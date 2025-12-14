@@ -43,6 +43,32 @@ bash:
 fix-permissions:
 	@docker compose run --rm -u "$(UID):$(GID)" app /var/www/html/docker/php/fix-permissions.sh
 
+# Frontend commands
+frontend-install:
+	@echo "📦 Installing frontend dependencies..."
+	@docker compose run --rm -u "${UID}:${GID}" frontend npm install
+	@echo "✅ Frontend dependencies installed!"
+
+frontend-dev:
+	@echo "🚀 Starting frontend dev server..."
+	@docker compose up frontend -d
+	@echo "✅ Frontend running at http://localhost:5173"
+
+frontend-build:
+	@echo "🏗️ Building frontend for production..."
+	@docker compose run --rm -u "${UID}:${GID}" frontend npm run build
+	@echo "✅ Frontend built!"
+
+frontend-bash:
+	@docker compose run --rm -u "${UID}:${GID}" frontend sh
+
+# Full stack commands
+dev:
+	@echo "🚀 Starting all services..."
+	@docker compose up -d
+	@echo "✅ Backend: http://localhost:8080"
+	@echo "✅ Frontend: http://localhost:5173"
+
 # Docker management
 up:
 	@echo "🚀 Starting all services..."
