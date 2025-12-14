@@ -1,4 +1,3 @@
-<!-- filepath: frontend/src/pages/errors/NotFoundPage.vue -->
 <template>
   <div class="min-h-screen flex items-center justify-center">
     <div class="text-center">

@@ -1,4 +1,3 @@
-<!-- filepath: frontend/src/pages/dashboard/DashboardPage.vue -->
 <template>
   <div>
     <h1 class="text-2xl font-bold mb-4">{{ $t('dashboard.title') }}</h1>

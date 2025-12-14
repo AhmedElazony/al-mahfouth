@@ -26,7 +26,7 @@ export default {
     rememberMe: 'تذكرني',
     forgotPassword: 'نسيت كلمة المرور؟',
     loginButton: 'دخول',
-    loginTitle: 'مرحباً بك في المحفوظ',
+    loginTitle: 'مرحباً بك في منصة المحفوظ',
     loginSubtitle: 'سجل دخولك للمتابعة'
   },
 
@@ -159,7 +159,7 @@ export default {
     confirm: 'تأكيد',
     yes: 'نعم',
     no: 'لا',
-    loading: 'جاري التحميل...',
+    loading: 'جارٍ التحميل...',
     noData: 'لا توجد بيانات',
     success: 'تمت العملية بنجاح',
     error: 'حدث خطأ',

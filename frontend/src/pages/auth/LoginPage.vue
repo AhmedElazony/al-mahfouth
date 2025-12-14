@@ -1,4 +1,3 @@
-<!-- filepath: frontend/src/pages/auth/LoginPage.vue -->
 <template>
   <div class="card p-8">
     <h1 class="text-2xl font-bold text-center mb-2">{{ $t('auth.loginTitle') }}</h1>
