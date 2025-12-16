@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('phone')->unique()->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
-            $table->enum('type', ['trainee', 'trainer']);
-            $table->enum('gender', ['male', 'female']);
-            $table->date('date_of_birth')->nullable();
+            $table->enum('role', ['super_admin', 'admin', 'teacher', 'student'])->default('student');
+            $table->enum('gender', ['male', 'female'])->default('male');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -47,8 +47,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };
