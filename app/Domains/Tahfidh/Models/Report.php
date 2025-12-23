@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Domains\Tahfidh\Models;
 
+use App\Domains\User\Models\Student;
+use App\Domains\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
