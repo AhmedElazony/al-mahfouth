@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         // Seed a super admin user
-        $superAdmin = User::factory()->create([
+        $superAdmin = User::create([
             'name' => 'Admin User',
             'username' => 'superAdmin',
             'email' => 'admin@al-mahfouth.com',
