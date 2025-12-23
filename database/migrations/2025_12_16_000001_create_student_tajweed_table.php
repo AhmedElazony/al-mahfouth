@@ -1,5 +1,7 @@
 <?php
 
+use App\Domains\Tahfidh\Enums\GradesEnum;
+use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,8 +13,8 @@ return new class extends Migration
         Schema::create('student_tajweed', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->primary()->constrained('students', 'user_id')->cascadeOnDelete();
-            $table->enum('recitation_level', ['excellent', 'good_plus', 'good', 'bad']);
-            $table->enum('tajweed_learning_status', ['not_yet', 'in_progress', 'completed']);
+            $table->enum('recitation_level', GradesEnum::values());
+            $table->enum('tajweed_learning_status', LearningStatusesEnum::values());
             // TODO: add tuhfetul_atfal_memorized, and jazrieah_memorized columns later
             $table->text('notes')->nullable();
             $table->timestamps();

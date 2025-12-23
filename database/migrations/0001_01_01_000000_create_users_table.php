@@ -1,5 +1,7 @@
 <?php
 
+use App\Domains\User\Enums\UserGendersEnum;
+use App\Domains\User\Enums\UserRolesEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,8 +22,8 @@ return new class extends Migration
             $table->string('phone')->unique()->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['super_admin', 'admin', 'teacher', 'student'])->default('student');
-            $table->enum('gender', ['male', 'female'])->default('male');
+            $table->enum('role', UserRolesEnum::values())->default(UserRolesEnum::STUDENT->value);
+            $table->enum('gender', UserGendersEnum::values())->default(UserGendersEnum::MALE->value);
             $table->rememberToken();
             $table->timestamps();
         });
