@@ -9,7 +9,7 @@ class DomainServiceProvider extends ServiceProvider
     public function register(): void
     {
         $services = [
-
+            \App\Domains\User\Services\Contracts\UserServiceInterface::class => \App\Domains\User\Services\Database\UserService::class,
         ];
 
         foreach ($services as $contract => $implementation) {
