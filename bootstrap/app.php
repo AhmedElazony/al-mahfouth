@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         \App\Support\Commands\MakeDomainService::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->api([
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
         $middleware->append(\App\Support\Http\Middlewares\HandleLocalization::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
