@@ -1,13 +1,25 @@
 export interface User {
   id: number
   name: string
+  username: string
   email: string
-  role: UserRole
+  email_verified: boolean
+  phone: string | null
+  phone_verified: boolean
+  role: {
+    for_view: string
+    value: UserRole 
+  }
+  gender: {
+    for_view: string
+    value: 'male' | 'female'
+  }
   created_at: string
-  updated_at: string
 }
 
-export type UserRole = 'super_admin' | 'supervisor' | 'teacher' | 'student'
+export type UserRole = 'super_admin' | 'admin' | 'teacher' | 'student'
+
+export type UserRoleValue = User['role']['value']
 
 export interface Student {
   id: number

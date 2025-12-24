@@ -10,28 +10,28 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/auth',
     component: AuthLayout,
+    meta: { guest: true },
     children: [
       {
         path: 'login',
         name: 'login',
-        component: () => import('@/pages/auth/LoginPage.vue'),
-        meta: { guest: true }
+        component: () => import('@/pages/auth/LoginPage.vue')
       }
     ]
   },
 
-  // Dashboard Routes
+  // Dashboard Routes (Protected)
   {
     path: '/',
     component: DashboardLayout,
-    meta: { requiresAuth: false },
+    meta: { requiresAuth: true },
     children: [
-        {
-            path: '',
-            name: 'dashboard',
-            component: () => import('@/pages/dashboard/DashboardPage.vue')
-        }
-    ] 
+      {
+        path: '',
+        name: 'dashboard',
+        component: () => import('@/pages/dashboard/DashboardPage.vue')
+      },
+    ]
   },
 
   // 404
@@ -48,14 +48,26 @@ const router = createRouter({
 })
 
 // Navigation Guards
-router.beforeEach((to, _from, next) => {
+router.beforeEach(async (to, _from, next) => {
+  // Dynamically import to avoid circular dependency
+  const { useAuthStore } = await import('@/stores/auth')
   const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next({ name: 'login' })
-  } else if (to.meta.guest && authStore.isAuthenticated) {
+  // Check token directly from localStorage as fallback
+  const hasToken = !!localStorage.getItem('token')
+  const isAuthenticated = authStore.isAuthenticated || hasToken
+  console.log('Auth Guard:', { isAuthenticated, to: to.fullPath })
+  // Check if route requires authentication
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    // Redirect to login with return URL
+    next({ name: 'login', query: { redirect: to.fullPath } })
+  } 
+  // Check if route is for guests only (like login page)
+  else if (to.meta.guest && isAuthenticated) {
+    // Redirect to dashboard (home)
     next({ name: 'dashboard' })
-  } else {
+  } 
+  else {
     next()
   }
 })
