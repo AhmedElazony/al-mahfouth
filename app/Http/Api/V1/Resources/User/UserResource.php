@@ -28,7 +28,7 @@ class UserResource extends JsonResource
                 'for_view' => UserGendersEnum::from($this->gender)->label(),
                 'value' => $this->gender,
             ],
-            'type' => [
+            'role' => [
                 'for_view' => UserRolesEnum::from($this->role)->label(),
                 'value' => $this->role,
             ],
