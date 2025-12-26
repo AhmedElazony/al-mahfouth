@@ -15,9 +15,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService implements UserServiceInterface
 {
-    public function get(int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+    public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator
     {
-        return User::paginate($perPage, $columns);
+        return User::filter($filters)
+            ->latest()
+            ->paginate($perPage, $columns);
     }
 
     public function create(array $data): User

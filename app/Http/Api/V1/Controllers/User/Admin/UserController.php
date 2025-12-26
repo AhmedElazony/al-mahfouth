@@ -23,8 +23,9 @@ class UserController extends ApiController
     {
         try {
             $perPage = request()->query('per_page', 15);
+            $filters = request()->only(['q', 'role', 'gender']);
 
-            $users = $this->userService->get($perPage);
+            $users = $this->userService->get($perPage, filters: $filters);
 
             return $this->success(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),

@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface UserServiceInterface
 {
-    public function get(int $perPage = 15, array $columns = ['*']): LengthAwarePaginator;
+    public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator;
 
     public function create(array $data): User;
 
