@@ -8,6 +8,7 @@ export default {
   // Navigation
   nav: {
     dashboard: 'لوحة التحكم',
+    users: 'المستخدمين',
     students: 'الطلاب',
     teachers: 'المعلمين',
     groups: 'المجموعات',
@@ -40,6 +41,46 @@ export default {
     todayAttendance: 'حضور اليوم',
     recentActivity: 'النشاط الأخير',
     upcomingClasses: 'الحلقات القادمة'
+  },
+
+  // Users
+  users: {
+    title: 'المستخدمين',
+    subtitle: 'إدارة جميع مستخدمي النظام',
+    addUser: 'إضافة مستخدم',
+    editUser: 'تعديل المستخدم',
+    deleteUser: 'حذف المستخدم',
+    deleteConfirmation: 'هل أنت متأكد من حذف المستخدم "{name}"؟',
+    name: 'الاسم',
+    username: 'اسم المستخدم',
+    usernameHint: 'يجب أن يكون فريداً ويحتوي على أحرف إنجليزية وأرقام فقط (مثال: amr_123)',
+    email: 'البريد الإلكتروني',
+    phone: 'رقم الهاتف',
+    password: 'كلمة المرور',
+    passwordConfirmation: 'تأكيد كلمة المرور',
+    leaveEmptyToKeep: 'اتركه فارغاً للإبقاء على القديمة',
+    role: 'الدور',
+    gender: 'الجنس',
+    male: 'ذكر',
+    female: 'أنثى',
+    selectRole: 'اختر الدور',
+    allRoles: 'جميع الأدوار',
+    allGenders: 'الكل',
+    specialization: 'التخصص',
+    educationalStage: 'المرحلة التعليمية',
+    selectStage: 'اختر المرحلة',
+    beginMemorizingAt: 'تاريخ بداية الحفظ',
+    memorizingCompletedAt: 'تاريخ إتمام الحفظ'
+  },
+
+  // Educational Stages
+  stages: {
+    noSchool: 'ما قبل المدرسة',
+    primarySchool: 'المرحلة الابتدائية',
+    preparatorySchool: 'المرحلة الإعدادية',
+    secondarySchool: 'المرحلة الثانوية',
+    universityStage: 'المرحلة الجامعية',
+    graduate: 'خريج'
   },
 
   // Students
@@ -175,13 +216,17 @@ export default {
     back: 'رجوع',
     next: 'التالي',
     previous: 'السابق',
-    close: 'إغلاق'
+    close: 'إغلاق',
+    showing: 'عرض',
+    of: 'من',
+    clearFilters: 'مسح الفلاتر',
+    retry: 'إعادة المحاولة'
   },
 
   // Roles
   roles: {
     superAdmin: 'المشرف العام',
-    supervisor: 'مشرف',
+    admin: 'مشرف',
     teacher: 'معلم',
     student: 'طالب'
   }

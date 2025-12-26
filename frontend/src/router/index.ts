@@ -31,6 +31,12 @@ const routes: RouteRecordRaw[] = [
         name: 'dashboard',
         component: () => import('@/pages/dashboard/DashboardPage.vue')
       },
+      {
+        path: 'users',
+        name: 'users',
+        component: () => import('@/pages/users/UsersListPage.vue'),
+        meta: { roles: ['super_admin', 'admin'] }
+      },
     ]
   },
 
