@@ -13,6 +13,8 @@ interface UserServiceInterface
 
     public function update(User $user, array $data): User;
 
+    public function delete(User $user): void;
+
     public function login(string $usernameOrEmail, string $password): array;
 
     public function logout(): void;

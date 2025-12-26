@@ -19,7 +19,7 @@ class UserController extends ApiController
         private UserServiceInterface $userService
     ) {}
 
-    public function getUsers()
+    public function index()
     {
         try {
             $perPage = request()->query('per_page', 15);
@@ -40,7 +40,7 @@ class UserController extends ApiController
         }
     }
 
-    public function createUser(CreateUserRequest $request)
+    public function store(CreateUserRequest $request)
     {
         try {
             $user = $this->userService->create($request->validated());
@@ -57,7 +57,7 @@ class UserController extends ApiController
         }
     }
 
-    public function updateUser(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
         try {
             $user = $this->userService->update($user, $request->validated());
@@ -65,6 +65,22 @@ class UserController extends ApiController
             return $this->success(
                 __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
                 UserResource::make($user)
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage(),
+                $th->getCode() !== 0 ? $th->getCode() : 500
+            );
+        }
+    }
+
+    public function destroy(User $user)
+    {
+        try {
+            $this->userService->delete($user);
+
+            return $this->success(
+                __(ResponseMessageEnum::DELETED_SUCCESSFULLY->value)
             );
         } catch (\Throwable $th) {
             return $this->error(

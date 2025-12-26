@@ -65,6 +65,11 @@ class UserService implements UserServiceInterface
         });
     }
 
+    public function delete(User $user): void
+    {
+        $user->delete();
+    }
+
     public function login(string $usernameOrEmail, string $password): array
     {
         return DB::transaction(function () use ($usernameOrEmail, $password) {
