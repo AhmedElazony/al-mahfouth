@@ -7,6 +7,9 @@ Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
     Route::get('/', [UserController::class, 'index'])
         ->middleware('role:super_admin,admin')->name('index');
 
+    Route::get('/{user}', [UserController::class, 'show'])
+        ->name('show');
+
     Route::post('/', [UserController::class, 'store'])
         ->middleware('role:super_admin,admin')->name('store');
 
