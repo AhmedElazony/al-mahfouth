@@ -10,12 +10,12 @@ class Student extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'educational_stage',
         'code',
         'begin_memorizing_at',
         'memorizing_completed_at',
         'created_by',
-        'is_active',
     ];
 
     protected $casts = [

@@ -16,4 +16,6 @@ enum ResponseMessageEnum: string
     case LOGIN_SUCCESSFUL = 'responses.login_successful';
     case LOGOUT_SUCCESSFUL = 'responses.logout_successful';
     case INVALID_CREDENTIALS = 'responses.invalid_credentials';
+    case UNAUTHORIZED = 'responses.unauthorized';
+    case FORBIDDEN = 'responses.forbidden';
 }
