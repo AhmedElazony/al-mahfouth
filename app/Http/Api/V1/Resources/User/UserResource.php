@@ -32,6 +32,11 @@ class UserResource extends JsonResource
                 'for_view' => UserRolesEnum::from($this->role)->label(),
                 'value' => $this->role,
             ],
+            'profile' => match ($this->role) {
+                UserRolesEnum::TEACHER->value => new TeacherResource($this->whenLoaded('teacher')),
+                UserRolesEnum::STUDENT->value => new StudentResource($this->whenLoaded('student')),
+                default => null,
+            },
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }

@@ -40,6 +40,21 @@ class UserController extends ApiController
         }
     }
 
+    public function show(User $user)
+    {
+        try {
+            return $this->success(
+                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
+                UserResource::make($user->load($user->role))
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage(),
+                $th->getCode() !== 0 ? $th->getCode() : 500
+            );
+        }
+    }
+
     public function store(CreateUserRequest $request)
     {
         try {

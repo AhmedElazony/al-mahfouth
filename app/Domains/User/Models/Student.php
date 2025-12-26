@@ -12,7 +12,6 @@ class Student extends Model
     protected $fillable = [
         'user_id',
         'educational_stage',
-        'code',
         'begin_memorizing_at',
         'memorizing_completed_at',
         'created_by',
@@ -21,7 +20,6 @@ class Student extends Model
     protected $casts = [
         'begin_memorizing_at' => 'date',
         'memorizing_completed_at' => 'date',
-        'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
