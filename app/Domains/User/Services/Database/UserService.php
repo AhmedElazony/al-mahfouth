@@ -4,8 +4,6 @@ namespace App\Domains\User\Services\Database;
 
 use App\Domains\User\Enums\UserGendersEnum;
 use App\Domains\User\Enums\UserRolesEnum;
-use App\Domains\User\Models\Student;
-use App\Domains\User\Models\Teacher;
 use App\Domains\User\Models\User;
 use App\Domains\User\Services\Contracts\UserServiceInterface;
 use App\Http\Api\V1\Resources\User\UserResource;
@@ -35,7 +33,7 @@ class UserService implements UserServiceInterface
                 'role' => $data['role'] ?? UserRolesEnum::STUDENT->value,
             ]);
 
-            $this->createRoleProfile(
+            $this->createOrUpdateRoleProfile(
                 $user,
                 $user->role ?? $data['role'],
                 $data
@@ -44,6 +42,27 @@ class UserService implements UserServiceInterface
             return $user;
         });
 
+    }
+
+    public function update(User $user, array $data): User
+    {
+        return DB::transaction(function () use ($user, $data) {
+            $user->update([
+                'name' => $data['name'] ?? $user->name,
+                'username' => $data['username'] ?? $user->username,
+                'email' => $data['email'] ?? $user->email,
+                'phone' => $data['phone'] ?? $user->phone,
+                'password' => isset($data['password']) ? Hash::make($data['password']) : $user->password,
+            ]);
+
+            $this->createOrUpdateRoleProfile(
+                $user,
+                $user->role,
+                $data
+            );
+
+            return $user;
+        });
     }
 
     public function login(string $usernameOrEmail, string $password): array
@@ -73,23 +92,32 @@ class UserService implements UserServiceInterface
             ->tokens()->delete();
     }
 
-    private function createRoleProfile(User $user, string $role, array $data)
+    private function createOrUpdateRoleProfile(User $user, string $role, array $data)
     {
-        $currentUserId = auth()->id();
-        match ($role) {
-            UserRolesEnum::TEACHER->value => Teacher::create([
-                'user_id' => $user->id,
-                'created_by' => $currentUserId,
-                'specialization' => $data['teacher_specialization'] ?? null,
-            ]),
-            UserRolesEnum::STUDENT->value => Student::create([
-                'user_id' => $user->id,
-                'created_by' => $currentUserId,
-                'educational_stage' => $data['student_educational_stage'] ?? null,
-                'begin_memorizing_at' => $data['student_begin_memorizing_at'] ?? null,
-                'memorizing_completed_at' => $data['student_memorizing_completed_at'] ?? null,
-            ]),
+        return match ($role) {
+            UserRolesEnum::TEACHER->value => $this->handleTeacherProfile($user, $data),
+            UserRolesEnum::STUDENT->value => $this->handleStudentProfile($user, $data),
             default => null,
         };
+    }
+
+    private function handleTeacherProfile(User $user, array $data)
+    {
+        $currentProfile = $user->teacher;
+        $user->teacher()->updateOrCreate(['user_id' => $user->id], [
+            'created_by' => $currentProfile->created_by ?? auth()->id(),
+            'specialization' => $data['teacher_specialization'] ?? $currentProfile->specialization ?? null,
+        ]);
+    }
+
+    private function handleStudentProfile(User $user, array $data)
+    {
+        $currentProfile = $user->student;
+        $user->student()->updateOrCreate(['user_id' => $user->id], [
+            'created_by' => $currentProfile->created_by ?? auth()->id(),
+            'educational_stage' => $data['student_educational_stage'] ?? $currentProfile->educational_stage ?? null,
+            'begin_memorizing_at' => $data['student_begin_memorizing_at'] ?? $currentProfile->begin_memorizing_at ?? null,
+            'memorizing_completed_at' => $data['student_memorizing_completed_at'] ?? $currentProfile->completed_memorizing_at ?? null,
+        ]);
     }
 }

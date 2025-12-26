@@ -9,4 +9,7 @@ Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
 
     Route::post('/', [UserController::class, 'createUser'])
         ->middleware('role:super_admin,admin')->name('store');
+
+    Route::put('/{user}', [UserController::class, 'updateUser'])
+        ->middleware('role:super_admin,admin')->name('update');
 });

@@ -3,12 +3,11 @@
 namespace App\Http\Api\V1\Requests\User;
 
 use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
-use App\Domains\User\Enums\UserRolesEnum;
 use App\Domains\User\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
 
-class CreateUserRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,19 +25,15 @@ class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'username' => ['sometimes', 'string', 'max:255', Rule::unique('users', 'username')->ignore($this->user->id)],
+            'email' => ['sometimes', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user->id)],
             'phone' => ['nullable', 'string', 'phone:EG'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => [
-                'required',
-                'in:'.implode(',', Arr::except(UserRolesEnum::values(), [UserRolesEnum::SUPER_ADMIN->value])),
-            ],
-            'teacher_specialization' => ['required_if:role,'.UserRolesEnum::TEACHER->value, 'string', 'max:255'],
-            'student_educational_stage' => ['required_if:role,'.UserRolesEnum::STUDENT->value, 'in:'.implode(',', EducationalStagesEnum::values())],
-            'student_begin_memorizing_at' => ['nullable', 'date', 'before_or_equal:today'],
-            'student_memorizing_completed_at' => ['nullable', 'date', 'after_or_equal:student_begin_memorizing_at'],
+            'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
+            'teacher_specialization' => ['sometimes', 'string', 'max:255'],
+            'student_educational_stage' => ['sometimes', 'in:'.implode(',', EducationalStagesEnum::values())],
+            'student_begin_memorizing_at' => ['sometimes', 'date', 'before_or_equal:today'],
+            'student_memorizing_completed_at' => ['sometimes', 'date', 'after:student_begin_memorizing_at', 'before_or_equal:today'],
         ];
     }
 
@@ -57,7 +52,9 @@ class CreateUserRequest extends FormRequest
 
         $phone = phone($this->phone, 'EG')->formatE164();
 
-        $exists = User::where('phone', $phone)->exists();
+        $exists = User::where('phone', $phone)
+            ->where('id', '!=', $this->user->id)
+            ->exists();
 
         if ($exists) {
             $validator->errors()->add('phone', __('validation.unique', ['attribute' => __('validation.attributes.phone')]));

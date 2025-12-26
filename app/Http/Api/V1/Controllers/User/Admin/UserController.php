@@ -2,9 +2,11 @@
 
 namespace App\Http\Api\V1\Controllers\User\Admin;
 
+use App\Domains\User\Models\User;
 use App\Domains\User\Services\Contracts\UserServiceInterface;
 use App\Http\Api\V1\Controllers\ApiController;
 use App\Http\Api\V1\Requests\User\CreateUserRequest;
+use App\Http\Api\V1\Requests\User\UpdateUserRequest;
 use App\Http\Api\V1\Resources\User\UserResource;
 use App\Support\Enums\ResponseMessageEnum;
 use App\Support\Traits\WithPagination;
@@ -45,6 +47,23 @@ class UserController extends ApiController
 
             return $this->success(
                 __(ResponseMessageEnum::ADDED_SUCCESSFULLY->value),
+                UserResource::make($user)
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage(),
+                $th->getCode() !== 0 ? $th->getCode() : 500
+            );
+        }
+    }
+
+    public function updateUser(UpdateUserRequest $request, User $user)
+    {
+        try {
+            $user = $this->userService->update($user, $request->validated());
+
+            return $this->success(
+                __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
                 UserResource::make($user)
             );
         } catch (\Throwable $th) {
