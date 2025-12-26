@@ -116,7 +116,15 @@
               {{ user.email }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white" dir="ltr">
-              {{ user.phone || '-' }}
+              <a 
+                v-if="user.phone" 
+                :href="`tel:${user.phone}`" 
+                class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 hover:underline flex items-center gap-1"
+              >
+                <i class="pi pi-phone text-xs"></i>
+                {{ user.phone|| '-' }}
+              </a>
+              <span v-else class="text-gray-400">-</span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span :class="getRoleBadgeClass(user.role.value)" class="px-2 py-1 text-xs rounded-full">
