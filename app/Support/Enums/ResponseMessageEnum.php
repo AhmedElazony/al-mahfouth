@@ -10,6 +10,7 @@ enum ResponseMessageEnum: string
 
     case SUCCESS = 'responses.success';
     case FAILED = 'responses.failed';
+    case FETCHED_SUCCESSFULLY = 'responses.items_fetched';
     case ADDED_SUCCESSFULLY = 'responses.item_added';
     case UPDATED_SUCCESSFULLY = 'responses.item_updated';
     case DELETED_SUCCESSFULLY = 'responses.item_deleted';

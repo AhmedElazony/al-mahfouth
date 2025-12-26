@@ -11,11 +11,17 @@ use App\Domains\User\Services\Contracts\UserServiceInterface;
 use App\Http\Api\V1\Resources\User\UserResource;
 use App\Support\Enums\ResponseMessageEnum;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService implements UserServiceInterface
 {
+    public function get(int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+    {
+        return User::paginate($perPage, $columns);
+    }
+
     public function create(array $data): User
     {
         return DB::transaction(function () use ($data) {
