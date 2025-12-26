@@ -45,7 +45,7 @@ class UserController extends ApiController
         try {
             return $this->success(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
-                UserResource::make($user->load($user->role))
+                UserResource::make($user->load(! $user->hasAdminRole() ? $user->role : []))
             );
         } catch (\Throwable $th) {
             return $this->error(
