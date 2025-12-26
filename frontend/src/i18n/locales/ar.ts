@@ -220,7 +220,7 @@ export default {
     showing: 'عرض',
     of: 'من',
     clearFilters: 'مسح الفلاتر',
-    retry: 'إعادة المحاولة'
+    retry: 'إعادة المحاولة',
   },
 
   // Roles

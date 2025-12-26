@@ -2,12 +2,12 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('users.title') }}</h1>
         <p class="text-gray-500 dark:text-gray-400">{{ $t('users.subtitle') }}</p>
       </div>
-      <button @click="openCreateModal" class="btn-primary flex items-center gap-2">
+      <button @click="openCreateModal" class="btn-primary flex items-center justify-center gap-2">
         <i class="pi pi-plus"></i>
         {{ $t('users.addUser') }}
       </button>
@@ -15,7 +15,7 @@
 
     <!-- Filters -->
     <div class="card p-4">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Search -->
         <div>
           <input
@@ -69,8 +69,8 @@
       </button>
     </div>
 
-    <!-- Users Table -->
-    <div v-else class="card overflow-hidden">
+    <!-- Desktop Table (hidden on mobile) -->
+    <div v-else class="hidden md:block card overflow-hidden">
       <table class="w-full">
         <thead class="bg-gray-50 dark:bg-gray-800">
           <tr>
@@ -115,14 +115,14 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
               {{ user.email }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white" dir="ltr">
+            <td class="px-6 py-4 whitespace-nowrap text-sm" dir="ltr">
               <a 
                 v-if="user.phone" 
                 :href="`tel:${user.phone}`" 
-                class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 hover:underline flex items-center gap-1"
+                class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 hover:underline inline-flex items-center gap-1"
               >
                 <i class="pi pi-phone text-xs"></i>
-                {{ user.phone|| '-' }}
+                {{ user.phone }}
               </a>
               <span v-else class="text-gray-400">-</span>
             </td>
@@ -162,7 +162,7 @@
         </tbody>
       </table>
 
-      <!-- Pagination -->
+      <!-- Desktop Pagination -->
       <div v-if="usersStore.hasUsers" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <div class="text-sm text-gray-500 dark:text-gray-400">
           {{ $t('common.showing') }} {{ usersStore.pagination?.from }} - {{ usersStore.pagination?.to }} 
@@ -185,6 +185,115 @@
             class="btn-secondary px-3 py-1 disabled:opacity-50"
           >
             <i class="pi pi-chevron-left"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Cards (hidden on desktop) -->
+    <div v-if="!usersStore.loading && !usersStore.error" class="md:hidden space-y-4">
+      <!-- Empty State -->
+      <div v-if="!usersStore.hasUsers" class="card p-6 text-center text-gray-500 dark:text-gray-400">
+        <i class="pi pi-users text-4xl mb-4 block"></i>
+        {{ $t('common.noData') }}
+      </div>
+
+      <!-- User Cards -->
+      <div 
+        v-for="user in usersStore.users" 
+        :key="user.id" 
+        class="card p-4 space-y-3"
+      >
+        <!-- Header: Avatar, Name, Actions -->
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
+              <span class="text-primary-600 dark:text-primary-400 font-medium text-lg">
+                {{ user.name.charAt(0) }}
+              </span>
+            </div>
+            <div>
+              <div class="font-medium text-gray-900 dark:text-white">{{ user.name }}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">@{{ user.username }}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button
+              @click="openEditModal(user)"
+              :disabled="loadingUserId === user.id"
+              class="p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <i :class="loadingUserId === user.id ? 'pi pi-spinner pi-spin' : 'pi pi-pencil'"></i>
+            </button>
+            <button
+              @click="confirmDelete(user)"
+              class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+            >
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <span class="text-gray-500 dark:text-gray-400">{{ $t('users.role') }}:</span>
+            <span :class="getRoleBadgeClass(user.role.value)" class="px-2 py-0.5 text-xs rounded-full mr-2">
+              {{ user.role.for_view }}
+            </span>
+          </div>
+          <div class="text-gray-500 dark:text-gray-400">
+            #{{ user.id }}
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="space-y-2 text-sm border-t border-gray-200 dark:border-gray-700 pt-3">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-envelope text-gray-400"></i>
+            <a :href="`mailto:${user.email}`" class="text-primary-600 dark:text-primary-400 hover:underline truncate">
+              {{ user.email }}
+            </a>
+          </div>
+          <div class="flex items-center gap-2" dir="ltr">
+            <i class="pi pi-phone text-gray-400"></i>
+            <a 
+              v-if="user.phone" 
+              :href="`tel:${user.phone}`" 
+              class="text-primary-600 dark:text-primary-400 hover:underline"
+            >
+              {{ user.phone }}
+            </a>
+            <span v-else class="text-gray-400">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Pagination -->
+      <div v-if="usersStore.hasUsers" class="card p-4 flex flex-col gap-4">
+        <div class="text-sm text-center text-gray-500 dark:text-gray-400">
+          {{ $t('common.showing') }} {{ usersStore.pagination?.from }} - {{ usersStore.pagination?.to }} 
+          {{ $t('common.of') }} {{ usersStore.totalUsers }}
+        </div>
+        <div class="flex items-center justify-center gap-4">
+          <button
+            @click="usersStore.setPage(usersStore.currentPage - 1)"
+            :disabled="usersStore.currentPage === 1"
+            class="btn-secondary px-4 py-2 disabled:opacity-50"
+          >
+            <i class="pi pi-chevron-right ml-1"></i>
+            {{ $t('common.previous') }}
+          </button>
+          <span class="text-sm text-gray-700 dark:text-gray-300">
+            {{ usersStore.currentPage }} / {{ usersStore.totalPages }}
+          </span>
+          <button
+            @click="usersStore.setPage(usersStore.currentPage + 1)"
+            :disabled="usersStore.currentPage === usersStore.totalPages"
+            class="btn-secondary px-4 py-2 disabled:opacity-50"
+          >
+            {{ $t('common.next') }}
+            <i class="pi pi-chevron-left mr-1"></i>
           </button>
         </div>
       </div>
