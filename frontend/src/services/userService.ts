@@ -9,7 +9,7 @@ export const userService = {
   async getUsers(filters: UserFilters = {}): Promise<PaginatedResponse<User>> {
     const params = new URLSearchParams()
     
-    if (filters.search) params.append('search', filters.search)
+    if (filters.search) params.append('q', filters.search)
     if (filters.role) params.append('role', filters.role)
     if (filters.gender) params.append('gender', filters.gender)
     if (filters.per_page) params.append('per_page', filters.per_page.toString())
