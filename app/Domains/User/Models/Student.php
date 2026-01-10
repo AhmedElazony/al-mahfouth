@@ -2,6 +2,8 @@
 
 namespace App\Domains\User\Models;
 
+use App\Domains\Tahfidh\Models\Group;
+use App\Domains\Tahfidh\Models\GroupStudent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,5 +34,24 @@ class Student extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(
+            Group::class,
+            'group_student',
+            'student_id',
+            'group_id'
+        )->using(GroupStudent::class)
+            ->withPivot([
+                'group_id',
+                'student_id',
+                'student_status',
+                'is_online',
+                'memorizing_amount',
+                'joined_at',
+                'left_at',
+            ])->withTimestamps();
     }
 }
