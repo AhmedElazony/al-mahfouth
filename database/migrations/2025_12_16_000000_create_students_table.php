@@ -10,14 +10,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('students', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('user_id')->primary()->constrained('users')->cascadeOnDelete();
-            $table->enum('educational_stage', EducationalStagesEnum::values());
-            $table->string('code')->unique();
+            $table->enum('educational_stage', EducationalStagesEnum::values())->nullable();
             $table->date('begin_memorizing_at')->nullable();
             $table->date('memorizing_completed_at')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

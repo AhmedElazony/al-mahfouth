@@ -20,10 +20,13 @@ return Application::configure(basePath: dirname(__DIR__))
         \App\Support\Commands\MakeDomainService::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(\App\Support\Http\Middlewares\HandleLocalization::class);
         $middleware->api([
             \Illuminate\Http\Middleware\HandleCors::class,
         ]);
-        $middleware->append(\App\Support\Http\Middlewares\HandleLocalization::class);
+        $middleware->alias([
+            'role' => \App\Http\Api\V1\Middleware\User\DetermineRole::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

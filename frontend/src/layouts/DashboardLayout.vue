@@ -18,16 +18,19 @@
             >
               {{ $t('nav.dashboard') }}
             </router-link>
+
+            <!-- Admin only: Users Management -->
+            <router-link 
+              v-if="authStore.isAdmin"
+              to="/users" 
+              class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              active-class="!text-primary-600 dark:!text-primary-400 font-medium"
+            >
+              {{ $t('nav.users') }}
+            </router-link>
             
             <!-- Admin/Teacher only links -->
             <template v-if="authStore.isAdmin || authStore.isTeacher">
-              <router-link 
-                to="/students" 
-                class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                active-class="!text-primary-600 dark:!text-primary-400 font-medium"
-              >
-                {{ $t('nav.students') }}
-              </router-link>
               <router-link 
                 to="/groups" 
                 class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
@@ -39,13 +42,6 @@
             
             <!-- Admin only links -->
             <template v-if="authStore.isAdmin">
-              <router-link 
-                to="/teachers" 
-                class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                active-class="!text-primary-600 dark:!text-primary-400 font-medium"
-              >
-                {{ $t('nav.teachers') }}
-              </router-link>
               <router-link 
                 to="/reports" 
                 class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"

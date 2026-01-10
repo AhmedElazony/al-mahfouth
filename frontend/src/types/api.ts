@@ -1,23 +1,25 @@
-export interface ApiResponse<T = unknown> {
+export interface ApiResponse<T> {
   message: string
-  status: number
   data: T
+  status: number
 }
 
 export interface PaginatedResponse<T> {
+  message: string
   data: T[]
-  meta: {
-    current_page: number
-    from: number
-    last_page: number
-    per_page: number
-    to: number
-    total: number
-  }
+  meta: PaginationMeta
+}
+
+export interface PaginationMeta {
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  from: number
+  to: number
 }
 
 export interface ApiError {
   message: string
-  status: number
   errors?: Record<string, string[]>
 }

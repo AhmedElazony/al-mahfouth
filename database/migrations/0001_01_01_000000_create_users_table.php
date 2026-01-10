@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', UserRolesEnum::values())->default(UserRolesEnum::STUDENT->value);
             $table->enum('gender', UserGendersEnum::values())->default(UserGendersEnum::MALE->value);
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

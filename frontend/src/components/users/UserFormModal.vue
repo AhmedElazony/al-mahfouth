@@ -1,0 +1,327 @@
+<!-- filepath: frontend/src/components/users/UserFormModal.vue -->
+<template>
+  <div class="fixed inset-0 z-50 overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black/50" @click="$emit('close')"></div>
+
+    <!-- Modal -->
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <!-- Header -->
+        <div class="sticky top-0 bg-white dark:bg-gray-800 flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+            {{ isEditing ? $t('users.editUser') : $t('users.addUser') }}
+          </h2>
+          <button @click="$emit('close')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+            <i class="pi pi-times text-xl"></i>
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
+          <!-- Error Message -->
+          <div v-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+            {{ error }}
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Name -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.name') }} <span class="text-red-500">*</span>
+              </label>
+              <input v-model="form.name" type="text" class="input w-full" required />
+            </div>
+
+            <!-- Username -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.username') }} <span class="text-red-500">*</span>
+              </label>
+              <input v-model="form.username" type="text" class="input w-full" dir="ltr" required />
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                {{ $t('users.usernameHint') }}
+              </p>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.email') }} <span class="text-red-500">*</span>
+              </label>
+              <input v-model="form.email" type="email" class="input w-full" required />
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.phone') }}
+              </label>
+              <input v-model="form.phone" type="tel" class="input w-full" dir="ltr" />
+            </div>
+
+            <!-- Password -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.password') }} 
+                <span v-if="!isEditing" class="text-red-500">*</span>
+                <span v-else class="text-gray-400 text-xs">({{ $t('users.leaveEmptyToKeep') }})</span>
+              </label>
+              <input v-model="form.password" type="password" class="input w-full" :required="!isEditing" />
+            </div>
+
+            <!-- Password Confirmation -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.passwordConfirmation') }}
+                <span v-if="!isEditing" class="text-red-500">*</span>
+              </label>
+              <input v-model="form.password_confirmation" type="password" class="input w-full" :required="!isEditing" />
+            </div>
+
+            <!-- Role (only on create) -->
+            <div v-if="!isEditing">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.role') }} <span class="text-red-500">*</span>
+              </label>
+              <select v-model="form.role" class="input w-full" required>
+                <option value="">{{ $t('users.selectRole') }}</option>
+                <option value="admin">{{ $t('roles.admin') }}</option>
+                <option value="teacher">{{ $t('roles.teacher') }}</option>
+                <option value="student">{{ $t('roles.student') }}</option>
+              </select>
+            </div>
+
+            <!-- Gender -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.gender') }} <span class="text-red-500">*</span>
+              </label>
+              <select v-model="form.gender" class="input w-full" required>
+                <option value="male">{{ $t('users.male') }}</option>
+                <option value="female">{{ $t('users.female') }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Teacher Specialization -->
+          <div v-if="showTeacherFields">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              {{ $t('users.specialization') }} <span class="text-red-500">*</span>
+            </label>
+            <input v-model="form.teacher_specialization" type="text" class="input w-full" :required="showTeacherFields" />
+          </div>
+
+          <!-- Student Fields -->
+          <div v-if="showStudentFields" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ $t('users.educationalStage') }} <span class="text-red-500">*</span>
+              </label>
+              <select v-model="form.student_educational_stage" class="input w-full" :required="showStudentFields">
+                <option value="">{{ $t('users.selectStage') }}</option>
+                <option value="no_school">{{ $t('stages.noSchool') }}</option>
+                <option value="primary_school">{{ $t('stages.primarySchool') }}</option>
+                <option value="preparatory_school">{{ $t('stages.preparatorySchool') }}</option>
+                <option value="secondary_school">{{ $t('stages.secondarySchool') }}</option>
+                <option value="university_stage">{{ $t('stages.universityStage') }}</option>
+                <option value="graduate">{{ $t('stages.graduate') }}</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {{ $t('users.beginMemorizingAt') }}
+                </label>
+                <input v-model="form.student_begin_memorizing_at" type="date" class="input w-full" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {{ $t('users.memorizingCompletedAt') }}
+                </label>
+                <input v-model="form.student_memorizing_completed_at" type="date" class="input w-full" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center justify-end gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button type="button" @click="$emit('close')" class="btn-secondary">
+              {{ $t('common.cancel') }}
+            </button>
+            <button type="submit" :disabled="loading" class="btn-primary flex items-center gap-2">
+              <i v-if="loading" class="pi pi-spinner pi-spin"></i>
+              {{ isEditing ? $t('common.save') : $t('common.add') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive, watch, computed } from 'vue'
+import type { User, CreateUserForm, UpdateUserForm, UserRole } from '@/types/models'
+
+interface Props {
+  user?: User | null
+  isEditing?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  user: null,
+  isEditing: false
+})
+
+const emit = defineEmits<{
+  close: []
+  save: [data: CreateUserForm | UpdateUserForm]
+}>()
+
+const loading = ref(false)
+const error = ref<string | null>(null)
+
+const form = reactive<CreateUserForm>({
+  name: '',
+  username: '',
+  email: '',
+  phone: '',
+  password: '',
+  password_confirmation: '',
+  role: '' as Exclude<UserRole, 'super_admin'>,
+  gender: 'male',
+  teacher_specialization: '',
+  student_educational_stage: '',
+  student_begin_memorizing_at: '',
+  student_memorizing_completed_at: ''
+})
+
+// Computed to show role-specific fields
+const currentRole = computed(() => props.isEditing ? props.user?.role.value : form.role)
+const showTeacherFields = computed(() => currentRole.value === 'teacher')
+const showStudentFields = computed(() => currentRole.value === 'student')
+
+// Populate form when editing
+watch(
+  () => props.user,
+  (user) => {
+    if (user) {
+      form.name = user.name
+      form.username = user.username
+      form.email = user.email
+      form.phone = user.phone || ''
+      form.gender = user.gender.value
+      form.role = user.role.value as Exclude<UserRole, 'super_admin'>
+      
+      // Clear passwords for editing
+      form.password = ''
+      form.password_confirmation = ''
+      
+      // Populate profile data
+      if (user.teacher) {
+        form.teacher_specialization = user.teacher.specialization || ''
+      }
+      
+      if (user.student) {
+        form.student_educational_stage = user.student.educational_stage?.value || ''
+        form.student_begin_memorizing_at = user.student.begin_memorizing_at || ''
+        form.student_memorizing_completed_at = user.student.memorizing_completed_at || ''
+      }
+    }
+  },
+  { immediate: true }
+)
+
+async function handleSubmit() {
+  loading.value = true
+  error.value = null
+
+  try {
+    // Validate passwords match
+    if (form.password && form.password !== form.password_confirmation) {
+      error.value = 'كلمة المرور غير متطابقة'
+      loading.value = false
+      return
+    }
+
+    // Build data object
+    const data: CreateUserForm | UpdateUserForm = props.isEditing
+      ? buildUpdateData()
+      : buildCreateData()
+
+    emit('save', data)
+  } catch (err: any) {
+    error.value = err.message || 'حدث خطأ'
+  } finally {
+    loading.value = false
+  }
+}
+
+function buildCreateData(): CreateUserForm {
+  const data: CreateUserForm = {
+    name: form.name,
+    username: form.username,
+    email: form.email,
+    password: form.password,
+    password_confirmation: form.password_confirmation,
+    role: form.role,
+    gender: form.gender
+  }
+
+  if (form.phone) {
+    data.phone = form.phone
+  }
+
+  if (form.role === 'teacher' && form.teacher_specialization) {
+    data.teacher_specialization = form.teacher_specialization
+  }
+
+  if (form.role === 'student') {
+    if (form.student_educational_stage) {
+      data.student_educational_stage = form.student_educational_stage
+    }
+    if (form.student_begin_memorizing_at) {
+      data.student_begin_memorizing_at = form.student_begin_memorizing_at
+    }
+    if (form.student_memorizing_completed_at) {
+      data.student_memorizing_completed_at = form.student_memorizing_completed_at
+    }
+  }
+
+  return data
+}
+
+function buildUpdateData(): UpdateUserForm {
+  const data: UpdateUserForm = {
+    name: form.name,
+    username: form.username,
+    email: form.email,
+    gender: form.gender
+  }
+
+  if (form.phone) {
+    data.phone = form.phone
+  }
+
+  // Only include password if provided
+  if (form.password) {
+    data.password = form.password
+    data.password_confirmation = form.password_confirmation
+  }
+
+  // Include profile data based on role
+  if (props.user?.role.value === 'teacher') {
+    data.teacher_specialization = form.teacher_specialization
+  }
+
+  if (props.user?.role.value === 'student') {
+    data.student_educational_stage = form.student_educational_stage
+    data.student_begin_memorizing_at = form.student_begin_memorizing_at || undefined
+    data.student_memorizing_completed_at = form.student_memorizing_completed_at || undefined
+  }
+
+  return data
+}
+</script>

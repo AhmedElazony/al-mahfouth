@@ -32,6 +32,8 @@ class UserResource extends JsonResource
                 'for_view' => UserRolesEnum::from($this->role)->label(),
                 'value' => $this->role,
             ],
+            'teacher' => TeacherResource::make($this->whenLoaded('teacher')),
+            'student' => StudentResource::make($this->whenLoaded('student')),
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
