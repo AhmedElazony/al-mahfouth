@@ -24,10 +24,8 @@ class GroupController extends ApiController
             $groups = $this->groupService->get($perPage);
 
             return $this->paginated(
-                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
-                200,
-                $groups,
-                GroupResource::class,
+                data: $groups,
+                resource: GroupResource::class,
             );
         } catch (\Throwable $th) {
             return $this->error(
