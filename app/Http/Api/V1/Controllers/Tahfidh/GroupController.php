@@ -7,12 +7,9 @@ use App\Domains\Tahfidh\Services\Contracts\GroupServiceInterface;
 use App\Http\Api\V1\Controllers\ApiController;
 use App\Http\Api\V1\Resources\Tahfidh\GroupResource;
 use App\Support\Enums\ResponseMessageEnum;
-use App\Support\Traits\WithPagination;
 
 class GroupController extends ApiController
 {
-    use WithPagination;
-
     public function __construct(
         protected GroupServiceInterface $groupService,
     ) {}
