@@ -4,9 +4,9 @@ namespace App\Domains\Tahfidh\Models;
 
 use App\Domains\User\Models\Student;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class GroupStudent extends Model
+class GroupStudent extends Pivot
 {
     use HasFactory;
 
@@ -16,16 +16,12 @@ class GroupStudent extends Model
         'group_id',
         'student_id',
         'student_status',
-        'is_online',
         'memorizing_amount',
         'joined_at',
-        'left_at',
     ];
 
     protected $casts = [
-        'is_online' => 'boolean',
         'joined_at' => 'datetime',
-        'left_at' => 'datetime',
     ];
 
     public function group()

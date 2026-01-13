@@ -17,7 +17,7 @@ abstract class ApiController
         return ApiResponse::error($message, $status, $errors, $extra);
     }
 
-    public function paginated(?string $message = null, int $status = 200, LengthAwarePaginator $data, string $resource)
+    public function paginated(?string $message, int $status, LengthAwarePaginator $data, string $resource)
     {
         return ApiResponse::paginated($message, $status, $data, $resource);
     }

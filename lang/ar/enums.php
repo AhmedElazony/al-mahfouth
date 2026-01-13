@@ -1,6 +1,7 @@
 <?php
 
 use App\Domains\Tahfidh\Enums\AttendanceStatusesEnum;
+use App\Domains\Tahfidh\Enums\DaysEnum;
 use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
 use App\Domains\Tahfidh\Enums\GradesEnum;
 use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
@@ -50,4 +51,13 @@ return [
     MemorizingAmountsEnum::ONE_HIZB->value => 'حزب واحد',
     MemorizingAmountsEnum::ONE_JUZ->value => 'جزء واحد',
     MemorizingAmountsEnum::MORE_THAN_ONE_JUZ->value => 'أكثر من جزء واحد',
+
+    // DaysEnum
+    DaysEnum::SATURDAY->value => 'السبت',
+    DaysEnum::SUNDAY->value => 'الأحد',
+    DaysEnum::MONDAY->value => 'الاثنين',
+    DaysEnum::TUESDAY->value => 'الثلاثاء',
+    DaysEnum::WEDNESDAY->value => 'الأربعاء',
+    DaysEnum::THURSDAY->value => 'الخميس',
+    DaysEnum::FRIDAY->value => 'الجمعة',
 ];

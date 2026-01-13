@@ -1,6 +1,7 @@
 <?php
 
 use App\Domains\Tahfidh\Enums\AttendanceStatusesEnum;
+use App\Domains\Tahfidh\Enums\DaysEnum;
 use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
 use App\Domains\Tahfidh\Enums\GradesEnum;
 use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
@@ -50,4 +51,13 @@ return [
     MemorizingAmountsEnum::ONE_HIZB->value => 'One Hizb',
     MemorizingAmountsEnum::ONE_JUZ->value => 'One Juz',
     MemorizingAmountsEnum::MORE_THAN_ONE_JUZ->value => 'More than one Juz',
+
+    // DaysEnum
+    DaysEnum::SATURDAY->value => 'Saturday',
+    DaysEnum::SUNDAY->value => 'Sunday',
+    DaysEnum::MONDAY->value => 'Monday',
+    DaysEnum::TUESDAY->value => 'Tuesday',
+    DaysEnum::WEDNESDAY->value => 'Wednesday',
+    DaysEnum::THURSDAY->value => 'Thursday',
+    DaysEnum::FRIDAY->value => 'Friday',
 ];

@@ -26,7 +26,7 @@ class ApiResponse
         ], $extra), $status);
     }
 
-    public static function paginated(?string $message = null, int $status = 200, LengthAwarePaginator $data, string $resource): JsonResponse
+    public static function paginated(?string $message, int $status, LengthAwarePaginator $data, string $resource): JsonResponse
     {
         return self::success(
             $message ?? __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),

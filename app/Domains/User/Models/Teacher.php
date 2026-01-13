@@ -2,8 +2,10 @@
 
 namespace App\Domains\User\Models;
 
+use App\Domains\Tahfidh\Models\Group;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Teacher extends Model
 {
@@ -15,10 +17,17 @@ class Teacher extends Model
         'created_by',
     ];
 
+    protected $with = ['user:id,name'];
+
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'user_id';
+    }
 
     public function user()
     {
@@ -28,5 +37,14 @@ class Teacher extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function groups(): HasMany
+    {
+        return $this->hasMany(
+            Group::class,
+            'teacher_id',
+            'user_id'
+        );
     }
 }

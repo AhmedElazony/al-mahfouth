@@ -25,8 +25,10 @@ class UserController extends ApiController
             $users = $this->userService->get($perPage, filters: $filters);
 
             return $this->paginated(
-                data: $users,
-                resource: UserResource::class
+                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
+                200,
+                $users,
+                UserResource::class
             );
         } catch (\Throwable $th) {
             return $this->error(

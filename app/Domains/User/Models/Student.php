@@ -19,12 +19,19 @@ class Student extends Model
         'created_by',
     ];
 
+    protected $with = ['user:id,name'];
+
     protected $casts = [
         'begin_memorizing_at' => 'date',
         'memorizing_completed_at' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'user_id';
+    }
 
     public function user()
     {
@@ -42,16 +49,14 @@ class Student extends Model
             Group::class,
             'group_student',
             'student_id',
-            'group_id'
+            'group_id',
+            'id',
+            'user_id'
         )->using(GroupStudent::class)
             ->withPivot([
-                'group_id',
-                'student_id',
                 'student_status',
-                'is_online',
                 'memorizing_amount',
                 'joined_at',
-                'left_at',
             ])->withTimestamps();
     }
 }

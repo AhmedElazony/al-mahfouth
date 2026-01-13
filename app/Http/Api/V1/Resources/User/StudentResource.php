@@ -17,6 +17,7 @@ class StudentResource extends JsonResource
     {
         return [
             'id' => $this->user_id,
+            'name' => $this->whenLoaded('user', fn () => $this->user->name),
             'educational_stage' => [
                 'for_view' => EducationalStagesEnum::from($this->educational_stage)->label(),
                 'value' => $this->educational_stage,

@@ -16,11 +16,15 @@ class TeacherResource extends JsonResource
     {
         return [
             'id' => $this->user_id,
+            'name' => $this->whenLoaded('user',
+                fn () => $this->user->name
+            ),
             'specialization' => $this->specialization,
-            'created_by' => $this->whenLoaded('createdBy', fn () => [
-                'id' => $this->createdBy->id,
-                'name' => $this->createdBy->name,
-            ]),
+            'created_by' => $this->whenLoaded('createdBy',
+                fn () => [
+                    'id' => $this->createdBy->id,
+                    'name' => $this->createdBy->name,
+                ]),
         ];
     }
 }

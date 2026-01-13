@@ -16,19 +16,19 @@ class Group extends Model
         'name',
         'teacher_id',
         'schedule',
+        'is_online',
         'is_active',
     ];
 
     protected $casts = [
         'schedule' => 'array',
+        'is_online' => 'boolean',
         'is_active' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
     public function teacher()
     {
-        return $this->belongsTo(Teacher::class, 'teacher_id');
+        return $this->belongsTo(Teacher::class, 'teacher_id', 'user_id');
     }
 
     public function groupStudents()
@@ -42,16 +42,14 @@ class Group extends Model
             Student::class,
             'group_student',
             'group_id',
-            'student_id'
+            'student_id',
+            'id',
+            'user_id'
         )->using(GroupStudent::class)
             ->withPivot([
-                'group_id',
-                'student_id',
                 'student_status',
-                'is_online',
                 'memorizing_amount',
                 'joined_at',
-                'left_at',
             ])->withTimestamps();
     }
 }

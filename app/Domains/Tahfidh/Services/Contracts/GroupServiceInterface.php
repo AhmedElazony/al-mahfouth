@@ -4,6 +4,7 @@ namespace App\Domains\Tahfidh\Services\Contracts;
 
 use App\Domains\Tahfidh\Models\Group;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 interface GroupServiceInterface
 {
@@ -17,5 +18,9 @@ interface GroupServiceInterface
 
     public function delete(Group $group): void;
 
-    public function assignStudent(Group $group, array $studentData): void;
+    public function getStudents(Group $group): Collection;
+
+    public function assignStudent(Group $group, array $studentData): Collection;
+
+    public function removeStudent(Group $group, int $studentId): void;
 }
