@@ -227,6 +227,9 @@ return [
         'student_begin_memorizing_at' => 'تاريخ بدء الحفظ للطالب',
         'memorizing_completed_at' => 'تاريخ إتمام الحفظ',
         'student_memorizing_completed_at' => 'تاريخ إتمام الحفظ للطالب',
+        'schedule.*.day' => 'يوم الجلسة',
+        'schedule.*.start_time' => 'وقت بدء الجلسة',
+        'schedule.*.end_time' => 'وقت انتهاء الجلسة',
     ],
 
 ];
