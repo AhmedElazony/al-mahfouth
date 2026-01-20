@@ -24,7 +24,12 @@ class GroupController extends ApiController
     {
         try {
             $perPage = request()->query('per_page', 15);
-            $groups = $this->groupService->get($perPage);
+            $filters = request()->only([
+                'q',
+                'teacher_id',
+                'is_active',
+            ]);
+            $groups = $this->groupService->get($perPage, ['*'], $filters);
 
             return $this->paginated(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
