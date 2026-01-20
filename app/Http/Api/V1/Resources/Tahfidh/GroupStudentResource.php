@@ -18,25 +18,21 @@ class GroupStudentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'group' => $this->whenLoaded('group',
-                fn () => GroupResource::make($this->group)
-            ),
-            'student' => $this->whenLoaded('student',
+            'student' => $this->whenLoaded('user',
                 fn () => [
-                    'id' => $this->student->id,
-                    'name' => $this->student->name,
+                    'id' => $this->user_id,
+                    'name' => $this->user->name,
                 ]
             ),
             'student_status' => [
-                'for_view' => StudentStatusesEnum::from($this->student_status)->label(),
-                'value' => $this->student_status,
+                'for_view' => isset($this->pivot?->student_status) ? StudentStatusesEnum::from($this->pivot?->student_status)->label() : null,
+                'value' => $this->pivot?->student_status,
             ],
-            'is_online' => $this->is_online,
             'memorizing_amount' => [
-                'for_view' => MemorizingAmountsEnum::from($this->memorizing_amount)->label(),
-                'value' => $this->memorizing_amount,
+                'for_view' => isset($this->pivot?->memorizing_amount) ? MemorizingAmountsEnum::from($this->pivot?->memorizing_amount)->label() : null,
+                'value' => $this->pivot?->memorizing_amount,
             ],
-            'joined_at' => $this->joined_at?->toDateTimeString(),
+            'joined_at' => $this->pivot?->joined_at?->toDateTimeString(),
         ];
     }
 }

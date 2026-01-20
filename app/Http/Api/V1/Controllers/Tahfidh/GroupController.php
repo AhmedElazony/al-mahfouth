@@ -10,6 +10,7 @@ use App\Http\Api\V1\Requests\Tahfidh\Groups\AssignStudentRequest;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\StoreGroupRequest;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateGroupRequest;
 use App\Http\Api\V1\Resources\Tahfidh\GroupResource;
+use App\Http\Api\V1\Resources\Tahfidh\GroupStudentResource;
 use App\Http\Api\V1\Resources\User\StudentResource;
 use App\Support\Enums\ResponseMessageEnum;
 
@@ -114,7 +115,7 @@ class GroupController extends ApiController
 
             return $this->success(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
-                StudentResource::collection($students),
+                GroupStudentResource::collection($students),
             );
         } catch (\Throwable $th) {
             return $this->error(

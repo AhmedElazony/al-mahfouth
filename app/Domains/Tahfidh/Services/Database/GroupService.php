@@ -14,7 +14,7 @@ class GroupService implements GroupServiceInterface
 {
     public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator
     {
-        return Group::latest()->paginate($perPage, $columns);
+        return Group::with('teacher.user')->latest()->paginate($perPage, $columns);
     }
 
     public function findBy(string $field, string $value): Group

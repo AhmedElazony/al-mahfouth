@@ -3,7 +3,6 @@
 namespace App\Http\Api\V1\Resources\Tahfidh;
 
 use App\Domains\Tahfidh\Enums\DaysEnum;
-use App\Http\Api\V1\Resources\User\TeacherResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +19,10 @@ class GroupResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'teacher' => $this->whenLoaded('teacher',
-                fn () => TeacherResource::make($this->teacher)
+                fn () => [
+                    'id' => $this->teacher->user_id,
+                    'name' => $this->teacher->user->name,
+                ]
             ),
             'is_online' => $this->is_online,
             'schedule' => $this->formatSchedule($this->schedule),
