@@ -239,7 +239,7 @@ export default {
     close: 'إغلاق',
     showing: 'عرض',
     of: 'من',
-    clearFilters: 'مسح الفلاتر',
+    clearFilters: 'مسح كلمات البحث',
     retry: 'إعادة المحاولة',
     active: 'نشط',
     inactive: 'غير نشط',
