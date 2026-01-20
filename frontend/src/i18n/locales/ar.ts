@@ -1,3 +1,5 @@
+import { all } from "axios";
+
 export default {
   // App
   app: {
@@ -149,6 +151,7 @@ export default {
     name: 'اسم المجموعة',
     teacher: 'المعلم',
     selectTeacher: 'اختر المعلم',
+    allTeachers: 'جميع المعلمين',
     students: 'الطلاب',
     studentsCount: 'عدد الطلاب',
     schedule: 'المواعيد',

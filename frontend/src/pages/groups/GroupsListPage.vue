@@ -24,6 +24,14 @@
             @input="debouncedSearch"
             />
           </div>
+          <div>
+             <select v-model="selectedTeacher" class="input" @change="applyFilters">
+               <option value="" selected>{{ $t('groups.allTeachers') }}</option>
+               <option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">
+                 {{ teacher.name }}
+               </option>
+             </select>
+          </div>
           <select v-model="selectedStatus" class="input" @change="applyFilters">
             <option value="">{{ $t('groups.allStatuses') }}</option>
             <option value="active">{{ $t('common.active') }}</option>
@@ -309,12 +317,16 @@ import GroupFormModal from '@/components/groups/GroupFormModal.vue'
 import GroupStudentsModal from '@/components/groups/GroupStudentsModal.vue'
 import ConfirmModal from '@/components/common/ConfirmModal.vue'
 import { WeekDayLabels, getEnumLabel } from '@/constants'
+import userService from '@/services/userService'
 
 const groupsStore = useGroupsStore()
 
 // Filters
 const searchQuery = ref('')
 const selectedStatus = ref<string>('')
+const selectedTeacher = ref<string>('')
+
+const teachers = ref<Array<{ id: number; name: string }>>([])
 
 // Modal state
 const showModal = ref(false)
@@ -407,6 +419,7 @@ function debouncedSearch() {
 function applyFilters() {
   groupsStore.setFilters({
     search: searchQuery.value || undefined,
+    teacher_id: selectedTeacher.value || undefined,
     is_active: selectedStatus.value === 'active' ? true : selectedStatus.value === 'inactive' ? false : undefined
   })
 }
@@ -414,6 +427,7 @@ function applyFilters() {
 function clearFilters() {
   searchQuery.value = ''
   selectedStatus.value = ''
+  selectedTeacher.value = ''
   groupsStore.clearFilters()
 }
 
@@ -479,7 +493,17 @@ async function handleDelete() {
   }
 }
 
+async function fetchTeachers() {
+  try {
+    const response = await userService.getUsers({ role: 'teacher' })
+    teachers.value = response.data || []
+  } catch (err) {
+    console.error('Failed to fetch teachers:', err)
+  }
+}
+
 onMounted(() => {
   groupsStore.fetchGroups()
+  fetchTeachers()
 })
 </script>
