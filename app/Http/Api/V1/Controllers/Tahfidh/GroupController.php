@@ -64,7 +64,7 @@ class GroupController extends ApiController
 
             return $this->success(
                 __(ResponseMessageEnum::ADDED_SUCCESSFULLY->value),
-                GroupResource::make($group),
+                GroupResource::make($group->load('teacher')),
             );
         } catch (\Throwable $th) {
             return $this->error(
@@ -82,7 +82,7 @@ class GroupController extends ApiController
 
             return $this->success(
                 __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
-                GroupResource::make($updatedGroup),
+                GroupResource::make($updatedGroup->load('teacher')),
             );
         } catch (\Throwable $th) {
             return $this->error(
