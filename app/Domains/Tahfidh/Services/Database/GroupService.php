@@ -77,6 +77,25 @@ class GroupService implements GroupServiceInterface
         });
     }
 
+    public function updateAssignedStudent(Group $group, int $studentId, array $studentData): Collection
+    {
+        return DB::transaction(function () use ($group, $studentId, $studentData) {
+            if (! $group->students()->where('student_id', $studentId)->exists()) {
+                throw new \Exception(
+                    __(ResponseMessageEnum::NOT_FOUND->value),
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            $group->students()->updateExistingPivot($studentId, [
+                'student_status' => $studentData['student_status'] ?? null,
+                'memorizing_amount' => $studentData['memorizing_amount'],
+            ]);
+
+            return $group->students;
+        });
+    }
+
     public function removeStudent(Group $group, int $studentId): void
     {
         DB::transaction(function () use ($group, $studentId) {

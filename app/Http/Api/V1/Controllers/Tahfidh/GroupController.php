@@ -8,6 +8,7 @@ use App\Domains\User\Models\Student;
 use App\Http\Api\V1\Controllers\ApiController;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\AssignStudentRequest;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\StoreGroupRequest;
+use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateAssignedStudentRequest;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateGroupRequest;
 use App\Http\Api\V1\Resources\Tahfidh\GroupResource;
 use App\Http\Api\V1\Resources\Tahfidh\GroupStudentResource;
@@ -134,6 +135,26 @@ class GroupController extends ApiController
             return $this->success(
                 __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
                 StudentResource::collection($students),
+            );
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+
+            return $this->error(
+                $th->getMessage(),
+                $th->getCode() !== 0 ? $th->getCode() : 500
+            );
+        }
+    }
+
+    public function updateStudent(Group $group, Student $student, UpdateAssignedStudentRequest $request)
+    {
+        try {
+            $students = $this->groupService
+                ->updateAssignedStudent($group, $student->user_id, $request->validated());
+
+            return $this->success(
+                __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
+                GroupStudentResource::collection($students),
             );
         } catch (\Throwable $th) {
             dd($th->getMessage());

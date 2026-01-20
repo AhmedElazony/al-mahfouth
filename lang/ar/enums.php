@@ -6,6 +6,7 @@ use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
 use App\Domains\Tahfidh\Enums\GradesEnum;
 use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
 use App\Domains\Tahfidh\Enums\MemorizingAmountsEnum;
+use App\Domains\Tahfidh\Enums\StudentStatusesEnum;
 use App\Domains\User\Enums\UserGendersEnum;
 use App\Domains\User\Enums\UserRolesEnum;
 
@@ -38,6 +39,11 @@ return [
     GradesEnum::GOOD->value => 'جيد',
     GradesEnum::VERY_GOOD->value => 'جيد جدًا',
     GradesEnum::EXCELLENT->value => 'ممتاز',
+
+    // StudentStatusesEnum
+    StudentStatusesEnum::COMMITTED->value => 'ملتزم',
+    StudentStatusesEnum::UNCOMMITTED->value => 'غير ملتزم',
+    StudentStatusesEnum::ABSENT->value => 'غائب',
 
     // LearningStatusesEnum
     LearningStatusesEnum::NOT_STARTED->value => 'لم يبدأ',

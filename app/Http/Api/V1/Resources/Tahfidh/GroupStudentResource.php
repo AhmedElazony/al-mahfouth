@@ -18,6 +18,7 @@ class GroupStudentResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'group_id' => $this->pivot?->group_id,
             'student' => $this->whenLoaded('user',
                 fn () => [
                     'id' => $this->user_id,
