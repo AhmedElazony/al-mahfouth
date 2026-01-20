@@ -157,8 +157,6 @@ class GroupController extends ApiController
                 GroupStudentResource::collection($students),
             );
         } catch (\Throwable $th) {
-            dd($th->getMessage());
-
             return $this->error(
                 $th->getMessage(),
                 $th->getCode() !== 0 ? $th->getCode() : 500
