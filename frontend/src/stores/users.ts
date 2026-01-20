@@ -39,7 +39,7 @@ export const useUsersStore = defineStore('users', () => {
     try {
       const response = await userService.getUsers(filters.value)
       users.value = response.data
-      pagination.value = response.meta
+      pagination.value = response.pagination
     } catch (err: any) {
       error.value = err.response?.data?.message || 'حدث خطأ في جلب المستخدمين'
       throw err
