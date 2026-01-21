@@ -1,3 +1,5 @@
+import { all } from "axios";
+
 export default {
   // App
   app: {
@@ -141,15 +143,33 @@ export default {
   // Groups
   groups: {
     title: 'المجموعات',
+    subtitle: 'إدارة مجموعات الحفظ',
     addGroup: 'إضافة مجموعة',
     editGroup: 'تعديل المجموعة',
-    groupDetails: 'تفاصيل المجموعة',
+    deleteGroup: 'حذف المجموعة',
+    deleteConfirmation: 'هل أنت متأكد من حذف المجموعة "{name}"؟',
     name: 'اسم المجموعة',
     teacher: 'المعلم',
+    selectTeacher: 'اختر المعلم',
+    allTeachers: 'جميع المعلمين',
     students: 'الطلاب',
     studentsCount: 'عدد الطلاب',
     schedule: 'المواعيد',
-    createdAt: 'تاريخ الإنشاء'
+    addScheduleItem: 'إضافة موعد',
+    selectDay: 'اختر اليوم',
+    type: 'النوع',
+    online: 'عبر الإنترنت',
+    offline: 'في المسجد',
+    allStatuses: 'جميع الحالات',
+    selectStudent: 'اختر الطالب',
+    joinedAt: 'تاريخ الانضمام',
+    noStudents: 'لا يوجد طلاب في هذه المجموعة',
+    createdAt: 'تاريخ الإنشاء',
+    day: 'اليوم',
+    time: 'الوقت',
+    from: 'من',
+    to: 'إلى',
+    noStatus: 'بدون حالة'
   },
 
   // Reports
@@ -219,8 +239,11 @@ export default {
     close: 'إغلاق',
     showing: 'عرض',
     of: 'من',
-    clearFilters: 'مسح الفلاتر',
+    clearFilters: 'مسح كلمات البحث',
     retry: 'إعادة المحاولة',
+    active: 'نشط',
+    inactive: 'غير نشط',
+    status: 'الحالة'
   },
 
   // Roles

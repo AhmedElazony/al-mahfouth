@@ -12,4 +12,7 @@ return [
     'invalid_credentials' => 'Invalid credentials.',
     'unauthorized' => 'You are not authorized to access this resource.',
     'forbidden' => 'You do not have the necessary permissions to access this resource.',
+    'already_exists' => 'The item already exists.',
+    'not_found' => 'The item not found.',
+    'method_not_allowed' => 'Method Not Allowed.',
 ];

@@ -9,12 +9,9 @@ use App\Http\Api\V1\Requests\User\CreateUserRequest;
 use App\Http\Api\V1\Requests\User\UpdateUserRequest;
 use App\Http\Api\V1\Resources\User\UserResource;
 use App\Support\Enums\ResponseMessageEnum;
-use App\Support\Traits\WithPagination;
 
 class UserController extends ApiController
 {
-    use WithPagination;
-
     public function __construct(
         private UserServiceInterface $userService
     ) {}
@@ -27,11 +24,11 @@ class UserController extends ApiController
 
             $users = $this->userService->get($perPage, filters: $filters);
 
-            return $this->success(
+            return $this->paginated(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
-                UserResource::collection($users->items()),
                 200,
-                $this->returnPaginated($users)
+                $users,
+                UserResource::class
             );
         } catch (\Throwable $th) {
             return $this->error(

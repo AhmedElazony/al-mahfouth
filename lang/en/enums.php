@@ -1,10 +1,12 @@
 <?php
 
 use App\Domains\Tahfidh\Enums\AttendanceStatusesEnum;
+use App\Domains\Tahfidh\Enums\DaysEnum;
 use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
 use App\Domains\Tahfidh\Enums\GradesEnum;
 use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
 use App\Domains\Tahfidh\Enums\MemorizingAmountsEnum;
+use App\Domains\Tahfidh\Enums\StudentStatusesEnum;
 use App\Domains\User\Enums\UserGendersEnum;
 use App\Domains\User\Enums\UserRolesEnum;
 
@@ -38,6 +40,11 @@ return [
     GradesEnum::VERY_GOOD->value => 'Very Good',
     GradesEnum::EXCELLENT->value => 'Excellent',
 
+    // StudentStatusesEnum
+    StudentStatusesEnum::COMMITTED->value => 'Committed',
+    StudentStatusesEnum::UNCOMMITTED->value => 'Uncommitted',
+    StudentStatusesEnum::ABSENT->value => 'Absent',
+
     // LearningStatusesEnum
     LearningStatusesEnum::NOT_STARTED->value => 'Not Started',
     LearningStatusesEnum::IN_PROGRESS->value => 'In Progress',
@@ -50,4 +57,13 @@ return [
     MemorizingAmountsEnum::ONE_HIZB->value => 'One Hizb',
     MemorizingAmountsEnum::ONE_JUZ->value => 'One Juz',
     MemorizingAmountsEnum::MORE_THAN_ONE_JUZ->value => 'More than one Juz',
+
+    // DaysEnum
+    DaysEnum::SATURDAY->value => 'Saturday',
+    DaysEnum::SUNDAY->value => 'Sunday',
+    DaysEnum::MONDAY->value => 'Monday',
+    DaysEnum::TUESDAY->value => 'Tuesday',
+    DaysEnum::WEDNESDAY->value => 'Wednesday',
+    DaysEnum::THURSDAY->value => 'Thursday',
+    DaysEnum::FRIDAY->value => 'Friday',
 ];

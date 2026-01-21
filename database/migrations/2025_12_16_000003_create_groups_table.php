@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->foreignId('teacher_id')->constrained('teachers', 'user_id')->cascadeOnDelete();
             $table->json('schedule');
+            $table->boolean('is_online')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
