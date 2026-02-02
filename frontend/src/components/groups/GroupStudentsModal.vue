@@ -28,9 +28,9 @@
               </option>
             </select>
             <select v-model="memorizingAmount" class="input w-24 py-1.5 text-sm">
-              <option 
-                v-for="option in MemorizingAmountOptions" 
-                :key="option.value" 
+              <option
+                v-for="option in MemorizingAmountOptions"
+                :key="option.value"
                 :value="option.value"
               >
                 {{ option.label }}
@@ -38,16 +38,16 @@
             </select>
             <select v-model="studentStatus" class="input w-24 py-1.5 text-sm">
               <option value="">{{ $t('groups.noStatus') }}</option>
-              <option 
-                v-for="option in StudentStatusOptions" 
-                :key="option.value" 
+              <option
+                v-for="option in StudentStatusOptions"
+                :key="option.value"
                 :value="option.value"
               >
                 {{ option.label }}
               </option>
             </select>
-            <button 
-              @click="addStudent" 
+            <button
+              @click="addStudent"
               :disabled="!selectedStudentId || addingStudent"
               class="btn-primary py-1.5 px-3 text-sm flex items-center gap-1 disabled:opacity-50"
             >
@@ -68,9 +68,9 @@
 
           <!-- Students List -->
           <div v-else-if="students.length > 0" class="space-y-2">
-            <div 
-              v-for="item in students" 
-              :key="item.id" 
+            <div
+              v-for="item in students"
+              :key="item.id"
               class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg gap-3"
             >
               <!-- Student Info -->
@@ -93,9 +93,9 @@
               <!-- Editing Mode -->
               <div v-if="editingStudentId === getStudentId(item)" class="flex items-center gap-2">
                 <select v-model="editForm.memorizing_amount" class="input py-1 text-xs w-24">
-                  <option 
-                    v-for="option in MemorizingAmountOptions" 
-                    :key="option.value" 
+                  <option
+                    v-for="option in MemorizingAmountOptions"
+                    :key="option.value"
                     :value="option.value"
                   >
                     {{ option.label }}
@@ -103,23 +103,23 @@
                 </select>
                 <select v-model="editForm.student_status" class="input py-1 text-xs w-24">
                   <option value="">{{ $t('groups.noStatus') }}</option>
-                  <option 
-                    v-for="option in StudentStatusOptions" 
-                    :key="option.value" 
+                  <option
+                    v-for="option in StudentStatusOptions"
+                    :key="option.value"
                     :value="option.value"
                   >
                     {{ option.label }}
                   </option>
                 </select>
-                <button 
-                  @click="saveEdit(item)" 
+                <button
+                  @click="saveEdit(item)"
                   :disabled="savingEdit"
                   class="p-1.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 rounded"
                 >
                   <i :class="savingEdit ? 'pi pi-spinner pi-spin' : 'pi pi-check'" class="text-sm"></i>
                 </button>
-                <button 
-                  @click="cancelEdit" 
+                <button
+                  @click="cancelEdit"
                   class="p-1.5 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 rounded"
                 >
                   <i class="pi pi-times text-sm"></i>
@@ -133,22 +133,22 @@
                   {{ getMemorizingAmountLabel(item) }}
                 </span>
                 <!-- Student Status Badge -->
-                <span 
-                  v-if="getStudentStatusValue(item)" 
+                <span
+                  v-if="getStudentStatusValue(item)"
                   :class="getStatusBadgeClass(getStudentStatusValue(item))"
                   class="px-2 py-0.5 text-xs rounded-full"
                 >
                   {{ getStudentStatusLabel(item) }}
                 </span>
-                <button 
-                  @click="startEdit(item)" 
+                <button
+                  @click="startEdit(item)"
                   class="p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded"
                   :title="$t('common.edit')"
                 >
                   <i class="pi pi-pencil text-sm"></i>
                 </button>
-                <button 
-                  @click="removeStudent(item)" 
+                <button
+                  @click="removeStudent(item)"
                   :disabled="removingStudentId === getStudentId(item)"
                   class="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded disabled:opacity-50"
                   :title="$t('common.delete')"
@@ -175,14 +175,14 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import type { Group } from '@/types/models'
 import groupService, { type GroupStudentResponse } from '@/services/groupService'
 import userService from '@/services/userService'
-import { 
+import {
   MemorizingAmount,
-  MemorizingAmountLabels, 
+  MemorizingAmountLabels,
   MemorizingAmountOptions,
   StudentStatus,
   StudentStatusLabels,
   StudentStatusOptions,
-  getEnumLabel 
+  getEnumLabel
 } from '@/constants'
 
 interface Props {
@@ -345,18 +345,18 @@ async function addStudent() {
       student_id: selectedStudentId.value as number,
       memorizing_amount: memorizingAmount.value
     }
-    
+
     if (studentStatus.value) {
       payload.student_status = studentStatus.value
     }
 
     const response = await groupService.assignStudent(props.group.id, payload)
-    
+
     // Use the response data directly
     if (Array.isArray(response.data)) {
       students.value = response.data
     }
-    
+
     selectedStudentId.value = ''
     studentStatus.value = ''
   } catch (err: any) {
@@ -368,7 +368,7 @@ async function addStudent() {
 
 function startEdit(item: GroupStudentResponse) {
   editingStudentId.value = getStudentId(item) || null
-  
+
   if (item.memorizing_amount?.value) {
     editForm.memorizing_amount = item.memorizing_amount.value
   } else if (typeof item.memorizing_amount === 'string') {
@@ -376,7 +376,7 @@ function startEdit(item: GroupStudentResponse) {
   } else {
     editForm.memorizing_amount = MemorizingAmount.ONE_QUARTER
   }
-  
+
   editForm.student_status = getStudentStatusValue(item) || ''
 }
 
@@ -420,7 +420,7 @@ async function saveEdit(item: GroupStudentResponse) {
 async function removeStudent(item: GroupStudentResponse) {
   const studentId = getStudentId(item)
   if (!studentId) return
-  
+
   removingStudentId.value = studentId
   error.value = null
 

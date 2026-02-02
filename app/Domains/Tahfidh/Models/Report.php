@@ -24,7 +24,6 @@ class Report extends Model
 
     protected $casts = [
         'date' => 'date',
-        'created_at' => 'datetime',
     ];
 
     public function student()
