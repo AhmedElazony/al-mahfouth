@@ -12,7 +12,7 @@ class StudentTajweed extends Model
     protected $fillable = [
         'student_id',
         'recitation_level',
-        'tajweed_learning_status',
+        'learning_status',
         'notes',
     ];
 

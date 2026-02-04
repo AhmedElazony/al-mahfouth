@@ -119,7 +119,6 @@ class GroupService implements GroupServiceInterface
     public function updateStudentProfile(Group $group, array $profileData): Student
     {
         $student = $group->students()
-            ->with('tajweed')
             ->firstWhere('user_id', $profileData['student_id']);
 
         if (! $student) {
@@ -133,11 +132,11 @@ class GroupService implements GroupServiceInterface
             isset($profileData['tajweed_learning_status']) ||
             isset($profileData['tajweed_notes'])) {
             $tajweedData = [
-                'recitation_level' => $profileData['tajweed_recitation_level'] ?? $student->tajweed->recitation_level,
-                'learning_status' => $profileData['tajweed_learning_status'] ?? $student->tajweed->learning_status,
-                'notes' => $profileData['tajweed_notes'] ?? $student->tajweed->notes,
+                'recitation_level' => $profileData['tajweed_recitation_level'] ?? $student->tajweed?->recitation_level,
+                'learning_status' => $profileData['tajweed_learning_status'] ?? $student->tajweed?->learning_status,
+                'notes' => $profileData['tajweed_notes'] ?? $student->tajweed?->notes,
             ];
-            $student->tajweed()->update($tajweedData);
+            $student->tajweed()->updateOrCreate(['student_id' => $student->user_id], $tajweedData);
         }
 
         $student->update([
@@ -146,7 +145,7 @@ class GroupService implements GroupServiceInterface
             'memorizing_completed_at' => $profileData['memorizing_completed_at'] ?? $student->memorizing_completed_at,
         ]);
 
-        return $student->refresh();
+        return $student->load('tajweed');
     }
 
     public function removeStudent(Group $group, int $studentId): void
