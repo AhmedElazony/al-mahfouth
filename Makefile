@@ -11,7 +11,7 @@ UID := $(shell id -u)
 GID := $(shell id -g)
 
 # Targets
-.PHONY: images install certs deploy undeploy
+.PHONY: images install certs deploy undeploy bash fix-permissions frontend-install frontend-dev frontend-build frontend-bash dev artisan tinker up down logs
 
 images:
 	@docker compose build
@@ -67,6 +67,16 @@ dev:
 	@docker compose up -d
 	@echo "✅ Backend: http://localhost:8080"
 	@echo "✅ Frontend: http://localhost:5173"
+
+# Artisan commands
+artisan:
+	@docker compose run --rm -u "${UID}:${GID}" app php artisan $(filter-out $@,$(MAKECMDGOALS))
+
+tinker:
+	@docker compose run --rm -u "${UID}:${GID}" -e HOME=/tmp app php artisan tinker
+
+%:
+	@:
 
 # Docker management
 up:
