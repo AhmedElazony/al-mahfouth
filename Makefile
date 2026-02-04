@@ -10,7 +10,6 @@ SSL_CERT = $(SSL_DIR)/public.crt
 UID := $(shell id -u)
 GID := $(shell id -g)
 
-# MySql Backup config
 # Targets
 .PHONY: images install certs deploy undeploy
 
@@ -18,7 +17,7 @@ images:
 	@docker compose build
 
 install:
-	docker compose run --rm -u "$(UID):$(GID)" app composer install && \
+	@docker compose run --rm -u "$(UID):$(GID)" app composer install && \
 	cp .env.example .env && \
 	docker compose run --rm -u "$(UID):$(GID)" app php artisan key:generate
 
@@ -38,7 +37,7 @@ certs:
 	fi
 
 bash:
-	docker compose run --rm -u "${UID}:${GID}" app bash
+	@docker compose run --rm -u "${UID}:${GID}" app bash
 
 fix-permissions:
 	@docker compose run --rm -u "$(UID):$(GID)" app /var/www/html/docker/php/fix-permissions.sh
