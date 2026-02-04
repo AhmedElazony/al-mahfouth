@@ -3,6 +3,7 @@
 namespace App\Domains\User\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Domains\User\Enums\UserRolesEnum;
 use App\Domains\User\Traits\HasFilters;
 use App\Domains\User\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -65,5 +66,21 @@ class User extends Authenticatable
     public function student()
     {
         return $this->hasOne(Student::class);
+    }
+
+    // Helper Methods
+    public function loadRoleRelations()
+    {
+        if ($this->hasAdminRole()) {
+            return $this;
+        }
+
+        $relations = match ($this->role) {
+            UserRolesEnum::STUDENT->value => ['student', 'student.tajweed'],
+            UserRolesEnum::TEACHER->value => ['teacher'],
+            default => [],
+        };
+
+        return $this->load($relations);
     }
 }

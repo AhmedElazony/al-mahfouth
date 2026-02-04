@@ -24,6 +24,7 @@ class StudentResource extends JsonResource
             ],
             'begin_memorizing_at' => $this->begin_memorizing_at?->toDateString(),
             'memorizing_completed_at' => $this->memorizing_completed_at?->toDateString(),
+            'tajweed' => $this->whenLoaded('tajweed', fn () => $this->tajweed),
             'created_by' => $this->whenLoaded('createdBy', fn () => [
                 'id' => $this->createdBy->id,
                 'name' => $this->createdBy->name,
