@@ -1,4 +1,3 @@
-<!-- filepath: frontend/src/components/users/UserFormModal.vue -->
 <template>
     <div class="fixed inset-0 z-50 overflow-y-auto">
         <!-- Backdrop -->
@@ -254,7 +253,10 @@ const form = reactive<CreateUserForm>({
     teacher_specialization: '',
     student_educational_stage: '',
     student_begin_memorizing_at: '',
-    student_memorizing_completed_at: ''
+    student_memorizing_completed_at: '',
+    student_tajweed_recitation_level: '',
+    student_tajweed_learning_status: '',
+    student_tajweed_notes: ''
 })
 
 // Computed to show role-specific fields
@@ -287,6 +289,9 @@ watch(
                 form.student_educational_stage = user.student.educational_stage?.value || ''
                 form.student_begin_memorizing_at = user.student.begin_memorizing_at || ''
                 form.student_memorizing_completed_at = user.student.memorizing_completed_at || ''
+                form.student_tajweed_recitation_level = user.student.tajweed?.recitation_level?.value || ''
+                form.student_tajweed_learning_status = user.student.tajweed?.learning_status?.value || ''
+                form.student_tajweed_notes = user.student.tajweed?.notes || ''
             }
         }
     },
@@ -388,6 +393,9 @@ function buildUpdateData(): UpdateUserForm {
         data.student_educational_stage = form.student_educational_stage
         data.student_begin_memorizing_at = form.student_begin_memorizing_at || undefined
         data.student_memorizing_completed_at = form.student_memorizing_completed_at || undefined
+        data.student_tajweed_recitation_level = form.student_tajweed_recitation_level || undefined
+        data.student_tajweed_learning_status = form.student_tajweed_learning_status || undefined
+        data.student_tajweed_notes = form.student_tajweed_notes || undefined
     }
 
     return data

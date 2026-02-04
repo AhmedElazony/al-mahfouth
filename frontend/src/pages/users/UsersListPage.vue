@@ -1,4 +1,3 @@
-<!-- filepath: frontend/src/pages/users/UsersListPage.vue -->
 <template>
   <div class="space-y-6">
     <!-- Header -->

@@ -29,6 +29,7 @@ export interface StudentProfile {
     }
     begin_memorizing_at: string | null
     memorizing_completed_at: string | null
+    tajweed?: StudentTajweed
     created_by?: {
         id: number
         name: string
@@ -40,7 +41,7 @@ export interface StudentTajweed {
         for_view: string
         value: string
     }
-    tajweed_learning_status: {
+    learning_status: {
         for_view: string
         value: string
     }
@@ -137,7 +138,7 @@ export interface UpdateUserForm {
     student_begin_memorizing_at?: string
     student_memorizing_completed_at?: string
     // Tajweed fields
-    student_recitation_level?: string
+    student_tajweed_recitation_level?: string
     student_tajweed_learning_status?: string
     student_tajweed_notes?: string
 }
