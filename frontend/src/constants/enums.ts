@@ -131,6 +131,9 @@ export const GradeLabels: Record<GradeType, string> = {
   [Grade.VERY_GOOD]: 'جيد جداً',
   [Grade.EXCELLENT]: 'ممتاز',
 }
+export const GradeOptions = Object.entries(GradeLabels).map(
+  ([value, label]) => ({ value, label })
+)
 
 export const LearningStatus = {
     NOT_STARTED: 'not_started',
@@ -145,6 +148,9 @@ export const LearningStatusLabels: Record<LearningStatusType, string> = {
     [LearningStatus.IN_PROGRESS]: 'قيد الدراسة',
     [LearningStatus.COMPLETED]: 'مكتمل',
 }
+export const LearningStatusOptions = Object.entries(LearningStatusLabels).map(
+    ([value, label]) => ({ value, label })
+)
 
 /**
  * Helper function to get label from value

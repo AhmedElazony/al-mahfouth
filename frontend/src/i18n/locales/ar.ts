@@ -72,7 +72,14 @@ export default {
     educationalStage: 'المرحلة التعليمية',
     selectStage: 'اختر المرحلة',
     beginMemorizingAt: 'تاريخ بداية الحفظ',
-    memorizingCompletedAt: 'تاريخ إتمام الحفظ'
+    memorizingCompletedAt: 'تاريخ إتمام الحفظ',
+
+    studentInfo: 'معلومات الطالب',
+    teacherInfo: 'معلومات المعلم',
+    tajweedInfo: 'معلومات التجويد',
+    recitationLevel: 'مستوى التلاوة',
+    tajweedLearningStatus: 'حالة تعلم التجويد',
+    tajweedNotes: 'ملاحظات التجويد',
   },
 
   // Educational Stages
@@ -215,6 +222,7 @@ export default {
     edit: 'تعديل',
     add: 'إضافة',
     search: 'بحث',
+    select: 'اختر',
     filter: 'تصفية',
     actions: 'الإجراءات',
     confirm: 'تأكيد',

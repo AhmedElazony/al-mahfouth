@@ -116,9 +116,9 @@
               {{ user.email }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm" dir="ltr">
-              <a 
-                v-if="user.phone" 
-                :href="`tel:${user.phone}`" 
+              <a
+                v-if="user.phone"
+                :href="`tel:${user.phone}`"
                 class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 hover:underline inline-flex items-center gap-1"
               >
                 <i class="pi pi-phone text-xs"></i>
@@ -165,7 +165,7 @@
       <!-- Desktop Pagination -->
       <div v-if="usersStore.hasUsers" class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
         <div class="text-sm text-gray-500 dark:text-gray-400">
-          {{ $t('common.showing') }} {{ usersStore.pagination?.from }} - {{ usersStore.pagination?.to }} 
+          {{ $t('common.showing') }} {{ usersStore.pagination?.from }} - {{ usersStore.pagination?.to }}
           {{ $t('common.of') }} {{ usersStore.totalUsers }}
         </div>
         <div class="flex items-center gap-2">
@@ -199,9 +199,9 @@
       </div>
 
       <!-- User Cards -->
-      <div 
-        v-for="user in usersStore.users" 
-        :key="user.id" 
+      <div
+        v-for="user in usersStore.users"
+        :key="user.id"
         class="card p-4 space-y-3"
       >
         <!-- Header: Avatar, Name, Actions -->
@@ -257,9 +257,9 @@
           </div>
           <div class="flex items-center gap-2" dir="ltr">
             <i class="pi pi-phone text-gray-400"></i>
-            <a 
-              v-if="user.phone" 
-              :href="`tel:${user.phone}`" 
+            <a
+              v-if="user.phone"
+              :href="`tel:${user.phone}`"
               class="text-primary-600 dark:text-primary-400 hover:underline"
             >
               {{ user.phone }}
@@ -272,7 +272,7 @@
       <!-- Mobile Pagination -->
       <div v-if="usersStore.hasUsers" class="card p-4 flex flex-col gap-4">
         <div class="text-sm text-center text-gray-500 dark:text-gray-400">
-          {{ $t('common.showing') }} {{ usersStore.pagination?.from }} - {{ usersStore.pagination?.to }} 
+          {{ $t('common.showing') }} {{ usersStore.pagination?.from }} - {{ usersStore.pagination?.to }}
           {{ $t('common.of') }} {{ usersStore.totalUsers }}
         </div>
         <div class="flex items-center justify-center gap-4">
@@ -432,7 +432,7 @@ function confirmDelete(user: User) {
 
 async function handleDelete() {
   if (!userToDelete.value) return
-  
+
   try {
     await usersStore.deleteUser(userToDelete.value.id)
     showDeleteModal.value = false
