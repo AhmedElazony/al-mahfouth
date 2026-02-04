@@ -20,13 +20,23 @@ export interface GroupStudentResponse {
   joined_at: string
 }
 
+export interface UpdateStudentProfilePayload {
+  student_id: number
+  educational_stage?: string
+  begin_memorizing_at?: string
+  memorizing_completed_at?: string
+  tajweed_recitation_level?: string
+  tajweed_learning_status?: string
+  tajweed_notes?: string
+}
+
 export const groupService = {
   /**
    * Get paginated list of groups
    */
   async getGroups(filters: GroupFilters = {}): Promise<PaginatedResponse<Group>> {
     const params = new URLSearchParams()
-    
+
     if (filters.search) params.append('q', filters.search)
     if (filters.teacher_id) params.append('teacher_id', filters.teacher_id.toString())
     if (filters.is_active !== undefined) params.append('is_active', filters.is_active ? '1' : '0')
@@ -78,6 +88,14 @@ export const groupService = {
   },
 
   /**
+   * Get a specific student in a group
+   */
+  async getGroupStudent(groupId: number, studentId: number): Promise<ApiResponse<any>> {
+    const response = await api.get(`/groups/${groupId}/students/${studentId}`)
+    return response.data
+  },
+
+  /**
    * Assign student to group
    */
   async assignStudent(groupId: number, data: {
@@ -97,6 +115,14 @@ export const groupService = {
     student_status?: string
   }): Promise<{ data: GroupStudentResponse }> {
     const response = await api.put(`/groups/${groupId}/students/${studentId}`, data)
+    return response.data
+  },
+
+  /**
+   * Update student profile within a group
+   */
+  async updateStudentProfile(groupId: number, data: UpdateStudentProfilePayload): Promise<ApiResponse<any>> {
+    const response = await api.put(`/groups/${groupId}/students/profile`, data)
     return response.data
   },
 
