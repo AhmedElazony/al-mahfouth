@@ -4,6 +4,7 @@ namespace App\Domains\User\Models;
 
 use App\Domains\Tahfidh\Models\Group;
 use App\Domains\Tahfidh\Models\GroupStudent;
+use App\Domains\Tahfidh\Models\StudentTajweed;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,8 +25,6 @@ class Student extends Model
     protected $casts = [
         'begin_memorizing_at' => 'date',
         'memorizing_completed_at' => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
     public function getRouteKeyName()
@@ -58,5 +57,10 @@ class Student extends Model
                 'memorizing_amount',
                 'joined_at',
             ])->withTimestamps();
+    }
+
+    public function tajweed()
+    {
+        return $this->hasOne(StudentTajweed::class, 'student_id', 'user_id');
     }
 }
