@@ -14,9 +14,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students', 'user_id')->cascadeOnDelete();
             $table->enum('recitation_level', GradesEnum::values());
-            $table->enum('tajweed_learning_status', LearningStatusesEnum::values());
+            $table->enum('learning_status', LearningStatusesEnum::values());
             // TODO: add tuhfetul_atfal_memorized, and jazrieah_memorized columns later
             $table->text('notes')->nullable();
+            $table->timestamps();
         });
     }
 

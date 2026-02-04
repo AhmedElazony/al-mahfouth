@@ -3,6 +3,8 @@
 namespace App\Http\Api\V1\Requests\User;
 
 use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
+use App\Domains\Tahfidh\Enums\GradesEnum;
+use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
 use App\Domains\User\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -34,6 +36,9 @@ class UpdateUserRequest extends FormRequest
             'student_educational_stage' => ['sometimes', 'in:'.implode(',', EducationalStagesEnum::values())],
             'student_begin_memorizing_at' => ['sometimes', 'date', 'before_or_equal:today'],
             'student_memorizing_completed_at' => ['sometimes', 'date', 'after:student_begin_memorizing_at', 'before_or_equal:today'],
+            'student_tajweed_recitation_level' => ['sometimes', 'in:'.implode(',', GradesEnum::values())],
+            'student_tajweed_learning_status' => ['sometimes', 'in:'.implode(',', LearningStatusesEnum::values())],
+            'student_tajweed_notes' => ['sometimes', 'string', 'max:1000'],
         ];
     }
 
