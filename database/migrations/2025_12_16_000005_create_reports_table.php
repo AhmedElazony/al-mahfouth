@@ -14,7 +14,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students', 'user_id')->cascadeOnDelete();
             $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete();
-            $table->foreignId('recorded_by')->constrained('users')->nullOnDelete();
+            $table->foreignId('created_by')->constrained('users')->nullOnDelete();
             $table->date('date');
             $table->enum('attendance_status', AttendanceStatusesEnum::values());
             $table->text('memorized_amount');
