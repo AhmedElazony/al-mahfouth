@@ -28,7 +28,10 @@ Route::group(['prefix' => 'groups', 'as' => 'groups.'], function () {
     Route::post('/{group}/students', [GroupController::class, 'assignStudent'])
         ->middleware('role:super_admin,admin,teacher')->name('assign-student');
 
-    Route::put('/{group}/students/{student}', [GroupController::class, 'updateStudent'])
+    Route::put('/{group}/students/profile', [GroupController::class, 'updateStudentProfile'])
+        ->middleware('role:super_admin,admin,teacher')->name('update-student-profile');
+
+    Route::put('/{group}/students/{student}', [GroupController::class, 'updateAssignedStudent'])
         ->middleware('role:super_admin,admin,teacher')->name('update-student');
 
     Route::delete('/{group}/students/{student}', [GroupController::class, 'removeStudent'])

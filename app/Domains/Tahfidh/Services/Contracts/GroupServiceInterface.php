@@ -27,5 +27,7 @@ interface GroupServiceInterface
 
     public function updateAssignedStudent(Group $group, int $studentId, array $studentData): Collection;
 
+    public function updateStudentProfile(Group $group, array $profileData): Student;
+
     public function removeStudent(Group $group, int $studentId): void;
 }
