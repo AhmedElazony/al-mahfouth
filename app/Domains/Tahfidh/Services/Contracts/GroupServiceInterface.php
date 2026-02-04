@@ -3,6 +3,7 @@
 namespace App\Domains\Tahfidh\Services\Contracts;
 
 use App\Domains\Tahfidh\Models\Group;
+use App\Domains\User\Models\Student;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -19,6 +20,8 @@ interface GroupServiceInterface
     public function delete(Group $group): void;
 
     public function getStudents(Group $group): Collection;
+
+    public function getStudent(Group $group, int $studentId): Student;
 
     public function assignStudent(Group $group, array $studentData): Collection;
 

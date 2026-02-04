@@ -12,6 +12,7 @@ use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateAssignedStudentRequest;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateGroupRequest;
 use App\Http\Api\V1\Resources\Tahfidh\GroupResource;
 use App\Http\Api\V1\Resources\Tahfidh\GroupStudentResource;
+use App\Http\Api\V1\Resources\User\StudentResource;
 use App\Support\Enums\ResponseMessageEnum;
 
 class GroupController extends ApiController
@@ -121,6 +122,23 @@ class GroupController extends ApiController
             return $this->success(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
                 GroupStudentResource::collection($students),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage(),
+                $th->getCode() !== 0 ? $th->getCode() : 500
+            );
+        }
+    }
+
+    public function showStudent(Group $group, int $studentId)
+    {
+        try {
+            $student = $this->groupService
+                ->getStudent($group, $studentId);
+            return $this->success(
+                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
+                StudentResource::make($student),
             );
         } catch (\Throwable $th) {
             return $this->error(

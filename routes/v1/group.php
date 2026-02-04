@@ -22,6 +22,9 @@ Route::group(['prefix' => 'groups', 'as' => 'groups.'], function () {
     Route::get('/{group}/students', [GroupController::class, 'getStudents'])
         ->middleware('role:super_admin,admin,teacher')->name('students');
 
+    Route::get('/{group}/students/{studentId}', [GroupController::class, 'showStudent'])
+        ->middleware('role:super_admin,admin,teacher')->name('students.show');
+
     Route::post('/{group}/students', [GroupController::class, 'assignStudent'])
         ->middleware('role:super_admin,admin,teacher')->name('assign-student');
 

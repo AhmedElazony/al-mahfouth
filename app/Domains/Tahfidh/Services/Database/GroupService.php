@@ -4,6 +4,7 @@ namespace App\Domains\Tahfidh\Services\Database;
 
 use App\Domains\Tahfidh\Models\Group;
 use App\Domains\Tahfidh\Services\Contracts\GroupServiceInterface;
+use App\Domains\User\Models\Student;
 use App\Support\Enums\ResponseMessageEnum;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
@@ -58,6 +59,22 @@ class GroupService implements GroupServiceInterface
     public function getStudents(Group $group): Collection
     {
         return $group->students;
+    }
+
+    public function getStudent(Group $group, int $studentId): Student
+    {
+        $student = $group->students()
+            ->with('tajweed')
+            ->firstWhere('user_id', $studentId);
+
+        if (! $student) {
+            throw new \Exception(
+                __(ResponseMessageEnum::NOT_FOUND->value),
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
+        return $student;
     }
 
     public function assignStudent(Group $group, array $studentData): Collection
