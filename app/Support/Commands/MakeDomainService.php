@@ -89,7 +89,9 @@ class MakeDomainService extends GeneratorCommand
 
 namespace App\\Domains\\{$domain}\\Services\\Contracts;
 
-interface {$service}
+use App\\Support\\Services\\Contracts\\BaseService;
+
+interface {$service} extends BaseService
 {
     //
 }
@@ -124,6 +126,7 @@ interface {$service}
         return $this->replaceNamespace($stub, $name)
             ->replaceDomain($stub)
             ->replaceService($stub)
+            ->replaceModel($stub)
             ->replaceClass($stub, $name);
     }
 
@@ -145,6 +148,18 @@ interface {$service}
     {
         $service = $this->argument('service');
         $stub = str_replace('{{ service }}', $service, $stub);
+
+        return $this;
+    }
+
+    /**
+     * Replace the model placeholder
+     */
+    protected function replaceModel(&$stub)
+    {
+        $service = $this->argument('service');
+        $model = str_replace('Service', '', $service);
+        $stub = str_replace('{{ model }}', $model, $stub);
 
         return $this;
     }
@@ -257,7 +272,7 @@ interface {$service}
         // Clean the class names (remove leading backslashes)
         $contractClass = ltrim($contractClass, '\\');
         $serviceClass = ltrim($serviceClass, '\\');
-		$serviceClassShort = class_basename($serviceClass);
+        $serviceClassShort = class_basename($serviceClass);
 
         $contractUse = "use {$contractClass} as {$serviceClassShort}Contract;";
         $serviceUse = "use {$serviceClass};";
