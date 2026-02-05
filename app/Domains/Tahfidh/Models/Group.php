@@ -4,7 +4,7 @@ namespace App\Domains\Tahfidh\Models;
 
 use App\Domains\User\Models\Student;
 use App\Domains\User\Models\Teacher;
-use App\Domains\User\Traits\HasFilters;
+use App\Support\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

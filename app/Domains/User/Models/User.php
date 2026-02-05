@@ -4,8 +4,8 @@ namespace App\Domains\User\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Domains\User\Enums\UserRolesEnum;
-use App\Domains\User\Traits\HasFilters;
 use App\Domains\User\Traits\HasRoles;
+use App\Support\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domains\User\Traits;
+namespace App\Support\Traits;
 
 use App\Domains\Tahfidh\Models\Group;
 use App\Domains\User\Models\User;
@@ -12,6 +12,10 @@ trait HasFilters
     #[Scope()]
     protected function filter(Builder $query, array $filters): Builder
     {
+		if (empty($filters)) {
+			return $query;
+		}
+
         foreach ($filters as $field => $value) {
             if (is_null($value)) {
                 continue;
