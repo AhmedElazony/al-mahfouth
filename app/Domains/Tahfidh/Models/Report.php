@@ -14,7 +14,7 @@ class Report extends Model
     protected $fillable = [
         'student_id',
         'group_id',
-        'recorded_by',
+        'created_by',
         'date',
         'attendance_status',
         'memorized_amount',
@@ -24,7 +24,6 @@ class Report extends Model
 
     protected $casts = [
         'date' => 'date',
-        'created_at' => 'datetime',
     ];
 
     public function student()
@@ -37,8 +36,8 @@ class Report extends Model
         return $this->belongsTo(Group::class, 'group_id');
     }
 
-    public function user()
+    public function createdBy()
     {
-        return $this->belongsTo(User::class, 'recorded_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

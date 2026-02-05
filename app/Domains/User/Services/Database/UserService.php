@@ -2,6 +2,7 @@
 
 namespace App\Domains\User\Services\Database;
 
+use App\Domains\Tahfidh\Models\StudentTajweed;
 use App\Domains\User\Enums\UserGendersEnum;
 use App\Domains\User\Enums\UserRolesEnum;
 use App\Domains\User\Models\User;
@@ -124,7 +125,17 @@ class UserService implements UserServiceInterface
             'created_by' => $currentProfile->created_by ?? auth()->id(),
             'educational_stage' => $data['student_educational_stage'] ?? $currentProfile->educational_stage ?? null,
             'begin_memorizing_at' => $data['student_begin_memorizing_at'] ?? $currentProfile->begin_memorizing_at ?? null,
-            'memorizing_completed_at' => $data['student_memorizing_completed_at'] ?? $currentProfile->completed_memorizing_at ?? null,
+            'memorizing_completed_at' => $data['student_memorizing_completed_at'] ?? $currentProfile->memorizing_completed_at ?? null,
         ]);
+
+        if (isset($data['student_tajweed_recitation_level']) ||
+            isset($data['student_tajweed_learning_status']) ||
+            isset($data['student_tajweed_notes'])) {
+            $tajweed = StudentTajweed::firstOrNew(['student_id' => $user->id]);
+            $tajweed->recitation_level = $data['student_tajweed_recitation_level'] ?? $tajweed->recitation_level;
+            $tajweed->learning_status = $data['student_tajweed_learning_status'] ?? $tajweed->learning_status;
+            $tajweed->notes = $data['student_tajweed_notes'] ?? $tajweed->notes;
+            $tajweed->save();
+        }
     }
 }

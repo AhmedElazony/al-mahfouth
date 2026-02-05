@@ -35,12 +35,12 @@
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {{ $t('groups.name') }} <span class="text-red-500">*</span>
             </label>
-            <input 
-              v-model="form.name" 
-              type="text" 
-              class="input w-full" 
+            <input
+              v-model="form.name"
+              type="text"
+              class="input w-full"
               :class="{ 'border-red-500': validationErrors.name }"
-              required 
+              required
             />
             <p v-if="validationErrors.name" class="text-red-500 text-xs mt-1">
               {{ Array.isArray(validationErrors.name) ? validationErrors.name[0] : validationErrors.name }}
@@ -52,9 +52,9 @@
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {{ $t('groups.teacher') }} <span class="text-red-500">*</span>
             </label>
-            <select 
-              v-model="form.teacher_id" 
-              class="input w-full" 
+            <select
+              v-model="form.teacher_id"
+              class="input w-full"
               :class="{ 'border-red-500': validationErrors.teacher_id }"
               required
             >
@@ -92,20 +92,20 @@
                   {{ day.label }}
                 </option>
               </select>
-              
+
               <!-- Start Time -->
               <TimePicker v-model="item.start_time" />
-              
+
               <!-- Arrow -->
               <span class="text-gray-400 text-sm">←</span>
-              
+
               <!-- End Time -->
               <TimePicker v-model="item.end_time" />
-              
+
               <!-- Delete Button -->
-              <button 
-                type="button" 
-                @click="removeScheduleItem(index)" 
+              <button
+                type="button"
+                @click="removeScheduleItem(index)"
                 class="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded mr-auto"
                 :disabled="form.schedule.length === 1"
               >
@@ -198,7 +198,7 @@ function clearErrors() {
 
 function parseScheduleFromApi(schedule: any): ScheduleFormItem[] {
   if (!schedule) return [{ day: '', start_time: '', end_time: '' }]
-  
+
   let scheduleArray = schedule
   if (typeof schedule === 'string') {
     try {
@@ -207,16 +207,16 @@ function parseScheduleFromApi(schedule: any): ScheduleFormItem[] {
       return [{ day: '', start_time: '', end_time: '' }]
     }
   }
-  
+
   if (!Array.isArray(scheduleArray) || scheduleArray.length === 0) {
     return [{ day: '', start_time: '', end_time: '' }]
   }
-  
+
   return scheduleArray.map((item: any) => {
     const day = typeof item.day === 'object' ? item.day?.value : item.day
     const startTime = typeof item.start_time === 'object' ? item.start_time?.value : item.start_time
     const endTime = typeof item.end_time === 'object' ? item.end_time?.value : item.end_time
-    
+
     return {
       day: day || '',
       start_time: formatTimeForInput(startTime),
@@ -229,19 +229,19 @@ function formatTimeForInput(time: string | undefined | null): string {
   if (!time) return ''
   if (/^\d{2}:\d{2}$/.test(time)) return time
   if (/^\d{2}:\d{2}:\d{2}$/.test(time)) return time.slice(0, 5)
-  
+
   const match = time.match(/^(\d{1,2}):(\d{2})\s*(am|pm)?$/i)
   if (match) {
     let hours = parseInt(match[1])
     const minutes = match[2]
     const period = match[3]?.toLowerCase()
-    
+
     if (period === 'pm' && hours < 12) hours += 12
     if (period === 'am' && hours === 12) hours = 0
-    
+
     return `${hours.toString().padStart(2, '0')}:${minutes}`
   }
-  
+
   return time
 }
 
@@ -319,7 +319,7 @@ async function handleSubmit() {
     emit('close')
   } catch (err: any) {
     console.error('Error saving group:', err)
-    
+
     if (err.response?.status === 422) {
       const responseData = err.response.data
       if (responseData.errors) {

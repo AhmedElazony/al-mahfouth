@@ -10,8 +10,10 @@ use App\Http\Api\V1\Requests\Tahfidh\Groups\AssignStudentRequest;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\StoreGroupRequest;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateAssignedStudentRequest;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateGroupRequest;
+use App\Http\Api\V1\Requests\User\UpdateStudentProfileRequest;
 use App\Http\Api\V1\Resources\Tahfidh\GroupResource;
 use App\Http\Api\V1\Resources\Tahfidh\GroupStudentResource;
+use App\Http\Api\V1\Resources\User\StudentResource;
 use App\Support\Enums\ResponseMessageEnum;
 
 class GroupController extends ApiController
@@ -130,6 +132,23 @@ class GroupController extends ApiController
         }
     }
 
+    public function showStudent(Group $group, int $studentId)
+    {
+        try {
+            $student = $this->groupService
+                ->getStudent($group, $studentId);
+            return $this->success(
+                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
+                StudentResource::make($student),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage(),
+                $th->getCode() !== 0 ? $th->getCode() : 500
+            );
+        }
+    }
+
     public function assignStudent(Group $group, AssignStudentRequest $request)
     {
         try {
@@ -150,7 +169,7 @@ class GroupController extends ApiController
         }
     }
 
-    public function updateStudent(Group $group, Student $student, UpdateAssignedStudentRequest $request)
+    public function updateAssignedStudent(Group $group, Student $student, UpdateAssignedStudentRequest $request)
     {
         try {
             $students = $this->groupService
@@ -159,6 +178,24 @@ class GroupController extends ApiController
             return $this->success(
                 __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
                 GroupStudentResource::collection($students),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage(),
+                $th->getCode() !== 0 ? $th->getCode() : 500
+            );
+        }
+    }
+
+    public function updateStudentProfile(Group $group, UpdateStudentProfileRequest $request)
+    {
+        try {
+            $updatedStudent = $this->groupService
+                ->updateStudentProfile($group, $request->validated());
+
+            return $this->success(
+                __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
+                StudentResource::make($updatedStudent),
             );
         } catch (\Throwable $th) {
             return $this->error(

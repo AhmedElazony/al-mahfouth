@@ -3,6 +3,7 @@
 namespace App\Http\Api\V1\Resources\User;
 
 use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
+use App\Http\Api\V1\Resources\User\StudentTajweedResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,6 +25,7 @@ class StudentResource extends JsonResource
             ],
             'begin_memorizing_at' => $this->begin_memorizing_at?->toDateString(),
             'memorizing_completed_at' => $this->memorizing_completed_at?->toDateString(),
+            'tajweed' => StudentTajweedResource::make($this->whenLoaded('tajweed')),
             'created_by' => $this->whenLoaded('createdBy', fn () => [
                 'id' => $this->createdBy->id,
                 'name' => $this->createdBy->name,

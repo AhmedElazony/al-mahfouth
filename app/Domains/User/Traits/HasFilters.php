@@ -31,7 +31,7 @@ trait HasFilters
                 if ($field === 'gender') {
                     $query->where('gender', $value);
                 }
-            } else if ($this instanceof Group) {
+            } elseif ($this instanceof Group) {
                 if ($field === 'q') {
                     $query->where('name', 'LIKE', "%$value%");
                 }

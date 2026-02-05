@@ -10,15 +10,14 @@ SSL_CERT = $(SSL_DIR)/public.crt
 UID := $(shell id -u)
 GID := $(shell id -g)
 
-# MySql Backup config
 # Targets
-.PHONY: images install certs deploy undeploy
+.PHONY: images install certs deploy undeploy bash fix-permissions frontend-install frontend-dev frontend-build frontend-bash dev artisan tinker up down logs
 
 images:
 	@docker compose build
 
 install:
-	docker compose run --rm -u "$(UID):$(GID)" app composer install && \
+	@docker compose run --rm -u "$(UID):$(GID)" app composer install && \
 	cp .env.example .env && \
 	docker compose run --rm -u "$(UID):$(GID)" app php artisan key:generate
 
@@ -38,7 +37,7 @@ certs:
 	fi
 
 bash:
-	docker compose run --rm -u "${UID}:${GID}" app bash
+	@docker compose run --rm -u "${UID}:${GID}" app bash
 
 fix-permissions:
 	@docker compose run --rm -u "$(UID):$(GID)" app /var/www/html/docker/php/fix-permissions.sh
@@ -68,6 +67,16 @@ dev:
 	@docker compose up -d
 	@echo "✅ Backend: http://localhost:8080"
 	@echo "✅ Frontend: http://localhost:5173"
+
+# Artisan commands
+artisan:
+	@docker compose run --rm -u "${UID}:${GID}" app php artisan $(filter-out $@,$(MAKECMDGOALS))
+
+tinker:
+	@docker compose run --rm -u "${UID}:${GID}" -e HOME=/tmp app php artisan tinker
+
+%:
+	@:
 
 # Docker management
 up:

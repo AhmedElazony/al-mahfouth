@@ -8,7 +8,7 @@ return new class extends Migration
     public function up()
     {
         DB::statement('DROP VIEW IF EXISTS statistics');
-        DB::statement(<<<SQL
+        DB::statement(<<<'SQL'
             CREATE VIEW `statistics` AS
             SELECT
                 (SELECT COUNT(*) FROM groups) AS groups_count,

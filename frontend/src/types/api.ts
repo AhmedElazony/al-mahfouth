@@ -7,7 +7,7 @@ export interface ApiResponse<T> {
 export interface PaginatedResponse<T> {
   message: string
   data: T[]
-  meta: PaginationMeta
+  pagination: PaginationMeta
 }
 
 export interface PaginationMeta {

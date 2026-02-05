@@ -3,6 +3,8 @@
 namespace App\Http\Api\V1\Requests\User;
 
 use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
+use App\Domains\Tahfidh\Enums\GradesEnum;
+use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
 use App\Domains\User\Enums\UserRolesEnum;
 use App\Domains\User\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
@@ -39,6 +41,9 @@ class CreateUserRequest extends FormRequest
             'student_educational_stage' => ['required_if:role,'.UserRolesEnum::STUDENT->value, 'in:'.implode(',', EducationalStagesEnum::values())],
             'student_begin_memorizing_at' => ['nullable', 'date', 'before_or_equal:today'],
             'student_memorizing_completed_at' => ['nullable', 'date', 'after_or_equal:student_begin_memorizing_at'],
+            'student_tajweed_recitation_level' => ['sometimes', 'in:'.implode(',', GradesEnum::values())],
+            'student_tajweed_learning_status' => ['sometimes', 'in:'.implode(',', LearningStatusesEnum::values())],
+            'student_tajweed_notes' => ['sometimes', 'string', 'max:1000'],
         ];
     }
 
