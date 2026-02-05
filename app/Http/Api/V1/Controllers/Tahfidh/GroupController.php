@@ -31,7 +31,13 @@ class GroupController extends ApiController
                 'teacher_id',
                 'is_active',
             ]);
-            $groups = $this->groupService->get($perPage, ['*'], $filters);
+            $groups = $this->groupService
+				->paginate(
+					['teacher'],
+					$filters,
+					$perPage,
+					['*']
+				);
 
             return $this->paginated(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),

@@ -2,7 +2,9 @@
 
 namespace App\Domains\Tahfidh\Services\Contracts;
 
-interface ReportService
+use App\Support\Services\Contracts\BaseService;
+
+interface ReportService extends BaseService
 {
     //
 }

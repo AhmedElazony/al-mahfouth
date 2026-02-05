@@ -19,10 +19,15 @@ class UserController extends ApiController
     public function index()
     {
         try {
-            $perPage = request()->query('per_page', 15);
-            $filters = request()->only(['q', 'role', 'gender']);
+            $filters = request()->only([
+				'per_page',
+				'q',
+				'role',
+				'gender'
+			]);
 
-            $users = $this->userService->get($perPage, filters: $filters);
+            $users = $this->userService
+				->paginate([], $filters, $filters['per_page'] ?? 15);
 
             return $this->paginated(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),

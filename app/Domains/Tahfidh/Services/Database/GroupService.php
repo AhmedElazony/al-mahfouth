@@ -6,54 +6,25 @@ use App\Domains\Tahfidh\Models\Group;
 use App\Domains\Tahfidh\Services\Contracts\GroupService as GroupServiceContract;
 use App\Domains\User\Models\Student;
 use App\Support\Enums\ResponseMessageEnum;
+use App\Support\Services\Database\BaseService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
-class GroupService implements GroupServiceContract
+class GroupService extends BaseService implements GroupServiceContract
 {
-    public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator
-    {
-        return Group::with('teacher')
-            ->filter($filters)
-            ->latest()
-            ->paginate($perPage, $columns);
-    }
-
-    public function findBy(string $field, string $value): Group
-    {
-        $group = Group::firstWhere($field, $value);
-
-        if (! $group) {
-            throw new \Exception(
-                __(ResponseMessageEnum::NOT_FOUND->value),
-                Response::HTTP_NOT_FOUND
-            );
-        }
-
-        return $group;
-    }
+	public function __construct()
+	{
+		parent::__construct(Group::class);
+	}
 
     public function create(array $data): Group
     {
-        return Group::create([
+        return $this->model()->create([
             ...$data,
             'is_online' => $data['is_online'] ?? false,
             'is_active' => $data['is_active'] ?? true,
         ]);
-    }
-
-    public function update(Group $group, array $data): Group
-    {
-        $group->update($data);
-
-        return $group->refresh();
-    }
-
-    public function delete(Group $group): void
-    {
-        $group->delete();
     }
 
     public function getStudents(Group $group): Collection

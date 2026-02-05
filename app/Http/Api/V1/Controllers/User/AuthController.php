@@ -2,7 +2,7 @@
 
 namespace App\Http\Api\V1\Controllers\User;
 
-use App\Domains\User\Services\Contracts\UserServiceInterface;
+use App\Domains\User\Services\Contracts\UserService;
 use App\Http\Api\V1\Controllers\ApiController;
 use App\Http\Api\V1\Requests\User\Auth\LoginRequest;
 use App\Support\Enums\ResponseMessageEnum;
@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 class AuthController extends ApiController
 {
     public function __construct(
-        private readonly UserServiceInterface $userService
+        private readonly UserService $userService
     ) {}
 
     public function login(LoginRequest $request): JsonResponse
