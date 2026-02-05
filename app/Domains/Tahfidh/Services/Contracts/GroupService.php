@@ -7,7 +7,7 @@ use App\Domains\User\Models\Student;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
-interface GroupServiceInterface
+interface GroupService
 {
     public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator;
 

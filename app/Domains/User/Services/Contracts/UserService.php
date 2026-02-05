@@ -5,7 +5,7 @@ namespace App\Domains\User\Services\Contracts;
 use App\Domains\User\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-interface UserServiceInterface
+interface UserService
 {
     public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator;
 

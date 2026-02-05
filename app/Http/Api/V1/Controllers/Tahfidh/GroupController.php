@@ -3,7 +3,7 @@
 namespace App\Http\Api\V1\Controllers\Tahfidh;
 
 use App\Domains\Tahfidh\Models\Group;
-use App\Domains\Tahfidh\Services\Contracts\GroupServiceInterface;
+use App\Domains\Tahfidh\Services\Contracts\GroupService;
 use App\Domains\User\Models\Student;
 use App\Http\Api\V1\Controllers\ApiController;
 use App\Http\Api\V1\Requests\Tahfidh\Groups\AssignStudentRequest;
@@ -19,7 +19,7 @@ use App\Support\Enums\ResponseMessageEnum;
 class GroupController extends ApiController
 {
     public function __construct(
-        protected GroupServiceInterface $groupService,
+        protected GroupService $groupService,
     ) {}
 
     public function index()

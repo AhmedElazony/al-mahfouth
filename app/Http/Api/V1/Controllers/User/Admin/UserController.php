@@ -3,7 +3,7 @@
 namespace App\Http\Api\V1\Controllers\User\Admin;
 
 use App\Domains\User\Models\User;
-use App\Domains\User\Services\Contracts\UserServiceInterface;
+use App\Domains\User\Services\Contracts\UserService;
 use App\Http\Api\V1\Controllers\ApiController;
 use App\Http\Api\V1\Requests\User\CreateUserRequest;
 use App\Http\Api\V1\Requests\User\UpdateUserRequest;
@@ -13,7 +13,7 @@ use App\Support\Enums\ResponseMessageEnum;
 class UserController extends ApiController
 {
     public function __construct(
-        private UserServiceInterface $userService
+        private UserService $userService
     ) {}
 
     public function index()

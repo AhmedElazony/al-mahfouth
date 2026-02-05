@@ -6,7 +6,7 @@ use App\Domains\Tahfidh\Models\StudentTajweed;
 use App\Domains\User\Enums\UserGendersEnum;
 use App\Domains\User\Enums\UserRolesEnum;
 use App\Domains\User\Models\User;
-use App\Domains\User\Services\Contracts\UserServiceInterface;
+use App\Domains\User\Services\Contracts\UserService as UserServiceContract;
 use App\Http\Api\V1\Resources\User\UserResource;
 use App\Support\Enums\ResponseMessageEnum;
 use Illuminate\Http\Response;
@@ -14,7 +14,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class UserService implements UserServiceInterface
+class UserService implements UserServiceContract
 {
     public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator
     {

@@ -3,7 +3,7 @@
 namespace App\Domains\Tahfidh\Services\Database;
 
 use App\Domains\Tahfidh\Models\Group;
-use App\Domains\Tahfidh\Services\Contracts\GroupServiceInterface;
+use App\Domains\Tahfidh\Services\Contracts\GroupService as GroupServiceContract;
 use App\Domains\User\Models\Student;
 use App\Support\Enums\ResponseMessageEnum;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
-class GroupService implements GroupServiceInterface
+class GroupService implements GroupServiceContract
 {
     public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator
     {
