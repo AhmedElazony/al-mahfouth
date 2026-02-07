@@ -75,6 +75,10 @@ export default {
         beginMemorizingAt: 'تاريخ بداية الحفظ',
         memorizingCompletedAt: 'تاريخ إتمام الحفظ',
 
+		student: 'الطالب',
+		teacher: 'المعلم',
+		superAdmin: 'المشرف العام',
+		admin: 'مشرف',
         studentInfo: 'معلومات الطالب',
         teacherInfo: 'معلومات المعلم',
         tajweedInfo: 'معلومات التجويد',
@@ -193,7 +197,7 @@ export default {
         monthlyReport: 'التقرير الشهري',
         yearlyReport: 'التقرير السنوي',
         attendance: 'الحضور',
-        present: 'حاضر',
+        attended: 'حاضر',
         absent: 'غائب',
         late: 'متأخر',
         excused: 'معذور',
@@ -204,7 +208,10 @@ export default {
         grade: 'الدرجة',
         notes: 'ملاحظات',
         date: 'التاريخ',
-        statistics: 'الإحصائيات'
+        statistics: 'الإحصائيات',
+		noReports: 'لا تقارير بعد',
+		addFirstReport: 'أضف أول تقرير',
+		notesPlaceholder: 'اكتب ملاحظاتك هنا...'
     },
 
     // Settings
@@ -221,7 +228,10 @@ export default {
 
     // Common
     common: {
+		create: 'إنشاء',
+		update: 'تحديث',
         save: 'حفظ',
+		clear: 'مسح',
         cancel: 'إلغاء',
         delete: 'حذف',
         edit: 'تعديل',
@@ -256,7 +266,9 @@ export default {
         retry: 'إعادة المحاولة',
         active: 'نشط',
         inactive: 'غير نشط',
-        status: 'الحالة'
+        status: 'الحالة',
+		comingSoon: 'قريباً',
+		searchNotFound: 'لم نعثر على نتائج تطابق بحثك'
     },
 
     // Roles

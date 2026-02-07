@@ -116,6 +116,10 @@ export const AttendanceStatusLabels: Record<AttendanceStatusType, string> = {
   [AttendanceStatus.EXCUSED]: 'معذور',
 }
 
+export const AttendanceStatusOptions = Object.entries(AttendanceStatusLabels).map(
+  ([value, label]) => ({ value, label })
+)
+
 export const Grade = {
   BAD: 'bad',
   GOOD: 'good',
