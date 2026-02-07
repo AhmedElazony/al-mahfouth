@@ -9,7 +9,7 @@ export default {
 
     // Navigation
     nav: {
-        dashboard: 'لوحة التحكم',
+        dashboard: 'الرئيسة',
         users: 'المستخدمين',
         students: 'الطلاب',
         teachers: 'المعلمين',
