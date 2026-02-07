@@ -6,24 +6,35 @@ use App\Domains\Tahfidh\Models\StudentTajweed;
 use App\Domains\User\Enums\UserGendersEnum;
 use App\Domains\User\Enums\UserRolesEnum;
 use App\Domains\User\Models\User;
-use App\Domains\User\Services\Contracts\UserServiceInterface;
+use App\Domains\User\Services\Contracts\UserService as UserServiceContract;
 use App\Http\Api\V1\Resources\User\UserResource;
 use App\Support\Enums\ResponseMessageEnum;
+use App\Support\Services\Database\BaseService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class UserService implements UserServiceInterface
+class UserService extends BaseService implements UserServiceContract
 {
-    public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator
-    {
-        return User::filter($filters)
-            ->latest()
-            ->paginate($perPage, $columns);
-    }
+	public function __construct()
+	{
+		parent::__construct(User::class);
+	}
 
-    public function create(array $data): User
+	public function paginate(array $with = [], array $filters = [], int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+	{
+		$query = $this->model()->with($with);
+
+		if (auth()->user()->isTeacher()) {
+			$query->where('role', UserRolesEnum::STUDENT->value);
+		}
+
+		return $query->latest()->paginate($perPage);
+	}	
+
+    public function create(array $data): Model
     {
         return DB::transaction(function () use ($data) {
             $user = User::create([
@@ -47,7 +58,7 @@ class UserService implements UserServiceInterface
 
     }
 
-    public function update(User $user, array $data): User
+    public function update(Model $user, array $data): Model
     {
         return DB::transaction(function () use ($user, $data) {
             $user->update([
@@ -68,11 +79,6 @@ class UserService implements UserServiceInterface
         });
     }
 
-    public function delete(User $user): void
-    {
-        $user->delete();
-    }
-
     public function login(string $usernameOrEmail, string $password): array
     {
         return DB::transaction(function () use ($usernameOrEmail, $password) {
@@ -82,7 +88,7 @@ class UserService implements UserServiceInterface
 
             if (! isset($user) || ! Hash::check($password, $user?->password)) {
                 throw new \Exception(
-                    ResponseMessageEnum::INVALID_CREDENTIALS->value,
+                    __(ResponseMessageEnum::INVALID_CREDENTIALS->value),
                     Response::HTTP_UNAUTHORIZED
                 );
             }

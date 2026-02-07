@@ -3,57 +3,40 @@
 namespace App\Domains\Tahfidh\Services\Database;
 
 use App\Domains\Tahfidh\Models\Group;
-use App\Domains\Tahfidh\Services\Contracts\GroupServiceInterface;
+use App\Domains\Tahfidh\Services\Contracts\GroupService as GroupServiceContract;
 use App\Domains\User\Models\Student;
 use App\Support\Enums\ResponseMessageEnum;
+use App\Support\Services\Database\BaseService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
-class GroupService implements GroupServiceInterface
+class GroupService extends BaseService implements GroupServiceContract
 {
-    public function get(int $perPage = 15, array $columns = ['*'], array $filters = []): LengthAwarePaginator
+    public function __construct()
     {
-        return Group::with('teacher')
-            ->filter($filters)
-            ->latest()
-            ->paginate($perPage, $columns);
+        parent::__construct(Group::class);
     }
 
-    public function findBy(string $field, string $value): Group
+    public function paginate(array $with = [], array $filters = [], int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
     {
-        $group = Group::firstWhere($field, $value);
+        $query = $this->model()->with($with);
 
-        if (! $group) {
-            throw new \Exception(
-                __(ResponseMessageEnum::NOT_FOUND->value),
-                Response::HTTP_NOT_FOUND
-            );
+        if (auth()->user()->isTeacher()) {
+            $query->where('teacher_id', auth()->id());
         }
 
-        return $group;
+        return $query->latest()->paginate($perPage);
     }
 
     public function create(array $data): Group
     {
-        return Group::create([
+        return $this->model()->create([
             ...$data,
             'is_online' => $data['is_online'] ?? false,
             'is_active' => $data['is_active'] ?? true,
         ]);
-    }
-
-    public function update(Group $group, array $data): Group
-    {
-        $group->update($data);
-
-        return $group->refresh();
-    }
-
-    public function delete(Group $group): void
-    {
-        $group->delete();
     }
 
     public function getStudents(Group $group): Collection

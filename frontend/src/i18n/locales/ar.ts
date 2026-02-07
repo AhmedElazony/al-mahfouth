@@ -9,7 +9,7 @@ export default {
 
     // Navigation
     nav: {
-        dashboard: 'لوحة التحكم',
+        dashboard: 'الرئيسة',
         users: 'المستخدمين',
         students: 'الطلاب',
         teachers: 'المعلمين',
@@ -75,6 +75,10 @@ export default {
         beginMemorizingAt: 'تاريخ بداية الحفظ',
         memorizingCompletedAt: 'تاريخ إتمام الحفظ',
 
+		student: 'الطالب',
+		teacher: 'المعلم',
+		superAdmin: 'المشرف العام',
+		admin: 'مشرف',
         studentInfo: 'معلومات الطالب',
         teacherInfo: 'معلومات المعلم',
         tajweedInfo: 'معلومات التجويد',
@@ -163,6 +167,8 @@ export default {
         selectTeacher: 'اختر المعلم',
         allTeachers: 'جميع المعلمين',
         students: 'الطلاب',
+		manageStudents: 'إدارة الطلاب',
+		studentsList: 'قائمة الطلاب',
         studentsCount: 'عدد الطلاب',
         schedule: 'المواعيد',
         addScheduleItem: 'إضافة موعد',
@@ -186,12 +192,13 @@ export default {
     reports: {
         title: 'التقارير',
         addReport: 'إضافة تقرير',
+		editReport: 'تعديل التقرير',
         dailyReport: 'التقرير اليومي',
         weeklyReport: 'التقرير الأسبوعي',
         monthlyReport: 'التقرير الشهري',
         yearlyReport: 'التقرير السنوي',
         attendance: 'الحضور',
-        present: 'حاضر',
+        attended: 'حاضر',
         absent: 'غائب',
         late: 'متأخر',
         excused: 'معذور',
@@ -202,7 +209,16 @@ export default {
         grade: 'الدرجة',
         notes: 'ملاحظات',
         date: 'التاريخ',
-        statistics: 'الإحصائيات'
+        statistics: 'الإحصائيات',
+		noReports: 'لا تقارير بعد',
+		addFirstReport: 'أضف أول تقرير',
+		notesPlaceholder: 'اكتب ملاحظاتك هنا...',
+		dateFrom: 'من تاريخ',
+		dateTo: 'إلى تاريخ',
+		filterByDate: 'تصفية حسب التاريخ',
+		clearFilters: 'مسح الفلاتر',
+		allStudents: 'جميع الطلاب',
+		searchByStudent: 'بحث بالطالب',
     },
 
     // Settings
@@ -219,7 +235,10 @@ export default {
 
     // Common
     common: {
+		create: 'إنشاء',
+		update: 'تحديث',
         save: 'حفظ',
+		clear: 'مسح',
         cancel: 'إلغاء',
         delete: 'حذف',
         edit: 'تعديل',
@@ -254,7 +273,9 @@ export default {
         retry: 'إعادة المحاولة',
         active: 'نشط',
         inactive: 'غير نشط',
-        status: 'الحالة'
+        status: 'الحالة',
+		comingSoon: 'قريباً',
+		searchNotFound: 'لم نعثر على نتائج تطابق بحثك'
     },
 
     // Roles

@@ -3,7 +3,7 @@
 namespace App\Http\Api\V1\Controllers\User\Admin;
 
 use App\Domains\User\Models\User;
-use App\Domains\User\Services\Contracts\UserServiceInterface;
+use App\Domains\User\Services\Contracts\UserService;
 use App\Http\Api\V1\Controllers\ApiController;
 use App\Http\Api\V1\Requests\User\CreateUserRequest;
 use App\Http\Api\V1\Requests\User\UpdateUserRequest;
@@ -13,20 +13,23 @@ use App\Support\Enums\ResponseMessageEnum;
 class UserController extends ApiController
 {
     public function __construct(
-        private UserServiceInterface $userService
+        private UserService $userService
     ) {}
 
     public function index()
     {
         try {
-            $perPage = request()->query('per_page', 15);
-            $filters = request()->only(['q', 'role', 'gender']);
+            $filters = request()->only([
+				'per_page',
+				'q',
+				'role',
+				'gender'
+			]);
 
-            $users = $this->userService->get($perPage, filters: $filters);
+            $users = $this->userService
+				->paginate([], $filters, $filters['per_page'] ?? 15);
 
             return $this->paginated(
-                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
-                200,
                 $users,
                 UserResource::class
             );

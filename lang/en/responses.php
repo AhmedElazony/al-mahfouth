@@ -15,4 +15,5 @@ return [
     'already_exists' => 'The item already exists.',
     'not_found' => 'The item not found.',
     'method_not_allowed' => 'Method Not Allowed.',
+	'student_not_in_group' => 'The student is not in the group.',
 ];
