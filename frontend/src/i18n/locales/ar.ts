@@ -192,6 +192,7 @@ export default {
     reports: {
         title: 'التقارير',
         addReport: 'إضافة تقرير',
+		editReport: 'تعديل التقرير',
         dailyReport: 'التقرير اليومي',
         weeklyReport: 'التقرير الأسبوعي',
         monthlyReport: 'التقرير الشهري',
@@ -211,7 +212,13 @@ export default {
         statistics: 'الإحصائيات',
 		noReports: 'لا تقارير بعد',
 		addFirstReport: 'أضف أول تقرير',
-		notesPlaceholder: 'اكتب ملاحظاتك هنا...'
+		notesPlaceholder: 'اكتب ملاحظاتك هنا...',
+		dateFrom: 'من تاريخ',
+		dateTo: 'إلى تاريخ',
+		filterByDate: 'تصفية حسب التاريخ',
+		clearFilters: 'مسح الفلاتر',
+		allStudents: 'جميع الطلاب',
+		searchByStudent: 'بحث بالطالب',
     },
 
     // Settings

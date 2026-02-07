@@ -29,12 +29,19 @@
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {{ $t('users.student') }} <span class="text-red-500">*</span>
               </label>
-              <select v-model="form.student_id" class="input w-full" :disabled="isEditing" required>
+              <select 
+                v-model="form.student_id" 
+                class="input w-full" 
+                :disabled="isEditing" 
+                :class="{ 'opacity-60 cursor-not-allowed': isEditing }"
+                required
+				:selected="form.student_id"
+              >
                 <option value="">{{ $t('groups.selectStudent') }}</option>
                 <option
                   v-for="student in students"
                   :key="getStudentId(student)"
-                  :value="getStudentId(student)"
+                  :value="String(getStudentId(student))"
                 >
                   {{ getStudentName(student) }}
                 </option>
@@ -206,7 +213,7 @@ function formatDateFromApi(dateStr: string): string {
 
 function populateForm() {
   if (props.report) {
-    form.student_id = String(props.report.student_id)
+    form.student_id = String(props.report.student?.id)
     form.date = formatDateFromApi(props.report.date)
     form.attendance_status = props.report.attendance_status.value
     form.memorized_amount = props.report.memorized_amount?.value || ''
@@ -229,18 +236,26 @@ async function handleSubmit() {
   error.value = null
 
   try {
-    const payload = {
-      student_id: Number(form.student_id),
-      date: formatDateForApi(form.date),
-      attendance_status: form.attendance_status,
-      memorized_amount: form.memorized_amount || undefined,
-      grade: form.grade || undefined,
-      notes: form.notes || undefined
-    }
-
     if (isEditing.value && props.report) {
+      // ✅ When editing, don't send student_id
+      const payload = {
+        date: formatDateForApi(form.date),
+        attendance_status: form.attendance_status,
+        memorized_amount: form.memorized_amount || undefined,
+        grade: form.grade || undefined,
+        notes: form.notes || undefined
+      }
       await reportService.updateReport(props.group.id, props.report.id, payload as any)
     } else {
+      // ✅ When creating, include student_id
+      const payload = {
+        student_id: Number(form.student_id),
+        date: formatDateForApi(form.date),
+        attendance_status: form.attendance_status,
+        memorized_amount: form.memorized_amount || undefined,
+        grade: form.grade || undefined,
+        notes: form.notes || undefined
+      }
       await reportService.createReport(props.group.id, payload as any)
     }
 
