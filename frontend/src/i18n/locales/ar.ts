@@ -163,6 +163,8 @@ export default {
         selectTeacher: 'اختر المعلم',
         allTeachers: 'جميع المعلمين',
         students: 'الطلاب',
+		manageStudents: 'إدارة الطلاب',
+		studentsList: 'قائمة الطلاب',
         studentsCount: 'عدد الطلاب',
         schedule: 'المواعيد',
         addScheduleItem: 'إضافة موعد',

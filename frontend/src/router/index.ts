@@ -42,7 +42,13 @@ const routes: RouteRecordRaw[] = [
         name: 'groups',
         component: () => import('@/pages/groups/GroupsListPage.vue'),
         meta: { roles: ['super_admin', 'admin', 'teacher'] }
-      }
+      },
+	  {
+		path: 'groups/:id',
+		name: 'group-details',
+		component: () => import('@/pages/groups/GroupDetailsPage.vue'),
+		meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'teacher'] }
+	  }
     ]
   },
 

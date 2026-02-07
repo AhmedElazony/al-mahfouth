@@ -10,21 +10,7 @@
       <option value="PM" class="bg-gray-800">م</option>
     </select>
     
-    <!-- Minutes -->
-    <select 
-      v-model="minutes" 
-      @change="updateTime"
-      class="bg-transparent text-white text-center appearance-none cursor-pointer focus:outline-none w-6 text-xs"
-    >
-      <option value="" disabled class="bg-gray-800">--</option>
-      <option v-for="m in minuteOptions" :key="m" :value="m" class="bg-gray-800">
-        {{ m }}
-      </option>
-    </select>
-    
-    <span class="text-gray-400 text-xs">:</span>
-    
-    <!-- Hours -->
+    <!-- Hours (moved before minutes) -->
     <select 
       v-model="hours" 
       @change="updateTime"
@@ -33,6 +19,20 @@
       <option value="" disabled class="bg-gray-800">--</option>
       <option v-for="h in hourOptions" :key="h" :value="h" class="bg-gray-800">
         {{ h }}
+      </option>
+    </select>
+    
+    <span class="text-gray-400 text-xs">:</span>
+    
+    <!-- Minutes (moved after hours) -->
+    <select 
+      v-model="minutes" 
+      @change="updateTime"
+      class="bg-transparent text-white text-center appearance-none cursor-pointer focus:outline-none w-6 text-xs"
+    >
+      <option value="" disabled class="bg-gray-800">--</option>
+      <option v-for="m in minuteOptions" :key="m" :value="m" class="bg-gray-800">
+        {{ m }}
       </option>
     </select>
   </div>

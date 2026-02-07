@@ -178,21 +178,23 @@ import {
 
 interface Props {
     group: Group
+    students?: GroupStudentResponse[]
 }
 
 const props = defineProps<Props>()
 
-defineEmits<{
+const emit = defineEmits<{
     close: []
+    updated: [students: GroupStudentResponse[]]
 }>()
 
 // Loading states
-const loadingStudents = ref(true)
+const loadingStudents = ref(!props.students)
 const loadingAllStudents = ref(true)
 const error = ref<string | null>(null)
 
 // Data
-const students = ref<GroupStudentResponse[]>([])
+const students = ref<GroupStudentResponse[]>(props.students ? [...props.students] : [])
 const allStudents = ref<{ id: number; name: string }[]>([])
 
 // Add student form
@@ -360,6 +362,7 @@ async function addStudent() {
 
         selectedStudentId.value = ''
         studentStatus.value = ''
+        emit('updated', students.value)
     } catch (err: any) {
         error.value = err.response?.data?.message || 'حدث خطأ في إضافة الطالب'
     } finally {
@@ -411,6 +414,7 @@ async function saveEdit(item: GroupStudentResponse) {
         }
 
         cancelEdit()
+        emit('updated', students.value)
     } catch (err: any) {
         error.value = err.response?.data?.message || 'حدث خطأ في تحديث بيانات الطالب'
     } finally {
@@ -428,6 +432,7 @@ async function removeStudent(item: GroupStudentResponse) {
     try {
         await groupService.removeStudent(props.group.id, studentId)
         students.value = students.value.filter(s => getStudentId(s) !== studentId)
+        emit('updated', students.value)
     } catch (err: any) {
         error.value = err.response?.data?.message || 'حدث خطأ في إزالة الطالب'
     } finally {
@@ -436,7 +441,9 @@ async function removeStudent(item: GroupStudentResponse) {
 }
 
 onMounted(() => {
-    fetchStudents()
+    if (!props.students) {
+        fetchStudents()
+    }
     fetchAllStudents()
 })
 </script>
