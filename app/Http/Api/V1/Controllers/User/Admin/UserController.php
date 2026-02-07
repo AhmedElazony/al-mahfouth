@@ -30,8 +30,6 @@ class UserController extends ApiController
 				->paginate([], $filters, $filters['per_page'] ?? 15);
 
             return $this->paginated(
-                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
-                200,
                 $users,
                 UserResource::class
             );

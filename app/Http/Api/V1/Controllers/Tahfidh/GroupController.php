@@ -40,8 +40,6 @@ class GroupController extends ApiController
 				);
 
             return $this->paginated(
-                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
-                200,
                 $groups,
                 GroupResource::class,
             );
