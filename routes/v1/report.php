@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'groups/{group}/reports', 'as' => 'reports.'], function () {
     Route::get('/', [ReportController::class, 'index'])
-        ->middleware('role:super_admin,admin')->name('index');
+        ->middleware('role:super_admin,admin,teacher')->name('index');
 
     Route::get('/{report}', [ReportController::class, 'show'])
         ->middleware('role:super_admin,admin,teacher')->name('show');
