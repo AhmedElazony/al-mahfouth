@@ -25,7 +25,6 @@ class UpdateReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'student_id' => ['sometimes', 'integer'],
             'date' => ['sometimes', 'date', 'date_format:d-m-Y'],
             'attendance_status' => ['sometimes', 'in:'.implode(',', AttendanceStatusesEnum::values())],
             'memorized_amount' => ['sometimes', 'in:'.implode(',', MemorizingAmountsEnum::values())],

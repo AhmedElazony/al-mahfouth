@@ -61,15 +61,7 @@ class ReportService extends BaseService implements ReportServiceContract
     public function updateByGroup(Group $group, Report $report, array $data): Report
     {
         return DB::transaction(function () use ($group, $report, $data) {
-            if (isset($data['student_id']) && $report->student_id !== $data['student_id']) {
-                $student = $group->students()->firstWhere('student_id', $data['student_id']);
-                if (! $student) {
-                    throw new \Exception(__(ResponseMessageEnum::STUDENT_NOT_IN_GROUP->value), Response::HTTP_NOT_FOUND);
-                }
-            }
-
-            $report->update([
-                'student_id' => $data['student_id'] ?? $report->student_id,
+            $group->reports()->where('id', $report->id)->update([
                 'date' => $data['date'] ?? $report->date,
                 'attendance_status' => $data['attendance_status'] ?? $report->attendance_status,
                 'memorized_amount' => $data['memorized_amount'] ?? $report->memorized_amount,
