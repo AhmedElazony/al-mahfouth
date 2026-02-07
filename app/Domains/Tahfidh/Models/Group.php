@@ -8,6 +8,7 @@ use App\Support\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Group extends Model
 {
@@ -53,4 +54,9 @@ class Group extends Model
                 'joined_at',
             ])->withTimestamps();
     }
+
+	public function reports(): HasMany
+	{
+		return $this->hasMany(Report::class, 'group_id');
+	}
 }

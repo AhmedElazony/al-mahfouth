@@ -25,22 +25,19 @@ class GroupController extends ApiController
     public function index()
     {
         try {
-            $perPage = request()->query('per_page', 15);
             $filters = request()->only([
+				'per_page',
                 'q',
                 'teacher_id',
                 'is_active',
             ]);
-            $groups = $this->groupService
-				->paginate(
-					['teacher'],
-					$filters,
-					$perPage,
-					['*']
-				);
 
             return $this->paginated(
-                $groups,
+                $this->groupService->paginate(
+					['teacher'],
+					$filters,
+					$filters['per_page'] ?? 15,
+				),
                 GroupResource::class,
             );
         } catch (\Throwable $th) {
