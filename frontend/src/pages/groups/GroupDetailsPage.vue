@@ -1,12 +1,13 @@
+<!-- filepath: frontend/src/pages/groups/GroupDetailsPage.vue -->
 <template>
-    <div class="space-y-6">
+    <div class="space-y-4 md:space-y-6 px-4 md:px-0">
         <!-- Breadcrumb & Header -->
-        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <div class="flex items-center gap-2 text-xs md:text-sm text-gray-500 dark:text-gray-400">
             <router-link to="/groups" class="hover:text-primary-600">
                 {{ $t('groups.title') }}
             </router-link>
             <i class="pi pi-chevron-left text-xs"></i>
-            <span class="text-gray-900 dark:text-white">{{ group?.name }}</span>
+            <span class="text-gray-900 dark:text-white truncate">{{ group?.name }}</span>
         </div>
 
         <!-- Loading State -->
@@ -15,10 +16,10 @@
         </div>
 
         <!-- Error State -->
-        <div v-else-if="error" class="card p-6">
+        <div v-else-if="error" class="card p-4 md:p-6">
             <div class="text-center text-red-600 dark:text-red-400">
-                <i class="pi pi-exclamation-circle text-4xl mb-4"></i>
-                <p>{{ error }}</p>
+                <i class="pi pi-exclamation-circle text-3xl md:text-4xl mb-4"></i>
+                <p class="text-sm md:text-base">{{ error }}</p>
                 <button @click="fetchGroupDetails" class="btn-primary mt-4">
                     {{ $t('common.retry') }}
                 </button>
@@ -28,42 +29,55 @@
         <!-- Group Details -->
         <div v-else-if="group">
             <!-- Group Info Card -->
-            <div class="card p-6">
-                <div class="flex items-start justify-between mb-6">
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ group.name }}</h1>
-                        <div class="flex items-center gap-4 mt-2 text-sm text-gray-500 dark:text-gray-400">
+            <div class="card p-4 md:p-6">
+                <!-- Header - Stack on mobile -->
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4 md:mb-6">
+                    <div class="flex-1 min-w-0">
+                        <h1 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white truncate">
+                            {{ group.name }}
+                        </h1>
+                        <div class="flex flex-wrap items-center gap-2 md:gap-4 mt-2 text-xs md:text-sm text-gray-500 dark:text-gray-400">
                             <span class="flex items-center gap-1">
-                                <i class="pi pi-user"></i>
-                                {{ group.teacher?.name }}
+                                <i class="pi pi-user text-xs"></i>
+                                <span class="truncate max-w-[120px] md:max-w-none">{{ group.teacher?.name }}</span>
                             </span>
-                            <span class="flex items-center gap-1">
-                                <i class="pi pi-users"></i>
-                                {{ $t('groups.studentsCount') }}: {{ studentsCount }} 
+                            <span class="flex items-center gap-1 whitespace-nowrap">
+                                <i class="pi pi-users text-xs"></i>
+                                {{ studentsCount }}
                             </span>
-                            <span :class="group.is_active ? 'text-green-600' : 'text-red-600'">
+                            <span :class="group.is_active ? 'text-green-600' : 'text-red-600'" class="whitespace-nowrap">
                                 {{ group.is_active ? $t('common.active') : $t('common.inactive') }}
                             </span>
                         </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button @click="openEditModal" class="btn-secondary">
+                    
+                    <!-- Action Button - Full width on mobile -->
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button @click="openEditModal" class="btn-secondary flex-1 md:flex-none text-sm md:text-base">
                             <i class="pi pi-pencil mr-2"></i>
-                            {{ $t('common.edit') }}
+                            <span class="hidden sm:inline">{{ $t('common.edit') }}</span>
+                            <span class="sm:hidden">تعديل</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Schedule -->
+                <!-- Description - Hide on small screens if too long -->
+                <p v-if="group.description" class="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 md:line-clamp-none">
+                    {{ group.description }}
+                </p>
+
+                <!-- Schedule - Horizontal scroll on mobile -->
                 <div v-if="group.schedule?.length" class="mt-4">
-                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <h3 class="text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         {{ $t('groups.schedule') }}
                     </h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span v-for="(item, index) in parseSchedule(group.schedule)" :key="index"
-                            class="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm">
-                            {{ getDayName(item.day) }} {{ formatTime(item.start_time) }} - {{
-                                formatTime(item.end_time) }}
+                    <div class="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap">
+                        <span 
+                            v-for="(item, index) in parseSchedule(group.schedule)" 
+                            :key="index"
+                            class="px-2 md:px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-xs md:text-sm whitespace-nowrap flex-shrink-0"
+                        >
+                            {{ getDayName(item.day) }} {{ formatTime(item.start_time) }} - {{ formatTime(item.end_time) }}
                         </span>
                     </div>
                 </div>
@@ -71,31 +85,38 @@
 
             <!-- Tabs -->
             <div class="card">
-                <div class="border-b border-gray-200 dark:border-gray-700">
-                    <nav class="flex -mb-px">
-                        <button @click="activeTab = 'students'" :class="[
-                            'px-6 py-3 text-sm font-medium border-b-2 transition-colors',
-                            activeTab === 'students'
-                                ? 'border-primary-600 text-primary-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                        ]">
-                            <i class="pi pi-users mr-2"></i>
+                <!-- Tab Navigation - Scrollable on mobile -->
+                <div class="border-b border-gray-200 dark:border-gray-700 overflow-x-auto">
+                    <nav class="flex -mb-px min-w-max md:min-w-0">
+                        <button 
+                            @click="activeTab = 'students'" 
+                            :class="[
+                                'px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
+                                activeTab === 'students'
+                                    ? 'border-primary-600 text-primary-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            ]"
+                        >
+                            <i class="pi pi-users mr-1 md:mr-2"></i>
                             {{ $t('groups.students') }}
                         </button>
-                        <button @click="activeTab = 'reports'" :class="[
-                            'px-6 py-3 text-sm font-medium border-b-2 transition-colors',
-                            activeTab === 'reports'
-                                ? 'border-primary-600 text-primary-600'
-                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                        ]">
-                            <i class="pi pi-file-edit mr-2"></i>
+                        <button 
+                            @click="activeTab = 'reports'" 
+                            :class="[
+                                'px-4 md:px-6 py-2 md:py-3 text-xs md:text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
+                                activeTab === 'reports'
+                                    ? 'border-primary-600 text-primary-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            ]"
+                        >
+                            <i class="pi pi-file-edit mr-1 md:mr-2"></i>
                             {{ $t('reports.title') }}
                         </button>
                     </nav>
                 </div>
 
                 <!-- Students Tab -->
-                <div v-show="activeTab === 'students'" class="p-6">
+                <div v-show="activeTab === 'students'" class="p-4 md:p-6">
                     <GroupStudentsList 
                         :group="group" 
                         :students="students" 
@@ -105,17 +126,16 @@
                 </div>
 
                 <!-- Reports Tab -->
-                <div v-show="activeTab === 'reports'" class="p-6">
-                    <!-- <GroupReports :group="group" :students="students" /> -->
-                    <div class="text-center py-12 text-gray-500 dark:text-gray-400">
-                        <i class="pi pi-file-edit text-4xl mb-4 block"></i>
-                        <p>{{ $t('reports.comingSoon') }}</p>
+                <div v-show="activeTab === 'reports'" class="p-4 md:p-6">
+                    <div class="text-center py-8 md:py-12 text-gray-500 dark:text-gray-400">
+                        <i class="pi pi-file-edit text-3xl md:text-4xl mb-3 md:mb-4 block"></i>
+                        <p class="text-sm md:text-base">{{ $t('reports.comingSoon') }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Edit Group Modal -->
+        <!-- Edit Group Modal - Full screen on mobile -->
         <GroupFormModal
             v-if="showEditModal && group"
             :group="group"
@@ -124,11 +144,11 @@
             @updated="onGroupUpdated"
         />
 
-        <!-- Manage Students Modal -->
+        <!-- Manage Students Modal - Full screen on mobile -->
         <GroupStudentsModal 
             v-if="showManageStudents" 
             :group="group"
-			:students="students"
+            :students="students"
             @close="showManageStudents = false"
             @updated="onStudentsUpdated" 
         />
@@ -177,16 +197,9 @@ async function fetchGroupDetails() {
     }
 }
 
-/**
- * Parse schedule - handle both string and array formats
- */
 function parseSchedule(schedule: any): ScheduleItem[] {
     if (!schedule) return []
-
-    if (Array.isArray(schedule)) {
-        return schedule
-    }
-
+    if (Array.isArray(schedule)) return schedule
     if (typeof schedule === 'string') {
         try {
             const parsed = JSON.parse(schedule)
@@ -195,29 +208,20 @@ function parseSchedule(schedule: any): ScheduleItem[] {
             return []
         }
     }
-
     return []
 }
 
-/**
- * Get day name in Arabic using constants
- */
 function getDayName(day: string): string {
     if (!day) return ''
     const dayValue = typeof day === 'object' ? (day as any).value : day
     return getEnumLabel(WeekDayLabels, dayValue?.toLowerCase())
 }
 
-/**
- * Format time string (handle HH:mm:ss and HH:mm formats)
- */
 function formatTime(time: string): string {
     if (!time) return ''
-
     if (typeof time === 'object') {
         time = (time as any).value || ''
     }
-
     const parts = time.split(':')
     if (parts.length >= 2) {
         const hours = parseInt(parts[0])
@@ -226,34 +230,24 @@ function formatTime(time: string): string {
         const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours
         return `${displayHours}:${minutes} ${period}`
     }
-
     return time
 }
 
-/**
- * Open edit modal (uses existing group data, no API call)
- */
 function openEditModal() {
     showEditModal.value = true
 }
 
-/**
- * Close edit modal
- */
 function closeEditModal() {
     showEditModal.value = false
 }
 
-/**
- * Handle group update (update local state with API response)
- */
 function onGroupUpdated(updatedGroup: Group) {
     group.value = updatedGroup
     closeEditModal()
 }
 
 function onStudentsUpdated(updatedStudents: GroupStudentResponse[]) {
-	students.value = updatedStudents
+    students.value = updatedStudents
 }
 
 async function fetchStudents() {
