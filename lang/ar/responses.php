@@ -15,5 +15,5 @@ return [
     'already_exists' => 'العنصر موجود بالفعل.',
     'not_found' => 'العنصر غير موجود.',
     'method_not_allowed' => 'طريقة الطلب غير مسموح بها.',
-	'student_not_in_group' => 'الطالب غير موجود في المجموعة.',
+    'student_not_in_group' => 'الطالب غير موجود في المجموعة.',
 ];
