@@ -6,7 +6,7 @@
 				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('groups.title') }}</h1>
 				<p class="text-gray-500 dark:text-gray-400">{{ $t('groups.subtitle') }}</p>
 			</div>
-			<button @click="openCreateModal" class="btn-primary flex items-center justify-center gap-2">
+			<button @click="openCreateModal" v-if="useAuthStore().isAdmin || useAuthStore().isSuperAdmin" class="btn-primary flex items-center justify-center gap-2">
 				<i class="pi pi-plus"></i>
 				{{ $t('groups.addGroup') }}
 			</button>
@@ -287,6 +287,7 @@ import GroupStudentsModal from '@/components/groups/GroupStudentsModal.vue'
 import ConfirmModal from '@/components/common/ConfirmModal.vue'
 import { WeekDayLabels, getEnumLabel } from '@/constants'
 import userService from '@/services/userService'
+import { useAuthStore } from '@/stores/auth'
 
 const groupsStore = useGroupsStore()
 
