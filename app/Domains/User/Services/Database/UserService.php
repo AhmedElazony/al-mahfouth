@@ -10,6 +10,7 @@ use App\Domains\User\Services\Contracts\UserService as UserServiceContract;
 use App\Http\Api\V1\Resources\User\UserResource;
 use App\Support\Enums\ResponseMessageEnum;
 use App\Support\Services\Database\BaseService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,17 @@ class UserService extends BaseService implements UserServiceContract
 	{
 		parent::__construct(User::class);
 	}
+
+	public function paginate(array $with = [], array $filters = [], int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+	{
+		$query = $this->model()->with($with);
+
+		if (auth()->user()->isTeacher()) {
+			$query->where('role', UserRolesEnum::STUDENT->value);
+		}
+
+		return $query->latest()->paginate($perPage);
+	}	
 
     public function create(array $data): Model
     {
@@ -76,7 +88,7 @@ class UserService extends BaseService implements UserServiceContract
 
             if (! isset($user) || ! Hash::check($password, $user?->password)) {
                 throw new \Exception(
-                    ResponseMessageEnum::INVALID_CREDENTIALS->value,
+                    __(ResponseMessageEnum::INVALID_CREDENTIALS->value),
                     Response::HTTP_UNAUTHORIZED
                 );
             }

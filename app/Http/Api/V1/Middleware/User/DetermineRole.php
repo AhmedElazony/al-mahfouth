@@ -21,7 +21,7 @@ class DetermineRole
 
         if (! $user) {
             return ApiResponse::error(
-                ResponseMessageEnum::UNAUTHORIZED->value,
+                __(ResponseMessageEnum::UNAUTHORIZED->value),
                 Response::HTTP_UNAUTHORIZED
             );
         }
@@ -32,7 +32,7 @@ class DetermineRole
 
         if (! in_array($userRole, $roles, true)) {
             return ApiResponse::error(
-                ResponseMessageEnum::FORBIDDEN->value,
+                __(ResponseMessageEnum::FORBIDDEN->value),
                 Response::HTTP_FORBIDDEN
             );
         }

@@ -7,16 +7,28 @@ use App\Domains\Tahfidh\Services\Contracts\GroupService as GroupServiceContract;
 use App\Domains\User\Models\Student;
 use App\Support\Enums\ResponseMessageEnum;
 use App\Support\Services\Database\BaseService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class GroupService extends BaseService implements GroupServiceContract
 {
-	public function __construct()
-	{
-		parent::__construct(Group::class);
-	}
+    public function __construct()
+    {
+        parent::__construct(Group::class);
+    }
+
+    public function paginate(array $with = [], array $filters = [], int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+    {
+        $query = $this->model()->with($with);
+
+        if (auth()->user()->isTeacher()) {
+            $query->where('teacher_id', auth()->id());
+        }
+
+        return $query->latest()->paginate($perPage);
+    }
 
     public function create(array $data): Group
     {
