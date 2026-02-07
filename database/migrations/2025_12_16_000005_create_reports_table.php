@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('created_by')->constrained('users')->nullOnDelete();
             $table->date('date');
             $table->enum('attendance_status', AttendanceStatusesEnum::values());
-            $table->text('memorized_amount');
-            $table->enum('grade', GradesEnum::values());
+            $table->text('memorized_amount')->nullable();
+            $table->enum('grade', GradesEnum::values())->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });
