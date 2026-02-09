@@ -20,7 +20,7 @@ return new class extends Migration
                 COUNT(gs.id) AS students_count,
                 SUM(CASE WHEN gs.student_status = '{$committed}' THEN 1 ELSE 0 END) AS committed_count,
                 SUM(CASE WHEN gs.student_status = '{$uncommitted}' THEN 1 ELSE 0 END) AS uncommitted_count,
-                SUM(CASE WHEN gs.student_status = '{$absent}' THEN 1 ELSE 0 END) AS absent_count,
+                SUM(CASE WHEN gs.student_status = '{$absent}' THEN 1 ELSE 0 END) AS absent_count
             FROM groups g
             LEFT JOIN group_student gs ON g.id = gs.group_id
             LEFT JOIN students s ON gs.student_id = s.user_id
