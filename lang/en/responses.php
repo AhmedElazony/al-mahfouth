@@ -17,4 +17,5 @@ return [
     'method_not_allowed' => 'Method Not Allowed.',
 	'student_not_in_group' => 'The student is not in the group.',
 	'cannot_delete_super_admin' => 'Cannot delete super admin.',
+	'cannot_delete_own_account' => 'You cannot delete your own account.',
 ];

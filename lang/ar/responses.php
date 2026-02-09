@@ -17,4 +17,5 @@ return [
     'method_not_allowed' => 'طريقة الطلب غير مسموح بها.',
     'student_not_in_group' => 'الطالب غير موجود في المجموعة.',
 	'cannot_delete_super_admin' => 'لا يمكن حذف المشرف العام.',
+	'cannot_delete_own_account' => 'لا يمكنك حذف حسابك بنفسك',
 ];

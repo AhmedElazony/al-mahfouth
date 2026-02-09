@@ -92,6 +92,13 @@ class UserService extends BaseService implements UserServiceContract
             );
         }
 
+		if ($user->id === auth()->id()) {
+			throw new \Exception(
+				__(ResponseMessageEnum::CANNOT_DELETE_OWN_ACCOUNT->value),
+				Response::HTTP_FORBIDDEN
+			);
+		}
+
         $user->delete();
     }
 
