@@ -23,4 +23,5 @@ enum ResponseMessageEnum: string
     case NOT_FOUND = 'responses.not_found';
     case METHOD_NOT_ALLOWED = 'responses.method_not_allowed';
 	case STUDENT_NOT_IN_GROUP = 'responses.student_not_in_group';
+	case CANNOT_DELETE_SUPER_ADMIN = 'responses.cannot_delete_super_admin';
 }

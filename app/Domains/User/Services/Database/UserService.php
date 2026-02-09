@@ -79,6 +79,18 @@ class UserService extends BaseService implements UserServiceContract
         });
     }
 
+	public function delete(Model $user): void
+	{
+		if ($user->isSuperAdmin()) {
+			throw new \Exception(
+				__(ResponseMessageEnum::CANNOT_DELETE_SUPER_ADMIN->value),
+				Response::HTTP_FORBIDDEN
+			);
+		}
+
+		$user->delete();
+	}
+
     public function login(string $usernameOrEmail, string $password): array
     {
         return DB::transaction(function () use ($usernameOrEmail, $password) {
