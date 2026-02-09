@@ -2,6 +2,7 @@
 
 use App\Http\Api\V1\Controllers\User\Admin\UserController;
 use App\Http\Api\V1\Controllers\User\ProfileController;
+use App\Http\Api\V1\Controllers\User\StudentController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
@@ -24,3 +25,6 @@ Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
 
 Route::put('user/profile', [ProfileController::class, 'update'])
     ->name('user.profile.update');
+
+Route::get('student/groups', [StudentController::class, 'groups'])
+	->name('student.groups');

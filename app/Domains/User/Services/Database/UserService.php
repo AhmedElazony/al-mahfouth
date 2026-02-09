@@ -13,6 +13,7 @@ use App\Support\Services\Database\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -113,6 +114,20 @@ class UserService extends BaseService implements UserServiceContract
         }
 
         $user->delete();
+    }
+
+    public function getStudentGroups(): Collection
+    {
+        $user = auth()->user();
+
+        if (! $user->isStudent()) {
+            throw new \Exception(
+                __(ResponseMessageEnum::FORBIDDEN->value),
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        return $user->student->groups;
     }
 
     public function login(string $usernameOrEmail, string $password): array

@@ -49,8 +49,8 @@ class Student extends Model
             'group_student',
             'student_id',
             'group_id',
-            'id',
-            'user_id'
+            'user_id',
+            'id'
         )->using(GroupStudent::class)
             ->withPivot([
                 'student_status',
