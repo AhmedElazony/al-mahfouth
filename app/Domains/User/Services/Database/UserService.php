@@ -131,7 +131,7 @@ class UserService extends BaseService implements UserServiceContract
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return ['user' => UserResource::make($user), 'token' => $token];
+            return ['user' => UserResource::make($user->loadRoleRelations()), 'token' => $token];
         });
 
     }
