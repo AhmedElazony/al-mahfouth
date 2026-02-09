@@ -27,7 +27,10 @@ class GroupService extends BaseService implements GroupServiceContract
             $query->where('teacher_id', auth()->id());
         }
 
-        return $query->latest()->paginate($perPage);
+        return $query
+			->filter($filters)
+			->latest()
+			->paginate($perPage, $columns);
     }
 
     public function create(array $data): Group
