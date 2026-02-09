@@ -17,7 +17,6 @@ return new class extends Migration
             $table->enum('student_status', StudentStatusesEnum::values())->nullable();
             $table->enum('memorizing_amount', MemorizingAmountsEnum::values());
             $table->timestamp('joined_at')->nullable();
-            $table->timestamp('left_at')->nullable();
             $table->timestamps();
         });
     }

@@ -127,7 +127,13 @@ class UserService extends BaseService implements UserServiceContract
             );
         }
 
-        return $user->student->groups;
+        return $user->student->groups()
+            ->with('teacher')
+            ->withPivot([
+                'student_status',
+                'memorizing_amount',
+                'joined_at',
+            ])->get();
     }
 
     public function login(string $usernameOrEmail, string $password): array
