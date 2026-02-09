@@ -184,7 +184,7 @@ prepare-server-dev:
 	@echo "🔑 Generating application key..."
 	@docker compose -f docker-compose.dev.yml run --rm app php artisan key:generate --force
 	@echo "📦 Building frontend..."
-	@docker run --rm -v "$(PWD)/frontend:/app" -w /app node:20-alpine sh -c "npm install && npm run build -- --force" || docker run --rm -v "$(PWD)/frontend:/app" -w /app node:20-alpine sh -c "VITE_SKIP_TYPE_CHECK=true npm run build"
+	@docker run --rm -v "$(PWD)/frontend:/app" -w /app node:20-alpine sh -c "npm install && npx vite build"
 	@echo "📁 Copying frontend build to public directory..."
 	@mkdir -p ./public/app
 	@cp -r ./frontend/dist/* ./public/app/
