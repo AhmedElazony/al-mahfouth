@@ -4,6 +4,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import StudentLayout from '@/layouts/StudentLayout.vue'
+import AppLayout from '@/layouts/AppLayout.vue'
 
 const routes: RouteRecordRaw[] = [
 	// Public Home 
@@ -30,7 +31,7 @@ const routes: RouteRecordRaw[] = [
 	// Dashboard Routes (Protected)
 	{
 		path: '/dashboard',
-		component: DashboardLayout,
+		component: AppLayout,
 		meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'teacher'] },
 		children: [
 			{
@@ -68,7 +69,7 @@ const routes: RouteRecordRaw[] = [
 	// Student Routes
 	{
 		path: '/student',
-		component: StudentLayout,
+		component: AppLayout,
 		meta: { requiresAuth: true, roles: ['student'] },
 		children: [
 			{
@@ -81,11 +82,6 @@ const routes: RouteRecordRaw[] = [
 				name: 'student-groups',
 				component: () => import('@/pages/student/StudentGroupsPage.vue')
 			},
-			// {
-			// 	path: 'progress',
-			// 	name: 'student-progress',
-			// 	component: () => import('@/pages/student/StudentProgressPage.vue')
-			// },
 			{
 				path: 'settings',
 				name: 'student-settings',
@@ -97,7 +93,7 @@ const routes: RouteRecordRaw[] = [
 	{
 		path: '/community',
 		name: 'community',
-		component: DashboardLayout,
+		component: AppLayout,
 		meta: { requiresAuth: true },
 		children: [
 			{
