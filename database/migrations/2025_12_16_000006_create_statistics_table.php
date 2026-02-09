@@ -14,7 +14,7 @@ return new class extends Migration
 				(SELECT COUNT(*) FROM groups) AS groups_count,
 				(SELECT COUNT(*) FROM students) AS students_count,
 				(SELECT COUNT(*) FROM teachers) AS teachers_count,
-				(SELECT COUNT(*) FROM reports) AS reports_count,
+				(SELECT COUNT(*) FROM reports) AS reports_count
 SQL);
     }
 
