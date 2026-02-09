@@ -167,7 +167,9 @@ prepare-server-dev:
 	@echo "🔍 Checking .env file..."
 	@if [ ! -f .env ]; then \
         echo "❌ .env file not found! Please create one from .env.example"; \
-        exit 1; \
+		echo " creating .env file"
+		cp .env.example .env; \
+		exit 1; \
     fi
 	@echo "🔍 Checking frontend/.env.production..."
 	@if [ ! -f frontend/.env.production ]; then \
