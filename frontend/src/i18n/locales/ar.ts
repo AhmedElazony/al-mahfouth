@@ -275,7 +275,8 @@ export default {
         inactive: 'غير نشط',
         status: 'الحالة',
 		comingSoon: 'قريباً',
-		searchNotFound: 'لم نعثر على نتائج تطابق بحثك'
+		searchNotFound: 'لم نعثر على نتائج تطابق بحثك',
+		contactAdminToEdit: 'إذا كنت تريد تعديل البيانات، تواصل مع المشرف'
     },
 
     // Roles

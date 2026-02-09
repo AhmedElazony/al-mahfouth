@@ -1,4 +1,3 @@
-<!-- filepath: frontend/src/pages/groups/GroupDetailsPage.vue -->
 <template>
 	<div class="space-y-4 md:space-y-6 px-4 md:px-0">
 		<!-- Breadcrumb & Header -->
@@ -54,12 +53,31 @@
 					</div>
 
 					<!-- Action Button - Full width on mobile -->
-					<div class="flex gap-2 w-full md:w-auto">
-						<button @click="openEditModal" class="btn-secondary flex-1 md:flex-none text-sm md:text-base">
-							<i class="pi pi-pencil mr-2"></i>
-							<span class="hidden sm:inline">{{ $t('common.edit') }}</span>
-							<span class="sm:hidden">تعديل</span>
-						</button>
+					<div class="flex flex-col gap-2 w-full md:w-auto">
+						<div class="flex gap-2">
+							<button v-if="canEditGroup" @click="openEditModal"
+								class="btn-secondary flex-1 md:flex-none text-sm md:text-base">
+								<i class="pi pi-pencil mr-2"></i>
+								<span class="hidden sm:inline">{{ $t('common.edit') }}</span>
+								<span class="sm:hidden">تعديل</span>
+							</button>
+							<button v-else disabled
+								class="btn-secondary flex-1 md:flex-none text-sm md:text-base opacity-50 cursor-not-allowed"
+								:title="$t('groups.contactAdminToEdit')">
+								<i class="pi pi-pencil mr-2"></i>
+								<span class="hidden sm:inline">{{ $t('common.edit') }}</span>
+								<span class="sm:hidden">تعديل</span>
+							</button>
+						</div>
+						<!-- Teacher Info Message -->
+						<div v-if="!canEditGroup"
+							class="flex items-start gap-2 p-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+							<i
+								class="pi pi-info-circle text-blue-600 dark:text-blue-400 text-sm mt-0.5 flex-shrink-0"></i>
+							<p class="text-xs text-blue-700 dark:text-blue-300">
+								{{ $t('common.contactAdminToEdit') }}
+							</p>
+						</div>
 					</div>
 				</div>
 
@@ -135,10 +153,12 @@ import groupService, { type GroupStudentResponse } from '@/services/groupService
 import GroupStudentsList from '@/components/groups/GroupStudentsList.vue'
 import GroupStudentsModal from '@/components/groups/GroupStudentsModal.vue'
 import GroupFormModal from '@/components/groups/GroupFormModal.vue'
-import { getEnumLabel, WeekDayLabels } from '@/constants'
+import { getEnumLabel, UserRole, WeekDayLabels } from '@/constants'
 import GroupReportsList from '@/components/groups/GroupReportsList.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
+const authStore = useAuthStore()
 const groupId = computed(() => Number(route.params.id))
 
 const loading = ref(true)
@@ -150,6 +170,11 @@ const showManageStudents = ref(false)
 const showEditModal = ref(false)
 
 const studentsCount = computed(() => students.value.length)
+
+// Check if user can edit group (only admins can edit)
+const canEditGroup = computed(() => {
+	return authStore.isSuperAdmin || authStore.isAdmin
+})
 
 async function fetchGroupDetails() {
 	loading.value = true
