@@ -14,7 +14,7 @@ return new class extends Migration
 
         DB::statement('DROP VIEW IF EXISTS group_stats');
         DB::statement(<<<SQL
-            CREATE VIEW `group_stats` AS
+            CREATE VIEW group_stats AS
             SELECT
                 g.id AS group_id,
                 COUNT(gs.id) AS students_count,
