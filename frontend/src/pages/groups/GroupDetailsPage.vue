@@ -2,7 +2,7 @@
 	<div class="space-y-4 md:space-y-6 px-4 md:px-0">
 		<!-- Breadcrumb & Header -->
 		<div class="flex items-center gap-2 text-xs md:text-sm text-gray-500 dark:text-gray-400">
-			<router-link to="/groups" class="hover:text-primary-600">
+			<router-link to="/dashboard/groups" class="hover:text-primary-600">
 				{{ $t('groups.title') }}
 			</router-link>
 			<i class="pi pi-chevron-left text-xs"></i>
