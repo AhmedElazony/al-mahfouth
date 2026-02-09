@@ -15,8 +15,6 @@ return new class extends Migration
 				(SELECT COUNT(*) FROM students) AS students_count,
 				(SELECT COUNT(*) FROM teachers) AS teachers_count,
 				(SELECT COUNT(*) FROM reports) AS reports_count,
-				(SELECT COUNT(*) FROM students WHERE is_active = true) AS active_students_count,
-				(SELECT COUNT(*) FROM students WHERE is_active = false) AS inactive_students_count
 SQL);
     }
 
