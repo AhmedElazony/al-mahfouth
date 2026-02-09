@@ -11,7 +11,7 @@ UID := $(shell id -u)
 GID := $(shell id -g)
 
 # Targets
-.PHONY: images install certs deploy undeploy bash fix-permissions frontend-install frontend-dev frontend-build frontend-bash dev artisan tinker up down logs
+.PHONY: images install certs prepare-server deploy-prod bash fix-permissions frontend-install frontend-dev frontend-build frontend-bash dev artisan tinker up down logs
 
 images:
 	@docker compose build
@@ -61,6 +61,107 @@ frontend-build:
 frontend-bash:
 	@docker compose run --rm -u "${UID}:${GID}" frontend sh
 
+# Deploy on a Server (Production)
+prepare-server:
+	@echo "🔧 Preparing server environment for production..."
+	@echo "🔍 Checking .env file..."
+	@if [ ! -f .env ]; then \
+        echo "❌ .env file not found! Please create one from .env.example"; \
+        exit 1; \
+	fi
+	@echo "🏗️ Building Docker images..."
+	@docker compose -f docker-compose.prod.yml build --no-cache
+	@echo "📦 Installing backend dependencies (production)..."
+	@docker compose -f docker-compose.prod.yml run --rm -u "$(UID):$(GID)" app composer install --no-dev --optimize-autoloader --no-interaction
+	@echo "🔑 Generating application key (if not exists)..."
+	@docker compose -f docker-compose.prod.yml run --rm -u "$(UID):$(GID)" app php artisan key:generate --force
+	@echo "🔑 Generating JWT secret (if not exists)..."
+	@docker compose -f docker-compose.prod.yml run --rm -u "$(UID):$(GID)" app php artisan jwt:secret --force
+	@echo "📦 Building frontend for production..."
+	@docker compose run --rm -u "${UID}:${GID}" -w /var/www/html/frontend frontend npm install --production=false
+	@docker compose run --rm -u "${UID}:${GID}" -w /var/www/html/frontend frontend npm run build
+	@echo "📁 Copying frontend build to public directory..."
+	@mkdir -p ./public/app
+	@cp -r ./frontend/dist/* ./public/app/
+	@echo "🚀 Starting production services..."
+	@docker compose -f docker-compose.prod.yml up -d
+	@echo "⏳ Waiting for services to be ready..."
+	@sleep 10
+	@echo "🗄️ Running database migrations..."
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan migrate --force
+	@echo "🔗 Creating storage link..."
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan storage:link
+	@echo "⚡ Optimizing application..."
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan config:cache
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan route:cache
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan view:cache
+	@echo "🔧 Setting correct permissions..."
+	@docker compose -f docker-compose.prod.yml exec app chown -R www-data:www-data storage bootstrap/cache
+	@echo "✅ Production environment ready!"
+	@echo ""
+	@echo "📝 Next steps:"
+	@echo "   1. Configure your domain DNS to point to this server"
+	@echo "   2. Run: make setup-ssl DOMAIN=yourdomain.com"
+	@echo "   3. Update .env with production values"
+	@echo "   4. Access your app at: https://yourdomain.com"
+
+# Setup SSL with Let's Encrypt
+setup-ssl:
+	@echo "🔒 Setting up SSL certificate..."
+	@if [ -z "$(DOMAIN)" ]; then \
+        echo "❌ Please provide DOMAIN: make setup-ssl DOMAIN=yourdomain.com"; \
+        exit 1; \
+    fi
+	@echo "🛑 Stopping nginx temporarily..."
+	@docker compose -f docker-compose.prod.yml stop nginx
+	@echo "📜 Obtaining SSL certificate from Let's Encrypt..."
+	@sudo certbot certonly --standalone -d $(DOMAIN) -d www.$(DOMAIN) --non-interactive --agree-tos --email admin@$(DOMAIN)
+	@echo "✅ SSL certificate obtained!"
+	@echo "🚀 Starting nginx..."
+	@docker compose -f docker-compose.prod.yml up -d nginx
+	@echo "🔒 SSL setup completed for $(DOMAIN)"
+
+# Deploy/Update production
+deploy-prod:
+	@echo "🚀 Deploying updates to production..."
+	@echo "🛑 Putting application in maintenance mode..."
+	@docker compose -f docker-compose.prod.yml exec app php artisan down
+	@echo "📥 Pulling latest changes..."
+	@git pull origin master
+	@echo "🏗️ Rebuilding images..."
+	@docker compose -f docker-compose.prod.yml build
+	@echo "📦 Updating dependencies..."
+	@docker compose -f docker-compose.prod.yml run --rm -u "$(UID):$(GID)" app composer install --no-dev --optimize-autoloader --no-interaction
+	@echo "🗄️ Running migrations..."
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan migrate --force
+	@echo "📦 Rebuilding frontend..."
+	@docker compose run --rm -u "${UID}:${GID}" -w /var/www/html/frontend frontend npm install --production=false
+	@docker compose run --rm -u "${UID}:${GID}" -w /var/www/html/frontend frontend npm run build
+	@mkdir -p ./public/app
+	@cp -r ./frontend/dist/* ./public/app/
+	@echo "⚡ Optimizing..."
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan config:cache
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan route:cache
+	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan view:cache
+	@echo "🔄 Restarting services..."
+	@docker compose -f docker-compose.prod.yml restart app queue scheduler
+	@echo "✅ Bringing application back online..."
+	@docker compose -f docker-compose.prod.yml exec app php artisan up
+	@echo "🎉 Deployment completed!"
+
+setup-nginx-prod:
+	@echo "🔧 Setting up production nginx config..."
+	@read -p "Enter your domain (e.g., example.com): " DOMAIN; \
+	sed "s/yourdomain.com/$$DOMAIN/g" docker/nginx/production.conf > docker/nginx/production.tmp.conf && \
+	mv docker/nginx/production.tmp.conf docker/nginx/production.conf
+	@echo "✅ Nginx production config updated!"
+	@echo "📝 Remember to update your .env file with the same domain"
+
+# Create certbot directory
+prepare-certbot:
+	@mkdir -p docker/nginx/certbot
+	@echo "✅ Certbot directory created"
+
 # Full stack commands
 dev:
 	@echo "🚀 Starting all services..."
@@ -91,3 +192,9 @@ down:
 
 logs:
 	@docker compose logs -f
+
+logs-prod:
+	@docker compose -f docker-compose.prod.yml logs -f
+
+status-prod:
+	@docker compose -f docker-compose.prod.yml ps
