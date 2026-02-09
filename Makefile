@@ -170,11 +170,11 @@ prepare-server-dev:
     fi
 	@echo "🏗️ Building Docker images..."
 	@docker compose -f docker-compose.dev.yml build --no-cache
-	@echo "📦 Installing backend dependencies (production)..."
+	@echo "📦 Installing backend dependencies (development)..."
 	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app composer install --no-dev --optimize-autoloader --no-interaction
 	@echo "🔑 Generating application key (if not exists)..."
 	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app php artisan key:generate --force
-	@echo "📦 Building frontend for production..."
+	@echo "📦 Building frontend for development..."
 	@docker run --rm -u "$(UID):$(GID)" -v "$(PWD)/frontend:/app" -w /app node:20-alpine sh -c "npm install && npm run build"
 	@echo "📁 Copying frontend build to public directory..."
 	@mkdir -p ./public/app
