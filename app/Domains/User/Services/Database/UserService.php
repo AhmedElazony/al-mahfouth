@@ -18,21 +18,24 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService implements UserServiceContract
 {
-	public function __construct()
-	{
-		parent::__construct(User::class);
-	}
+    public function __construct()
+    {
+        parent::__construct(User::class);
+    }
 
-	public function paginate(array $with = [], array $filters = [], int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
-	{
-		$query = $this->model()->with($with);
+    public function paginate(array $with = [], array $filters = [], int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+    {
+        $query = $this->model()->with($with);
 
-		if (auth()->user()->isTeacher()) {
-			$query->where('role', UserRolesEnum::STUDENT->value);
-		}
+        if (auth()->user()->isTeacher()) {
+            $query->where('role', UserRolesEnum::STUDENT->value);
+        }
 
-		return $query->latest()->paginate($perPage);
-	}	
+        return $query
+            ->filter($filters)
+            ->latest()
+            ->paginate($perPage, $columns);
+    }
 
     public function create(array $data): Model
     {
@@ -67,6 +70,7 @@ class UserService extends BaseService implements UserServiceContract
                 'email' => $data['email'] ?? $user->email,
                 'phone' => $data['phone'] ?? $user->phone,
                 'password' => isset($data['password']) ? Hash::make($data['password']) : $user->password,
+                'gender' => $data['gender'] ?? $user->gender,
             ]);
 
             $this->createOrUpdateRoleProfile(
@@ -79,17 +83,17 @@ class UserService extends BaseService implements UserServiceContract
         });
     }
 
-	public function delete(Model $user): void
-	{
-		if ($user->isSuperAdmin()) {
-			throw new \Exception(
-				__(ResponseMessageEnum::CANNOT_DELETE_SUPER_ADMIN->value),
-				Response::HTTP_FORBIDDEN
-			);
-		}
+    public function delete(Model $user): void
+    {
+        if ($user->isSuperAdmin()) {
+            throw new \Exception(
+                __(ResponseMessageEnum::CANNOT_DELETE_SUPER_ADMIN->value),
+                Response::HTTP_FORBIDDEN
+            );
+        }
 
-		$user->delete();
-	}
+        $user->delete();
+    }
 
     public function login(string $usernameOrEmail, string $password): array
     {

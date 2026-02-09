@@ -5,6 +5,7 @@ namespace App\Http\Api\V1\Requests\User;
 use App\Domains\Tahfidh\Enums\EducationalStagesEnum;
 use App\Domains\Tahfidh\Enums\GradesEnum;
 use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
+use App\Domains\User\Enums\UserGendersEnum;
 use App\Domains\User\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -32,6 +33,7 @@ class UpdateUserRequest extends FormRequest
             'email' => ['sometimes', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user->id)],
             'phone' => ['nullable', 'string', 'phone:EG'],
             'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
+			'gender' => ['sometimes', 'in:'.implode(',', UserGendersEnum::values())],
             'teacher_specialization' => ['sometimes', 'string', 'max:255'],
             'student_educational_stage' => ['sometimes', 'in:'.implode(',', EducationalStagesEnum::values())],
             'student_begin_memorizing_at' => ['sometimes', 'date', 'before_or_equal:today'],
