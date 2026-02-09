@@ -2,8 +2,6 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 
 // Layouts
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import DashboardLayout from '@/layouts/DashboardLayout.vue'
-import StudentLayout from '@/layouts/StudentLayout.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 
 const routes: RouteRecordRaw[] = [
