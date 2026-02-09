@@ -162,41 +162,47 @@ prepare-certbot:
 
 # Full server setup (development)
 prepare-server-dev:
-	@echo "🔧 Preparing server environment for development..."
+	@echo "🔧 Preparing server environment for development/testing..."
+	@echo ""
 	@echo "🔍 Checking .env file..."
 	@if [ ! -f .env ]; then \
         echo "❌ .env file not found! Please create one from .env.example"; \
         exit 1; \
     fi
+	@echo "🔍 Checking frontend/.env.production..."
+	@if [ ! -f frontend/.env.production ]; then \
+        echo "❌ frontend/.env.production not found!"; \
+        echo "   Create it with: VITE_API_BASE_URL=http://YOUR_SERVER_IP/api/v1"; \
+        exit 1; \
+    fi
 	@echo "🏗️ Building Docker images..."
-	@docker compose -f docker-compose.dev.yml build --no-cache
-	@echo "📦 Installing backend dependencies (development)..."
-	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app composer install --no-dev --optimize-autoloader --no-interaction
-	@echo "🔑 Generating application key (if not exists)..."
-	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app php artisan key:generate --force
-	@echo "📦 Building frontend for development..."
-	@docker run --rm -u "$(UID):$(GID)" -v "$(PWD)/frontend:/app" -w /app node:20-alpine sh -c "npm install && npm run build"
+	@docker compose -f docker-compose.dev.yml build
+	@echo "📦 Installing backend dependencies..."
+	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app composer install --optimize-autoloader --no-interaction
+	@echo "🔑 Generating application key..."
+	@docker compose -f docker-compose.dev.yml run --rm app php artisan key:generate --force
+	@echo "📦 Building frontend..."
+	@docker run --rm -v "$(PWD)/frontend:/app" -w /app node:20-alpine sh -c "npm install && npm run build"
 	@echo "📁 Copying frontend build to public directory..."
 	@mkdir -p ./public/app
 	@cp -r ./frontend/dist/* ./public/app/
-	@echo "🚀 Starting development services..."
+	@echo "🚀 Starting services..."
 	@docker compose -f docker-compose.dev.yml up -d
-	@echo "⏳ Waiting for services to be ready..."
-	@sleep 10
-	@echo "🗄️ Running database migrations..."
+	@echo "⏳ Waiting for database to be ready..."
+	@sleep 15
+	@echo "🗄️ Running database migrations and seeders..."
 	@docker compose -f docker-compose.dev.yml exec app php artisan migrate --seed --force
 	@echo "🔗 Creating storage link..."
 	@docker compose -f docker-compose.dev.yml exec app php artisan storage:link || true
-	@echo "⚡ Optimizing application..."
+	@echo "⚡ Caching configuration..."
 	@docker compose -f docker-compose.dev.yml exec app php artisan config:cache
 	@docker compose -f docker-compose.dev.yml exec app php artisan route:cache
 	@docker compose -f docker-compose.dev.yml exec app php artisan view:cache
 	@echo "🔧 Setting correct permissions..."
 	@docker compose -f docker-compose.dev.yml exec app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 	@echo ""
-	@echo "✅ Development environment ready!"
-	@echo ""
-	@echo "🌐 Access your application at: http://$$(curl -s ifconfig.me)"
+	@echo "✅ Server development environment ready!"
+	@echo "🌐 Access at: http://$$(curl -s ifconfig.me 2>/dev/null || echo 'YOUR_SERVER_IP')"
 
 # Deploy/Update development
 deploy-dev:
