@@ -1,3 +1,5 @@
+import { UserRole } from "@/constants"
+
 // ============= Models ============ //
 export interface User {
     id: number
@@ -96,7 +98,7 @@ export interface GroupStudent {
     }
 }
 
-export type UserRole = 'super_admin' | 'admin' | 'teacher' | 'student'
+export type UserRole = typeof UserRole[keyof typeof UserRole]
 
 export type UserRoleValue = User['role']['value']
 

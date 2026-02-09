@@ -1,4 +1,27 @@
 /**
+ * User Roles
+ */
+export const UserRole = {
+  SUPER_ADMIN: 'super_admin',
+  ADMIN: 'admin',
+  TEACHER: 'teacher',
+  STUDENT: 'student',
+} as const
+
+export type UserRoleType = typeof UserRole[keyof typeof UserRole]
+
+export const UserRoleLabels: Record<UserRoleType, string> = {
+  [UserRole.SUPER_ADMIN]: 'مشرف عام',
+  [UserRole.ADMIN]: 'مشرف',
+  [UserRole.TEACHER]: 'معلم',
+  [UserRole.STUDENT]: 'طالب',
+}
+
+export const UserRoleOptions = Object.entries(UserRoleLabels).map(
+  ([value, label]) => ({ value, label })
+)
+
+/**
  * Memorizing Amount Options
  */
 export const MemorizingAmount = {
