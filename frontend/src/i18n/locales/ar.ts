@@ -1,5 +1,3 @@
-import { all } from "axios";
-
 export default {
 	// App
 	app: {
@@ -31,7 +29,9 @@ export default {
 		forgotPassword: 'نسيت كلمة المرور؟',
 		loginButton: 'دخول',
 		loginTitle: 'مرحباً بك في منصة المحفوظ',
-		loginSubtitle: 'سجل دخولك للمتابعة'
+		loginSubtitle: 'سجل دخولك للمتابعة',
+		noAccount: 'ليس لديك حساب؟',
+		contactAdmin: 'تواصل مع المشرف لإنشاء حساب',
 	},
 
 	// Dashboard
@@ -238,8 +238,24 @@ export default {
 		language: 'اللغة'
 	},
 
-    // Common
-    common: {
+	landing: {
+		title: 'مسجد المصطفى - منصة المحفوظ',
+		subtitle: 'منصة متكاملة لإدارة حلقات التحفيظ ومتابعة الطلاب',
+		getStarted: 'ابدأ الآن',
+		login: 'تسجيل الدخول',
+		dashboard: 'لوحة التحكم',
+		goToDashboard: 'اذهب إلى لوحة التحكم',
+		feature1Title: 'إدارة الطلاب',
+		feature1Desc: 'متابعة شاملة لجميع الطلاب والمعلمين',
+		feature2Title: 'تقارير يومية',
+		feature2Desc: 'تسجيل التقدم والحضور بشكل منظم',
+		feature3Title: 'إحصائيات دقيقة',
+		feature3Desc: 'تحليل الأداء ومتابعة التطور',
+		footer: '© 2026 منصة المحفوظ. جميع الحقوق محفوظة.'
+	},
+
+	// Common
+	common: {
 		create: 'إنشاء',
 		update: 'تحديث',
 		save: 'حفظ',

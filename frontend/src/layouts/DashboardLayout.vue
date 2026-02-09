@@ -6,7 +6,7 @@
 				<div class="flex items-center justify-between h-16">
 					<!-- Logo -->
 					<div class="flex items-center gap-4">
-						<router-link to="/"
+						<router-link to="/dashboard"
 							class="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200 transition-colors font-bold text-lg">
 							<h1 class="text-xl font-bold text-primary-600">{{ $t('app.name') }}</h1>
 						</router-link>
@@ -14,14 +14,14 @@
 
 					<!-- Desktop Navigation -->
 					<nav class="hidden md:flex items-center gap-6">
-						<router-link to="/"
+						<router-link to="/dashboard" exact
 							class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
 							active-class="!text-primary-600 dark:!text-primary-400 font-medium">
 							{{ $t('nav.dashboard') }}
 						</router-link>
 
 						<!-- Admin only: Users Management -->
-						<router-link v-if="authStore.isAdmin" to="/users"
+						<router-link v-if="authStore.isAdmin" to="/dashboard/users"
 							class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
 							active-class="!text-primary-600 dark:!text-primary-400 font-medium">
 							{{ $t('nav.users') }}
@@ -29,7 +29,7 @@
 
 						<!-- Admin/Teacher only links -->
 						<template v-if="authStore.isAdmin || authStore.isTeacher">
-							<router-link to="/groups"
+							<router-link to="/dashboard/groups"
 								class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
 								active-class="!text-primary-600 dark:!text-primary-400 font-medium">
 								{{ $t('nav.groups') }}
@@ -70,7 +70,7 @@
 							<!-- User Dropdown -->
 							<div v-if="showUserMenu"
 								class="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
-								<router-link to="/settings" @click="closeUserMenu"
+								<router-link to="/dashboard/settings" @click="closeUserMenu"
 									class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
 									<i class="pi pi-cog"></i>
 									{{ $t('nav.settings') }}
@@ -98,7 +98,7 @@
 					leave-to-class="opacity-0 -translate-y-2">
 					<nav v-if="showMobileMenu"
 						class="md:hidden pb-4 pt-2 space-y-1 border-t border-gray-200 dark:border-gray-700 mt-2">
-						<router-link to="/" @click="closeMobileMenu"
+						<router-link to="/dashboard" @click="closeMobileMenu"
 							class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
 							active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">
 							<i class="pi pi-home mr-2"></i>
@@ -106,7 +106,7 @@
 						</router-link>
 
 						<!-- Admin only: Users Management -->
-						<router-link v-if="authStore.isAdmin" to="/users" @click="closeMobileMenu"
+						<router-link v-if="authStore.isAdmin" to="/dashboard/users" @click="closeMobileMenu"
 							class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
 							active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">
 							<i class="pi pi-users mr-2"></i>
@@ -115,7 +115,7 @@
 
 						<!-- Admin/Teacher only links -->
 						<template v-if="authStore.isAdmin || authStore.isTeacher">
-							<router-link to="/groups" @click="closeMobileMenu"
+							<router-link to="/dashboard/groups" @click="closeMobileMenu"
 								class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
 								active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">
 								<i class="pi pi-th-large mr-2"></i>
@@ -124,7 +124,7 @@
 						</template>
 
 						<!-- Settings -->
-						<router-link to="/settings" @click="closeMobileMenu"
+						<router-link to="/dashboard/settings" @click="closeMobileMenu"
 							class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
 							active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">
 							<i class="pi pi-cog mr-2"></i>

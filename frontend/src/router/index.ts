@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
 
 // Layouts
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
 const routes: RouteRecordRaw[] = [
+	// Public Home 
+	{
+		path: '/',
+		name: 'landing',
+		component: () => import('@/pages/guest/LandingPage.vue'),
+	},
+
 	// Auth Routes
 	{
 		path: '/auth',
@@ -22,7 +28,7 @@ const routes: RouteRecordRaw[] = [
 
 	// Dashboard Routes (Protected)
 	{
-		path: '/',
+		path: '/dashboard',
 		component: DashboardLayout,
 		meta: { requiresAuth: true },
 		children: [

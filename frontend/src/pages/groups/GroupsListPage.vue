@@ -96,7 +96,7 @@
 								{{ group.id }}
 							</td>
 							<td class="px-6 py-4 whitespace-nowrap">
-								<router-link :to="`/groups/${group.id}`"
+								<router-link :to="`groups/${group.id}`"
 									class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline">
 									{{ group.name }}
 								</router-link>
