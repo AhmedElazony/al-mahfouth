@@ -15,6 +15,7 @@ export default {
 		groupInfo: 'معلومات المجموعة',
 		reports: 'التقارير',
 		settings: 'الإعدادات',
+		community: 'المجتمع',
 		logout: 'تسجيل الخروج'
 	},
 
@@ -137,7 +138,25 @@ export default {
 			proficient: 'متقن',
 			good: 'جيد',
 			needsImprovement: 'يحتاج تحسين'
-		}
+		},
+
+		myHome: 'الرئيسة',
+		myGroups: 'مجموعاتي',
+		myInfo: 'معلوماتي',
+		myProgress: 'تقدمي',
+		welcome: 'مرحباً',
+		homeSubtitle: 'تابع تقدمك في حفظ القرآن الكريم',
+		myGroupsSubtitle: 'المجموعات التي انضممت إليها',
+		progressSubtitle: 'تتبع تقدمك في الحفظ والمراجعة',
+		quickActions: 'إجراءات سريعة',
+		viewGroups: 'مجموعاتي',
+		viewGroupsDesc: 'عرض المجموعات المسجل فيها',
+		viewProgress: 'تقدمي',
+		viewProgressDesc: 'متابعة التقدم في الحفظ',
+		settingsDesc: 'إدارة الحساب والإعدادات',
+		noGroups: 'لم تسجل في أي مجموعة بعد',
+		groupDetails: 'تفاصيل المجموعة',
+		myStatus: 'حالتي في المجموعة',
 	},
 
 	// Teachers
@@ -306,5 +325,11 @@ export default {
 		admin: 'مشرف',
 		teacher: 'معلم',
 		student: 'طالب'
+	},
+
+	community: {
+		title: 'المجتمع',
+		subtitle: 'تواصل مع طلاب ومعلمين آخرين، شارك تجاربك، واطلب النصائح',
+		comingSoon: 'هذه الميزة قيد التطوير حالياً. ترقبوا إطلاقها قريباً!'
 	}
 }

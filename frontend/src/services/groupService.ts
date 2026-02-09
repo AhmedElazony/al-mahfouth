@@ -132,6 +132,14 @@ export const groupService = {
   async removeStudent(groupId: number, studentId: number): Promise<ApiResponse<null>> {
     const response = await api.delete(`/groups/${groupId}/students/${studentId}`)
     return response.data
+  },
+
+  /**
+   * Get student's groups
+   */
+  async getStudentGroups(): Promise<ApiResponse<any[]>> {
+    const response = await api.get('/student/groups')
+    return response.data
   }
 }
 

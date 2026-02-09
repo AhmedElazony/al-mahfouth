@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 // Layouts
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
+import StudentLayout from '@/layouts/StudentLayout.vue'
 
 const routes: RouteRecordRaw[] = [
 	// Public Home 
@@ -30,7 +31,7 @@ const routes: RouteRecordRaw[] = [
 	{
 		path: '/dashboard',
 		component: DashboardLayout,
-		meta: { requiresAuth: true },
+		meta: { requiresAuth: true, roles: ['super_admin', 'admin', 'teacher'] },
 		children: [
 			{
 				path: '',
@@ -64,6 +65,50 @@ const routes: RouteRecordRaw[] = [
 		]
 	},
 
+	// Student Routes
+	{
+		path: '/student',
+		component: StudentLayout,
+		meta: { requiresAuth: true, roles: ['student'] },
+		children: [
+			{
+				path: '',
+				name: 'student-home',
+				component: () => import('@/pages/student/StudentHomePage.vue')
+			},
+			{
+				path: 'groups',
+				name: 'student-groups',
+				component: () => import('@/pages/student/StudentGroupsPage.vue')
+			},
+			// {
+			// 	path: 'progress',
+			// 	name: 'student-progress',
+			// 	component: () => import('@/pages/student/StudentProgressPage.vue')
+			// },
+			{
+				path: 'settings',
+				name: 'student-settings',
+				component: () => import('@/pages/settings/SettingsPage.vue')
+			}
+		]
+	},
+
+	{
+		path: '/community',
+		name: 'community',
+		component: DashboardLayout,
+		meta: { requiresAuth: true },
+		children: [
+			{
+				path: '',
+				name: 'home',
+				component: () => import('@/pages/community/CommunityPage.vue'),
+				meta: { requiresAuth: true }
+			}
+		]
+	},
+
 	// 404
 	{
 		path: '/:pathMatch(.*)*',
@@ -79,27 +124,45 @@ const router = createRouter({
 
 // Navigation Guards
 router.beforeEach(async (to, _from, next) => {
-	// Dynamically import to avoid circular dependency
-	const { useAuthStore } = await import('@/stores/auth')
-	const authStore = useAuthStore()
+    const { useAuthStore } = await import('@/stores/auth')
+    const authStore = useAuthStore()
 
-	// Check token directly from localStorage as fallback
-	const hasToken = !!localStorage.getItem('token')
-	const isAuthenticated = authStore.isAuthenticated || hasToken
-	console.log('Auth Guard:', { isAuthenticated, to: to.fullPath })
-	// Check if route requires authentication
-	if (to.meta.requiresAuth && !isAuthenticated) {
-		// Redirect to login with return URL
-		next({ name: 'login', query: { redirect: to.fullPath } })
-	}
-	// Check if route is for guests only (like login page)
-	else if (to.meta.guest && isAuthenticated) {
-		// Redirect to dashboard (home)
-		next({ name: 'dashboard' })
-	}
-	else {
-		next()
-	}
+    const hasToken = !!localStorage.getItem('token')
+    const isAuthenticated = authStore.isAuthenticated || hasToken
+    
+    // Check if route requires authentication
+    if (to.meta.requiresAuth && !isAuthenticated) {
+        next({ name: 'login', query: { redirect: to.fullPath } })
+    }
+    // Check role-based access
+    else if (to.meta.roles && isAuthenticated) {
+        const userRole = authStore.user?.role?.value
+        const allowedRoles = to.meta.roles as string[]
+        
+        if (!userRole || !allowedRoles.includes(userRole)) {
+            // Redirect to appropriate dashboard based on role
+            if (userRole === 'student') {
+                next({ name: 'student-home' })
+            } else {
+                next({ name: 'dashboard' })
+            }
+        } else {
+            next()
+        }
+    }
+    // Check if route is for guests only
+    else if (to.meta.guest && isAuthenticated) {
+        // Redirect based on user role
+        const userRole = authStore.user?.role?.value
+        if (userRole === 'student') {
+            next({ name: 'student-home' })
+        } else {
+            next({ name: 'dashboard' })
+        }
+    }
+    else {
+        next()
+    }
 })
 
 export default router

@@ -35,6 +35,13 @@
 								{{ $t('nav.groups') }}
 							</router-link>
 						</template>
+						<template>
+							<router-link to="/community"
+								class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+								active-class="!text-primary-600 dark:!text-primary-400 font-medium">
+								{{ $t('nav.community') }}
+							</router-link>
+						</template>
 					</nav>
 
 					<!-- Right Side: User Menu & Mobile Menu Toggle -->
