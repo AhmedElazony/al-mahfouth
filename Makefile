@@ -177,7 +177,7 @@ prepare-server-dev:
     fi
 	@echo "🏗️ Building Docker images..."
 	@docker compose -f docker-compose.dev.yml build
-	@echo "📦 Installing backend dependencies..."
+	@echo "📦 Installing backend dependencies (WITH dev packages for testing)..."
 	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app composer install --optimize-autoloader --no-interaction
 	@echo "🔑 Generating application key..."
 	@docker compose -f docker-compose.dev.yml run --rm app php artisan key:generate --force
@@ -190,6 +190,9 @@ prepare-server-dev:
 	@docker compose -f docker-compose.dev.yml up -d
 	@echo "⏳ Waiting for database to be ready..."
 	@sleep 15
+	@echo "🔧 Fixing permissions inside container..."
+	@docker compose -f docker-compose.dev.yml exec app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+	@docker compose -f docker-compose.dev.yml exec app chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 	@echo "🗄️ Running database migrations and seeders..."
 	@docker compose -f docker-compose.dev.yml exec app php artisan migrate --seed --force
 	@echo "🔗 Creating storage link..."
@@ -198,8 +201,6 @@ prepare-server-dev:
 	@docker compose -f docker-compose.dev.yml exec app php artisan config:cache
 	@docker compose -f docker-compose.dev.yml exec app php artisan route:cache
 	@docker compose -f docker-compose.dev.yml exec app php artisan view:cache
-	@echo "🔧 Setting correct permissions..."
-	@docker compose -f docker-compose.dev.yml exec app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 	@echo ""
 	@echo "✅ Server development environment ready!"
 	@echo "🌐 Access at: http://$$(curl -s ifconfig.me 2>/dev/null || echo 'YOUR_SERVER_IP')"
