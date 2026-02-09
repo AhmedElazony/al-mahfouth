@@ -24,7 +24,7 @@ return new class extends Migration
                 SUM(CASE WHEN s.is_active = false THEN 1 ELSE 0 END) AS inactive_count
             FROM groups g
             LEFT JOIN group_student gs ON g.id = gs.group_id
-            LEFT JOIN students s ON gs.student_id = s.id
+            LEFT JOIN students s ON gs.student_id = s.user_id
             GROUP BY g.id
         SQL);
     }
