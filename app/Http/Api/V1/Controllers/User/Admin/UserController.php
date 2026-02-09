@@ -20,14 +20,14 @@ class UserController extends ApiController
     {
         try {
             $filters = request()->only([
-				'per_page',
-				'q',
-				'role',
-				'gender'
-			]);
+                'per_page',
+                'q',
+                'role',
+                'gender',
+            ]);
 
             $users = $this->userService
-				->paginate([], $filters, $filters['per_page'] ?? 15);
+                ->paginate([], $filters, $filters['per_page'] ?? 15);
 
             return $this->paginated(
                 $users,
