@@ -19,11 +19,11 @@ class StudentTajweedResource extends JsonResource
         return [
             'id' => $this->id,
             'recitation_level' => [
-                    'for_view' => GradesEnum::from($this->recitation_level)->label(),
+                    'for_view' => isset($this->recitation_level) ? GradesEnum::from($this->recitation_level)->label() : null,
                     'value' => $this->recitation_level,
                 ],
                 'learning_status' => [
-                    'for_view' => LearningStatusesEnum::from($this->learning_status)->label(),
+                    'for_view' => isset($this->learning_status) ? LearningStatusesEnum::from($this->learning_status)->label() : null,
                     'value' => $this->learning_status,
                 ],
                 'notes' => $this->notes,

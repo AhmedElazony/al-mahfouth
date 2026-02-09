@@ -13,8 +13,8 @@ return new class extends Migration
         Schema::create('student_tajweed', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students', 'user_id')->cascadeOnDelete();
-            $table->enum('recitation_level', GradesEnum::values());
-            $table->enum('learning_status', LearningStatusesEnum::values());
+            $table->enum('recitation_level', GradesEnum::values())->nullable();
+            $table->enum('learning_status', LearningStatusesEnum::values())->nullable();
             // TODO: add tuhfetul_atfal_memorized, and jazrieah_memorized columns later
             $table->text('notes')->nullable();
             $table->timestamps();
