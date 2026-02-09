@@ -63,12 +63,6 @@
 					</div>
 				</div>
 
-				<!-- Description - Hide on small screens if too long -->
-				<p v-if="group.description"
-					class="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 md:line-clamp-none">
-					{{ group.description }}
-				</p>
-
 				<!-- Schedule - Horizontal scroll on mobile -->
 				<div v-if="group.schedule?.length" class="mt-4">
 					<h3 class="text-xs md:text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
