@@ -1,3 +1,5 @@
+import { StudentStatus } from "@/constants";
+
 export default {
 	// App
 	app: {
@@ -157,6 +159,8 @@ export default {
 		noGroups: 'لم تسجل في أي مجموعة بعد',
 		groupDetails: 'تفاصيل المجموعة',
 		myStatus: 'حالتي في المجموعة',
+		studentStatus: 'حالة الطالب',
+
 	},
 
 	// Teachers

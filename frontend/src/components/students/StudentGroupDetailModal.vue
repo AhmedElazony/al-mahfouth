@@ -7,7 +7,7 @@
         <!-- Header -->
         <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div>
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ group.name }}</h2>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ group.group.name }}</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ $t('students.groupDetails') }}</p>
           </div>
           <button @click="$emit('close')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -23,12 +23,11 @@
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
                 <span class="text-primary-600 dark:text-primary-400 font-semibold">
-                  {{ group.teacher?.name?.charAt(0).toUpperCase() }}
+                  {{ group.group.teacher?.name?.charAt(0).toUpperCase() }}
                 </span>
               </div>
               <div>
-                <p class="font-medium text-gray-900 dark:text-white">{{ group.teacher?.name }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ group.teacher?.email }}</p>
+                <p class="font-medium text-gray-900 dark:text-white">{{ group.group.teacher?.name }}</p>
               </div>
             </div>
           </div>
@@ -38,7 +37,7 @@
             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">{{ $t('students.myStatus') }}</h3>
             <div class="space-y-3">
               <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('students.studentStatus') }}</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('students.myStatus') }}</span>
                 <span 
                   :class="getStatusBadgeClass(group.student_status)"
                   class="px-3 py-1 text-sm rounded-full"
@@ -47,7 +46,7 @@
                 </span>
               </div>
               <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('students.memorizingAmount') }}</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('students.memorization.amount') }}</span>
                 <span class="text-sm font-medium text-gray-900 dark:text-white">
                   {{ getMemorizingAmountLabel(group.memorizing_amount) }}
                 </span>
@@ -62,11 +61,11 @@
           </div>
 
           <!-- Schedule -->
-          <div v-if="group.schedule?.length">
+          <div v-if="group.group.schedule?.length">
             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">{{ $t('groups.schedule') }}</h3>
             <div class="space-y-2">
               <div 
-                v-for="(item, idx) in group.schedule" 
+                v-for="(item, idx) in group.group.schedule" 
                 :key="idx"
                 class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
               >
@@ -82,28 +81,28 @@
 
           <!-- Group Info -->
           <div>
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">{{ $t('groups.groupInfo') }}</h3>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">{{ $t('nav.groupInfo') }}</h3>
             <div class="space-y-3">
               <div class="flex items-center justify-between">
                 <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('groups.type') }}</span>
                 <span 
-                  :class="group.is_online 
+                  :class="group.group.is_online 
                     ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' 
                     : 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'"
                   class="px-3 py-1 text-sm rounded-full"
                 >
-                  {{ group.is_online ? $t('groups.online') : $t('groups.offline') }}
+                  {{ group.group.is_online ? $t('groups.online') : $t('groups.offline') }}
                 </span>
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('common.status') }}</span>
                 <span 
-                  :class="group.is_active 
+                  :class="group.group.is_active 
                     ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' 
                     : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'"
                   class="px-3 py-1 text-sm rounded-full"
                 >
-                  {{ group.is_active ? $t('common.active') : $t('common.inactive') }}
+                  {{ group.group.is_active ? $t('common.active') : $t('common.inactive') }}
                 </span>
               </div>
             </div>
@@ -139,17 +138,26 @@ defineEmits<{
   close: []
 }>()
 
-function getDayLabel(day: string): string {
-  const dayValue = typeof day === 'object' ? (day as any).value : day
+function getDayLabel(day: string | { value: string; for_view: string } | null | undefined): string {
+  if (!day) return '-'
+  if (typeof day === 'object' && day !== null) {
+    return day.for_view
+  }
+  const dayValue = typeof day === 'string' ? day : ''
   return getEnumLabel(WeekDayLabels, dayValue?.toLowerCase())
 }
 
-function formatTime(time: string): string {
+function formatTime(time: string | { value: string; for_view: string } | null | undefined): string {
   if (!time) return ''
-  if (typeof time === 'object') {
-    time = (time as any).value || ''
+  
+  // If it's already formatted from backend
+  if (typeof time === 'object' && time !== null) {
+    return time.for_view
   }
-  const parts = time.split(':')
+  
+  // Otherwise format it
+  const timeValue = typeof time === 'string' ? time : ''
+  const parts = timeValue.split(':')
   if (parts.length >= 2) {
     const hours = parseInt(parts[0])
     const minutes = parts[1]
@@ -157,7 +165,7 @@ function formatTime(time: string): string {
     const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours
     return `${displayHours}:${minutes} ${period}`
   }
-  return time
+  return timeValue
 }
 
 function formatDate(date: string | null | undefined): string {
@@ -186,7 +194,13 @@ function getMemorizingAmountLabel(amount: string | null | undefined): string {
 }
 
 function getStatusBadgeClass(status: string | null | undefined): string {
+  // Handle null/undefined status
+  if (!status) {
+    return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'
+  }
+  
   const statusValue = typeof status === 'object' ? (status as any).value : status
+  
   switch (statusValue) {
     case StudentStatus.COMMITTED:
       return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'

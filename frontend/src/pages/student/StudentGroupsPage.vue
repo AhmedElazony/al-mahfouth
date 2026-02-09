@@ -19,70 +19,70 @@
     <!-- Groups List -->
     <div v-else-if="groups.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <div 
-        v-for="group in groups" 
-        :key="group.id"
+        v-for="item in groups" 
+        :key="item.group.id"
         class="card p-6 hover:shadow-lg transition-shadow cursor-pointer"
-        @click="viewGroup(group)"
+        @click="viewGroup(item)"
       >
         <!-- Group Header -->
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              {{ group.name }}
+              {{ item.group.name }}
             </h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">
               <i class="pi pi-user text-xs mr-1"></i>
-              {{ group.teacher?.name || '-' }}
+              {{ item.group.teacher?.name || '-' }}
             </p>
           </div>
           <span 
-            :class="group.is_active 
+            :class="item.group.is_active 
               ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' 
               : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'"
             class="px-2 py-1 text-xs rounded-full"
           >
-            {{ group.is_active ? $t('common.active') : $t('common.inactive') }}
+            {{ item.group.is_active ? $t('common.active') : $t('common.inactive') }}
           </span>
         </div>
 
         <!-- Student Status in Group -->
         <div class="space-y-2 mb-4">
           <div class="flex items-center justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">{{ $t('students.studentStatus') }}:</span>
+            <span class="text-gray-600 dark:text-gray-400">{{ $t('students.myStatus') }}:</span>
             <span 
-              :class="getStatusBadgeClass(group.student_status)"
+              :class="getStatusBadgeClass(item.student_status)"
               class="px-2 py-1 text-xs rounded-full"
             >
-              {{ getStatusLabel(group.student_status) }}
+              {{ getStatusLabel(item.student_status) }}
             </span>
           </div>
           <div class="flex items-center justify-between text-sm">
-            <span class="text-gray-600 dark:text-gray-400">{{ $t('students.memorizingAmount') }}:</span>
+            <span class="text-gray-600 dark:text-gray-400">{{ $t('students.memorization.amount') }}:</span>
             <span class="font-medium text-gray-900 dark:text-white">
-              {{ getMemorizingAmountLabel(group.memorizing_amount) }}
+              {{ getMemorizingAmountLabel(item.memorizing_amount) }}
             </span>
           </div>
           <div class="flex items-center justify-between text-sm">
             <span class="text-gray-600 dark:text-gray-400">{{ $t('groups.joinedAt') }}:</span>
             <span class="text-gray-900 dark:text-white">
-              {{ formatDate(group.joined_at) }}
+              {{ formatDate(item.joined_at) }}
             </span>
           </div>
         </div>
 
         <!-- Schedule -->
-        <div v-if="group.schedule?.length" class="pt-3 border-t border-gray-200 dark:border-gray-700">
+        <div v-if="item.group.schedule?.length" class="pt-3 border-t border-gray-200 dark:border-gray-700">
           <p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">{{ $t('groups.schedule') }}:</p>
           <div class="flex flex-wrap gap-1">
             <span 
-              v-for="(item, idx) in group.schedule.slice(0, 2)" 
+              v-for="(scheduleItem, idx) in item.group.schedule.slice(0, 2)" 
               :key="idx"
               class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded text-xs"
             >
-              {{ getDayLabel(item.day) }} {{ formatTime(item.start_time) }}
+              {{ getDayLabel(scheduleItem.day) }} {{ formatTime(scheduleItem.start_time) }}
             </span>
-            <span v-if="group.schedule.length > 2" class="px-2 py-1 text-xs text-gray-400">
-              +{{ group.schedule.length - 2 }}
+            <span v-if="item.group.schedule.length > 2" class="px-2 py-1 text-xs text-gray-400">
+              +{{ item.group.schedule.length - 2 }}
             </span>
           </div>
         </div>
@@ -92,7 +92,7 @@
     <!-- Empty State -->
     <div v-else class="card p-12 text-center">
       <i class="pi pi-users text-4xl text-gray-300 dark:text-gray-600 mb-4 block"></i>
-      <p class="text-gray-500 dark:text-gray-400">{{ $t('student.noGroups') }}</p>
+      <p class="text-gray-500 dark:text-gray-400">{{ $t('students.noGroups') }}</p>
     </div>
 
     <!-- Group Detail Modal -->
@@ -106,8 +106,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import type { Group } from '@/types/models'
 import groupService from '@/services/groupService'
 import StudentGroupDetailModal from '@/components/students/StudentGroupDetailModal.vue'
 import { 
@@ -118,7 +116,6 @@ import {
   StudentStatus 
 } from '@/constants'
 
-const router = useRouter()
 const loading = ref(true)
 const error = ref<string | null>(null)
 const groups = ref<any[]>([])
@@ -138,21 +135,30 @@ async function fetchGroups() {
   }
 }
 
-function viewGroup(group: any) {
-  selectedGroup.value = group
+function viewGroup(item: any) {
+  selectedGroup.value = item
 }
 
-function getDayLabel(day: string): string {
-  const dayValue = typeof day === 'object' ? (day as any).value : day
+function getDayLabel(day: string | { value: string; for_view: string } | null | undefined): string {
+  if (!day) return '-'
+  if (typeof day === 'object' && day !== null) {
+    return day.for_view
+  }
+  const dayValue = typeof day === 'string' ? day : ''
   return getEnumLabel(WeekDayLabels, dayValue?.toLowerCase())
 }
 
-function formatTime(time: string): string {
+function formatTime(time: string | { value: string; for_view: string } | null | undefined): string {
   if (!time) return ''
-  if (typeof time === 'object') {
-    time = (time as any).value || ''
+  
+  // If it's already formatted from backend
+  if (typeof time === 'object' && time !== null) {
+    return time.for_view
   }
-  const parts = time.split(':')
+  
+  // Otherwise format it
+  const timeValue = typeof time === 'string' ? time : ''
+  const parts = timeValue.split(':')
   if (parts.length >= 2) {
     const hours = parseInt(parts[0])
     const minutes = parts[1]
@@ -160,7 +166,7 @@ function formatTime(time: string): string {
     const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours
     return `${displayHours}:${minutes} ${period}`
   }
-  return time
+  return timeValue
 }
 
 function formatDate(date: string | null | undefined): string {
@@ -189,7 +195,13 @@ function getMemorizingAmountLabel(amount: string | null | undefined): string {
 }
 
 function getStatusBadgeClass(status: string | null | undefined): string {
+  // Handle null/undefined status
+  if (!status) {
+    return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400'
+  }
+  
   const statusValue = typeof status === 'object' ? (status as any).value : status
+  
   switch (statusValue) {
     case StudentStatus.COMMITTED:
       return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
