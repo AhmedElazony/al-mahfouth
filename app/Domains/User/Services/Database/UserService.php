@@ -83,6 +83,19 @@ class UserService extends BaseService implements UserServiceContract
         });
     }
 
+    public function updateProfile(array $data): User
+    {
+        $user = auth()->user();
+        $user->update([
+            'name' => $data['name'] ?? $user->name,
+            'username' => $data['username'] ?? $user->username,
+            'phone' => $data['phone'] ?? $user->phone,
+            'password' => isset($data['password']) ? Hash::make($data['password']) : $user->password,
+        ]);
+
+        return $user;
+    }
+
     public function delete(Model $user): void
     {
         if ($user->isSuperAdmin()) {
@@ -92,12 +105,12 @@ class UserService extends BaseService implements UserServiceContract
             );
         }
 
-		if ($user->id === auth()->id()) {
-			throw new \Exception(
-				__(ResponseMessageEnum::CANNOT_DELETE_OWN_ACCOUNT->value),
-				Response::HTTP_FORBIDDEN
-			);
-		}
+        if ($user->id === auth()->id()) {
+            throw new \Exception(
+                __(ResponseMessageEnum::CANNOT_DELETE_OWN_ACCOUNT->value),
+                Response::HTTP_FORBIDDEN
+            );
+        }
 
         $user->delete();
     }
