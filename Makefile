@@ -75,8 +75,6 @@ prepare-server:
 	@docker compose -f docker-compose.prod.yml run --rm -u "$(UID):$(GID)" app composer install --no-dev --optimize-autoloader --no-interaction
 	@echo "🔑 Generating application key (if not exists)..."
 	@docker compose -f docker-compose.prod.yml run --rm -u "$(UID):$(GID)" app php artisan key:generate --force
-	@echo "🔑 Generating JWT secret (if not exists)..."
-	@docker compose -f docker-compose.prod.yml run --rm -u "$(UID):$(GID)" app php artisan jwt:secret --force
 	@echo "📦 Building frontend for production..."
 	@docker compose run --rm -u "${UID}:${GID}" -w /var/www/html/frontend frontend npm install --production=false
 	@docker compose run --rm -u "${UID}:${GID}" -w /var/www/html/frontend frontend npm run build
@@ -96,7 +94,7 @@ prepare-server:
 	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan route:cache
 	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan view:cache
 	@echo "🔧 Setting correct permissions..."
-	@docker compose -f docker-compose.prod.yml exec app chown -R www-data:www-data storage bootstrap/cache
+	@make fix-permissions
 	@echo "✅ Production environment ready!"
 	@echo ""
 	@echo "📝 Next steps:"
@@ -144,7 +142,7 @@ deploy-prod:
 	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan route:cache
 	@docker compose -f docker-compose.prod.yml exec -u "$(UID):$(GID)" app php artisan view:cache
 	@echo "🔄 Restarting services..."
-	@docker compose -f docker-compose.prod.yml restart app queue scheduler
+	@docker compose -f docker-compose.prod.yml restart app
 	@echo "✅ Bringing application back online..."
 	@docker compose -f docker-compose.prod.yml exec app php artisan up
 	@echo "🎉 Deployment completed!"
@@ -161,6 +159,71 @@ setup-nginx-prod:
 prepare-certbot:
 	@mkdir -p docker/nginx/certbot
 	@echo "✅ Certbot directory created"
+
+# Full server setup (development)
+prepare-server-dev:
+	@echo "🔧 Preparing server environment for development..."
+	@echo "🔍 Checking .env file..."
+	@if [ ! -f .env ]; then \
+        echo "❌ .env file not found! Please create one from .env.example"; \
+        exit 1; \
+    fi
+	@echo "🏗️ Building Docker images..."
+	@docker compose -f docker-compose.dev.yml build --no-cache
+	@echo "📦 Installing backend dependencies (production)..."
+	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app composer install --no-dev --optimize-autoloader --no-interaction
+	@echo "🔑 Generating application key (if not exists)..."
+	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app php artisan key:generate --force
+	@echo "📦 Building frontend for production..."
+	@docker run --rm -u "$(UID):$(GID)" -v "$(PWD)/frontend:/app" -w /app node:20-alpine sh -c "npm install && npm run build"
+	@echo "📁 Copying frontend build to public directory..."
+	@mkdir -p ./public/app
+	@cp -r ./frontend/dist/* ./public/app/
+	@echo "🚀 Starting development services..."
+	@docker compose -f docker-compose.dev.yml up -d
+	@echo "⏳ Waiting for services to be ready..."
+	@sleep 10
+	@echo "🗄️ Running database migrations..."
+	@docker compose -f docker-compose.dev.yml exec app php artisan migrate --seed --force
+	@echo "🔗 Creating storage link..."
+	@docker compose -f docker-compose.dev.yml exec app php artisan storage:link || true
+	@echo "⚡ Optimizing application..."
+	@docker compose -f docker-compose.dev.yml exec app php artisan config:cache
+	@docker compose -f docker-compose.dev.yml exec app php artisan route:cache
+	@docker compose -f docker-compose.dev.yml exec app php artisan view:cache
+	@echo "🔧 Setting correct permissions..."
+	@docker compose -f docker-compose.dev.yml exec app chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+	@echo ""
+	@echo "✅ Development environment ready!"
+	@echo ""
+	@echo "🌐 Access your application at: http://$$(curl -s ifconfig.me)"
+
+# Deploy/Update development
+deploy-dev:
+	@echo "🚀 Deploying updates to development..."
+	@echo "🛑 Putting application in maintenance mode..."
+	@docker compose -f docker-compose.dev.yml exec app php artisan down
+	@echo "📥 Pulling latest changes..."
+	@git pull origin develop
+	@echo "🏗️ Rebuilding images..."
+	@docker compose -f docker-compose.dev.yml build
+	@echo "📦 Updating dependencies..."
+	@docker compose -f docker-compose.dev.yml run --rm -u "$(UID):$(GID)" app composer install --no-dev --optimize-autoloader --no-interaction
+	@echo "🗄️ Running migrations..."
+	@docker compose -f docker-compose.dev.yml exec app php artisan migrate --force
+	@echo "📦 Rebuilding frontend..."
+	@docker run --rm -u "$(UID):$(GID)" -v "$(PWD)/frontend:/app" -w /app node:20-alpine sh -c "npm install && npm run build"
+	@mkdir -p ./public/app
+	@cp -r ./frontend/dist/* ./public/app/
+	@echo "⚡ Optimizing..."
+	@docker compose -f docker-compose.dev.yml exec app php artisan config:cache
+	@docker compose -f docker-compose.dev.yml exec app php artisan route:cache
+	@docker compose -f docker-compose.dev.yml exec app php artisan view:cache
+	@echo "🔄 Restarting services..."
+	@docker compose -f docker-compose.dev.yml restart app
+	@echo "✅ Bringing application back online..."
+	@docker compose -f docker-compose.dev.yml exec app php artisan up
+	@echo "🎉 Deployment completed!"
 
 # Full stack commands
 dev:
