@@ -141,7 +141,7 @@
                 class="btn-primary mt-2 sm:mt-4"
             >
                 <i class="pi pi-plus mr-2"></i>
-                {{ $t('groups.addStudents') }}
+                {{ $t('students.addStudents') }}
             </button>
         </div>
 
