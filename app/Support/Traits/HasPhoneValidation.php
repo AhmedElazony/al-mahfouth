@@ -6,16 +6,23 @@ use App\Domains\User\Models\User;
 
 trait HasPhoneValidation
 {
-	protected function prepareForValidation(): void
-	{
-		if (empty($this->phone)) {
-			return;
-		}
+    protected function prepareForValidation(): void
+    {
+        if (empty($this->phone)) {
+            return;
+        }
 
-		$this->merge([
-			'phone' => phone($this->phone, 'EG')->formatE164(),
-		]);
-	}
+        $this->merge([
+            'phone' => $this->formatPhone($this->phone),
+        ]);
+    }
+
+    protected function formatPhone(string $phone, $country = 'EG'): string
+    {
+        return rescue(function () use ($phone, $country) {
+            return str_replace(' ', '', phone($phone, $country)->formatE164());
+        }, $phone);
+    }
 
     protected function withValidator($validator): void
     {
@@ -30,7 +37,7 @@ trait HasPhoneValidation
             return;
         }
 
-        $phone = phone($this->phone, 'EG')->formatE164();
+        $phone = $this->formatPhone($this->phone);
 
         $exists = User::where('phone', $phone)->exists();
 
