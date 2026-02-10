@@ -7,11 +7,14 @@ use App\Domains\Tahfidh\Enums\GradesEnum;
 use App\Domains\Tahfidh\Enums\LearningStatusesEnum;
 use App\Domains\User\Enums\UserGendersEnum;
 use App\Domains\User\Models\User;
+use App\Support\Traits\HasPhoneValidation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateUserRequest extends FormRequest
 {
+	use HasPhoneValidation;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -42,29 +45,5 @@ class UpdateUserRequest extends FormRequest
             'student_tajweed_learning_status' => ['sometimes', 'in:'.implode(',', LearningStatusesEnum::values())],
             'student_tajweed_notes' => ['sometimes', 'string', 'max:1000'],
         ];
-    }
-
-    protected function withValidator($validator): void
-    {
-        $validator->after(function ($validator) {
-            $this->validateUniquePhone($validator);
-        });
-    }
-
-    protected function validateUniquePhone($validator): void
-    {
-        if (empty($this->phone)) {
-            return;
-        }
-
-        $phone = phone($this->phone, 'EG')->formatE164();
-
-        $exists = User::where('phone', $phone)
-            ->where('id', '!=', $this->user->id)
-            ->exists();
-
-        if ($exists) {
-            $validator->errors()->add('phone', __('validation.unique', ['attribute' => __('validation.attributes.phone')]));
-        }
     }
 }
