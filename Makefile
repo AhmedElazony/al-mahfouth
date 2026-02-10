@@ -154,6 +154,12 @@ dev-npm-install:
 dev-npm-build:
 	@docker compose -f $(DEV_COMPOSE) run --rm -u "$(UID):$(GID)" frontend npm run build
 
+dev-copy-frontend:
+	@echo "$(GREEN)Copying frontend build to public/app...$(NC)"
+	@rm -rf public/app
+	@cp -r frontend/dist public/app
+	@echo "$(GREEN)Frontend build copied!$(NC)"
+
 dev-setup:
 	@echo "$(BLUE)Setting up development environment...$(NC)"
 	@if [ ! -f .env ]; then cp .env.example .env; echo "$(GREEN).env file created$(NC)"; fi
@@ -168,8 +174,7 @@ dev-setup:
 	@$(MAKE) dev-artisan migrate --seed
 	@$(MAKE) dev-npm-install
 	@$(MAKE) dev-npm-build
-	@echo "$(GREEN)Copying frontend build to public/app...$(NC)"
-	@cp -r frontend/dist public/app
+	@$(MAKE) dev-copy-frontend
 	@$(MAKE) dev-fix-permissions
 	@echo "$(GREEN)Permissions fixed!$(NC)"
 	@docker compose -f $(DEV_COMPOSE) app php artisan storage:link
@@ -191,9 +196,7 @@ dev-deploy:
 	@$(MAKE) dev-artisan migrate
 	@$(MAKE) dev-npm-install
 	@$(MAKE) dev-npm-build
-	@echo "$(GREEN)Copying frontend build to public/app...$(NC)"
-	@rm -rf public/app
-	@cp -r frontend/dist public/app
+	@$(MAKE) dev-copy-frontend	
 	@docker compose -f $(DEV_COMPOSE) app php artisan optimize 
 	@docker compose -f $(DEV_COMPOSE) app php artisan up
 	@echo "$(GREEN)Development environment deployed!$(NC)"
@@ -234,11 +237,14 @@ prod-composer-install:
 		&& docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan key:generate \
 		&& echo "$(GREEN)Application key generated!$(NC)"
 
-prod-npm-install:
-	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app sh -c "cd frontend && npm install --production"
+prod-build-frontend:
+	@cd frontend && npm install --production && npm run build
 
-prod-npm-build:
-	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app sh -c "cd frontend && npm run build"
+prod-copy-frontend:
+	@echo "$(GREEN)Copying frontend build to public/app...$(NC)"
+	@rm -rf public/app
+	@cp -r frontend/dist public/app
+	@echo "$(GREEN)Frontend build copied!$(NC)"
 
 prod-artisan:
 	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan $(filter-out $@,$(MAKECMDGOALS))
@@ -258,10 +264,8 @@ prod-setup:
 	@$(MAKE) prod-composer-install
 	@echo "$(GREEN)Running migrations...$(NC)"
 	@$(MAKE) prod-artisan migrate --seed
-	@$(MAKE) prod-npm-install
-	@$(MAKE) prod-npm-build
-	@echo "$(GREEN)Copying frontend build to public/app...$(NC)"
-	@cp -r frontend/dist public/app
+	@$(MAKE) prod-build-frontend
+	@$(MAKE) prod-copy-frontend
 	@$(MAKE) prod-fix-permissions
 	@echo "$(GREEN)Permissions fixed!$(NC)"
 	@docker compose -f $(PROD_COMPOSE) app php artisan storage:link
@@ -280,19 +284,17 @@ prod-deploy:
 	@$(MAKE) prod-composer-install
 	@echo "$(GREEN)Running migrations...$(NC)"
 	@$(MAKE) prod-artisan migrate
-	@$(MAKE) prod-npm-install
-	@$(MAKE) prod-npm-build
+	@$(MAKE) prod-build-frontend
 	@echo "$(GREEN)Copying frontend build to public/app...$(NC)"
-	@rm -rf public/app
-	@cp -r frontend/dist public/app
+	@$(MAKE) prod-copy-frontend
 	@docker compose -f $(PROD_COMPOSE) app php artisan optimize 
 	@docker compose -f $(PROD_COMPOSE) app php artisan up
 	@echo "$(GREEN)Production environment deployed!$(NC)"
 
 prod-ssl-renew:
 	@echo "$(BLUE)Renewing SSL certificates...$(NC)"
-	sudo certbot renew
-	docker-compose -f $(PROD_COMPOSE) exec nginx nginx -s reload
+	@sudo certbot renew
+	@docker compose -f $(PROD_COMPOSE) exec nginx nginx -s reload
 	@echo "$(GREEN)SSL certificates renewed!$(NC)"
 ### END PRODUCTION ###
 ### END Server management ######
