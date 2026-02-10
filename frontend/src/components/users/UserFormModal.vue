@@ -9,7 +9,7 @@
 				class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
 				<!-- Header -->
 				<div
-					class="sticky top-0 bg-white dark:bg-gray-800 flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+					class="sticky top-0 bg-white dark:bg-gray-800 flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 z-10">
 					<h2 class="text-xl font-bold text-gray-900 dark:text-white">
 						{{ isEditing ? $t('users.editUser') : $t('users.addUser') }}
 					</h2>
@@ -23,7 +23,10 @@
 					<!-- Error Message -->
 					<div v-if="error"
 						class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
-						{{ error }}
+						<div class="flex items-start gap-2">
+							<i class="pi pi-exclamation-circle mt-0.5 flex-shrink-0"></i>
+							<span>{{ error }}</span>
+						</div>
 					</div>
 
 					<!-- Validation Errors -->
@@ -316,7 +319,6 @@ watch(
 
 async function handleSubmit() {
 	loading.value = true
-	error.value = null
 	clearErrors()
 
 	try {
@@ -334,24 +336,39 @@ async function handleSubmit() {
 
 		emit('save', data)
 	} catch (err: any) {
-		console.error('Error saving user:', err)
-
-		if (err.response?.status === 422) {
-			const responseData = err.response.data
-			if (responseData.errors) {
-				validationErrors.value = responseData.errors
-			} else if (responseData.message) {
-				error.value = responseData.message
-			}
-		} else if (err.response?.data?.message) {
-			error.value = err.response.data.message
-		} else {
-			error.value = 'حدث خطأ في حفظ المستخدم'
-		}
-	} finally {
+		error.value = 'حدث خطأ في حفظ المستخدم'
 		loading.value = false
 	}
 }
+
+/**
+ * Called by the parent component to set API errors inside the modal.
+ */
+function setApiErrors(err: any) {
+	if (err.response?.status === 422) {
+		const responseData = err.response.data
+		if (responseData.errors) {
+			validationErrors.value = responseData.errors
+		}
+		if (responseData.message) {
+			error.value = responseData.message
+		}
+	} else if (err.response?.data?.message) {
+		error.value = err.response.data.message
+	} else {
+		error.value = err.message || 'حدث خطأ في حفظ المستخدم'
+	}
+	loading.value = false
+}
+
+/**
+ * Called by the parent on success to stop the loading spinner.
+ */
+function setSuccess() {
+	loading.value = false
+}
+
+defineExpose({ setApiErrors, setSuccess })
 
 function buildCreateData(): CreateUserForm {
 	const data: CreateUserForm = {

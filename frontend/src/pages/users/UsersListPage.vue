@@ -277,8 +277,8 @@
 		</div>
 
 		<!-- Create/Edit Modal -->
-		<UserFormModal v-if="showModal" :user="selectedUserDetails" :is-editing="isEditing" @close="closeModal"
-			@save="handleSave" />
+		<UserFormModal v-if="showModal" ref="userFormModalRef" :user="selectedUserDetails" :is-editing="isEditing"
+			@close="closeModal" @save="handleSave" />
 
 		<!-- Delete Confirmation Modal -->
 		<ConfirmModal v-if="showDeleteModal" :title="$t('users.deleteUser')"
@@ -311,6 +311,7 @@ const showModal = ref(false)
 const isEditing = ref(false)
 const selectedUserDetails = ref<User | null>(null)
 const loadingUserId = ref<number | null>(null)
+const userFormModalRef = ref<InstanceType<typeof UserFormModal> | null>(null)
 
 // Delete modal state
 const showDeleteModal = ref(false)
@@ -388,8 +389,11 @@ async function handleSave(data: CreateUserForm | UpdateUserForm) {
 			await usersStore.createUser(data as CreateUserForm)
 		}
 		closeModal()
-	} catch (err) {
-		// Error handled in store
+	} catch (err: any) {
+		// Pass the error to the modal so it displays inside it
+		if (userFormModalRef.value) {
+			userFormModalRef.value.setApiErrors(err)
+		}
 	}
 }
 
