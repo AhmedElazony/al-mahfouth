@@ -11,6 +11,18 @@ trait HasPhoneValidation
         $validator->after(function ($validator) {
             $this->validateUniquePhone($validator);
         });
+
+		$validator->before(function ($validator) {
+			if (empty($this->phone)) {
+				return;
+			}
+
+			$phone = phone($this->phone, 'EG');
+
+			if (!$phone->isValid()) {
+				$validator->errors()->add('phone', __('validation.phone', ['attribute' => __('validation.attributes.phone')]));
+			}
+		});
     }
 
     protected function validateUniquePhone($validator): void
