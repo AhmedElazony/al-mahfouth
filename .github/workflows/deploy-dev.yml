@@ -22,10 +22,4 @@ jobs:
           key: ${{ secrets.DEV_VPS_SSH_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.DEV_VPS_PATH }}
-            if git diff HEAD~1 HEAD --name-only | grep -E "(Dockerfile|docker-compose|\.dockerignore)"; then
-              echo "Docker config changed - full rebuild"
-              make dev-deploy
-            else
-              echo "Fast deployment"
-              make dev-deploy-fast
-            fi
+            make dev-deploy-fast
