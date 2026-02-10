@@ -19,12 +19,20 @@ export default defineConfig({
 	},
 	// Build configuration
 	build: {
-		outDir: '../public/app',
+		outDir: 'dist', // Build to dist/ first
 		emptyOutDir: true,
 		manifest: true,
 		rollupOptions: {
-			input: './src/main.ts'
-		}
+			input: './src/main.ts',
+			output: {
+				manualChunks: {
+					'vendor': ['vue', 'vue-router', 'pinia'],
+					'primevue': ['primevue/config', 'primevue/button', 'primevue/inputtext', 'primevue/dropdown', 'primevue/datatable'],
+					'i18n': ['vue-i18n']
+				}
+			}
+		},
+		chunkSizeWarningLimit: 1000 // Increase warning limit to 1MB
 	},
 	css: {
 		preprocessorOptions: {
