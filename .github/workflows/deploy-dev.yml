@@ -1,10 +1,10 @@
 name: Deploy To Development
 
 on:
-#   workflow_dispatch:
-  push:
-    branches:
-      - develop
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - develop
 
 jobs:
   deploy:
@@ -22,4 +22,10 @@ jobs:
           key: ${{ secrets.DEV_VPS_SSH_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.DEV_VPS_PATH }}
-            make dev-deploy
+            if git diff HEAD~1 HEAD --name-only | grep -E "(Dockerfile|docker-compose|\.dockerignore)"; then
+              echo "Docker config changed - full rebuild"
+              make dev-deploy
+            else
+              echo "Fast deployment"
+              make dev-deploy-fast
+            fi

@@ -27,9 +27,10 @@ jobs:
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.VPS_PATH }}
-            docker compose exec app php artisan down
-            git pull origin master
-            docker compose exec app composer install --no-dev --optimize-autoloader --no-interaction
-            docker compose exec app php artisan migrate --force
-            docker compose exec app php artisan optimize
-            docker compose exec app php artisan up
+            if git diff HEAD~1 HEAD --name-only | grep -E "(Dockerfile|docker-compose|\.dockerignore)"; then
+              echo "Docker config changed - full rebuild"
+              make prod-deploy
+            else
+              echo "Fast deployment"
+              make prod-deploy-fast
+            fi

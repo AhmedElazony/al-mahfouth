@@ -201,6 +201,21 @@ dev-deploy:
 	@docker compose -f $(DEV_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan up
 	@echo "$(GREEN)Development environment deployed!$(NC)"
 
+dev-deploy-fast:
+	@echo "$(BLUE)Deploying development environment (fast)...$(NC)"
+	@git pull origin develop
+	@docker compose -f $(DEV_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan down 
+	@echo "$(GREEN)Running composer install...$(NC)"
+	@$(MAKE) dev-composer-install
+	@echo "$(GREEN)Running migrations...$(NC)"
+	@$(MAKE) dev-artisan migrate
+	@$(MAKE) dev-npm-install
+	@$(MAKE) dev-npm-build
+	@$(MAKE) dev-copy-frontend	
+	@docker compose -f $(DEV_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan optimize
+	@docker compose -f $(DEV_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan up
+	@echo "$(GREEN)Development environment deployed!$(NC)"
+
 ### PRODUCTION ###
 prod-up:
 	@echo "$(BLUE)Starting production environment...$(NC)"
@@ -280,6 +295,21 @@ prod-deploy:
 	@$(MAKE) prod-up
 	@echo "$(YELLOW)Waiting for containers to be ready...$(NC)"
 	@sleep 10
+	@echo "$(GREEN)Running composer install...$(NC)"
+	@$(MAKE) prod-composer-install
+	@echo "$(GREEN)Running migrations...$(NC)"
+	@$(MAKE) prod-artisan migrate
+	@$(MAKE) prod-build-frontend
+	@echo "$(GREEN)Copying frontend build to public/app...$(NC)"
+	@$(MAKE) prod-copy-frontend
+	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan optimize
+	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan up
+	@echo "$(GREEN)Production environment deployed!$(NC)"
+
+prod-deploy-fast:
+	@echo "$(BLUE)Deploying production environment (fast)...$(NC)"
+	@git pull origin main
+	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan down 
 	@echo "$(GREEN)Running composer install...$(NC)"
 	@$(MAKE) prod-composer-install
 	@echo "$(GREEN)Running migrations...$(NC)"
