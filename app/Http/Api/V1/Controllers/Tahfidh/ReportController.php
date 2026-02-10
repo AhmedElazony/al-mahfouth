@@ -40,8 +40,7 @@ class ReportController extends ApiController
             );
         } catch (\Throwable $th) {
             return $this->error(
-                $th->getMessage(),
-                $th->getCode() !== 0 ? $th->getCode() : 500
+                $th->getMessage()
             );
         }
     }
@@ -61,8 +60,7 @@ class ReportController extends ApiController
             );
         } catch (\Throwable $th) {
             return $this->error(
-                $th->getMessage(),
-                $th->getCode() !== 0 ? $th->getCode() : 500
+                $th->getMessage()
             );
         }
     }
@@ -79,8 +77,7 @@ class ReportController extends ApiController
             );
         } catch (\Throwable $th) {
             return $this->error(
-                $th->getMessage(),
-                $th->getCode() !== 0 ? $th->getCode() : 500
+                $th->getMessage()
             );
         }
     }
@@ -97,8 +94,7 @@ class ReportController extends ApiController
             );
         } catch (\Throwable $th) {
             return $this->error(
-                $th->getMessage(),
-                $th->getCode() !== 0 ? $th->getCode() : 500
+                $th->getMessage()
             );
         }
     }
@@ -113,8 +109,7 @@ class ReportController extends ApiController
             );
         } catch (\Throwable $th) {
             return $this->error(
-                $th->getMessage(),
-                $th->getCode() !== 0 ? $th->getCode() : 500
+                $th->getMessage()
             );
         }
     }
