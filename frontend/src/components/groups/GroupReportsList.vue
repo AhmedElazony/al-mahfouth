@@ -230,7 +230,6 @@ import { ref, watch, computed, onMounted } from 'vue'
 import type { Group } from '@/types/models'
 import type { GroupStudentResponse } from '@/services/groupService'
 import reportService, { type Report } from '@/services/reportService'
-import type { PaginationMeta } from '@/types/api'
 import ReportFormModal from './ReportFormModal.vue'
 import { AttendanceStatus, Grade } from '@/constants/enums'
 
@@ -295,15 +294,6 @@ const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, 
 const paginatedReports = computed(() => {
   return filteredReports.value.slice(startIndex.value, endIndex.value)
 })
-
-// Methods
-function getStudentId(student: GroupStudentResponse): number {
-  return student.student?.id || student.student_id || 0
-}
-
-function getStudentName(student: GroupStudentResponse): string {
-  return student.student?.name || student.name || '-'
-}
 
 function formatDate(dateStr: string): string {
   try {

@@ -144,7 +144,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
-import type { Group, CreateGroupForm, UpdateGroupForm } from '@/types/models'
+import type { Group, CreateGroupForm, UpdateGroupForm, ScheduleItem, WeekDay } from '@/types/models'
 import userService from '@/services/userService'
 import groupService from '@/services/groupService'
 import { WeekDayOptions } from '@/constants'
@@ -232,7 +232,7 @@ function formatTimeForInput(time: string | undefined | null): string {
 
 	const match = time.match(/^(\d{1,2}):(\d{2})\s*(am|pm)?$/i)
 	if (match) {
-		let hours = parseInt(match[1])
+		let hours = parseInt(match[1] || '0')
 		const minutes = match[2]
 		const period = match[3]?.toLowerCase()
 
@@ -293,12 +293,19 @@ async function handleSubmit() {
 	clearErrors()
 
 	try {
-		const validSchedule = form.schedule.filter(s => s.day && s.start_time && s.end_time)
+		const validSchedule: ScheduleItem[] = form.schedule.map((item) => ({
+			day: item.day as WeekDay, // Type assertion to WeekDay
+			start_time: item.start_time,
+			end_time: item.end_time
+		}))
 		if (validSchedule.length === 0) {
 			error.value = 'يجب إضافة موعد واحد على الأقل'
 			loading.value = false
 			return
 		}
+
+		// Validate and cast schedule items to proper WeekDay type
+
 
 		const data: CreateGroupForm | UpdateGroupForm = {
 			name: form.name,

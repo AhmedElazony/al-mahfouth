@@ -76,7 +76,7 @@ function parseTime(timeStr: string) {
   const match = timeStr.match(/^(\d{1,2}):(\d{2})$/)
   if (!match) return
 
-  let h = parseInt(match[1])
+  let h = parseInt(match[1] || '0')
   const m = match[2]
 
   period.value = h >= 12 ? 'PM' : 'AM'
@@ -84,7 +84,7 @@ function parseTime(timeStr: string) {
   else if (h > 12) h -= 12
   hours.value = String(h).padStart(2, '0')
 
-  const minNum = parseInt(m)
+  const minNum = parseInt(m || '0')
   const roundedMin = Math.round(minNum / props.minuteStep) * props.minuteStep
   minutes.value = String(roundedMin % 60).padStart(2, '0')
 }

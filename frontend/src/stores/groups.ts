@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Group, GroupFilters, CreateGroupForm, UpdateGroupForm } from '@/types/models'
+import type { Group, GroupFilters } from '@/types/models'
 import groupService from '@/services/groupService'
 import type { PaginationMeta } from '@/types'
 
@@ -8,7 +8,8 @@ export const useGroupsStore = defineStore('groups', () => {
   const groups = ref<Group[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
-  const currentPage = computed(() => pagination.value?.current_page ?? 1)
+  const currentPageNum = ref(1)
+  const currentPage = computed(() => currentPageNum.value)
   const perPage = ref(15)
   const totalGroups = computed(() => pagination.value?.total ?? 0)
   const totalPages = computed(() => pagination.value?.last_page ?? 1)
@@ -28,7 +29,7 @@ export const useGroupsStore = defineStore('groups', () => {
     try {
       const response = await groupService.getGroups({
         ...filters.value,
-        page: currentPage.value,
+        page: currentPageNum.value,
         per_page: perPage.value
       })
       
@@ -45,24 +46,26 @@ export const useGroupsStore = defineStore('groups', () => {
 
   async function setPage(page: number) {
     if (page < 1 || page > totalPages.value) return
-    currentPage.value = page
+    currentPageNum.value = page
     await fetchGroups()
   }
 
   function setFilters(newFilters: GroupFilters) {
-    currentPage.value = 1
+    currentPageNum.value = 1
     fetchGroups(newFilters)
   }
 
   function clearFilters() {
     filters.value = {}
-    currentPage.value = 1
+    currentPageNum.value = 1
     fetchGroups()
   }
 
   function addGroup(group: Group) {
     groups.value.unshift(group)
-    totalGroups.value += 1
+    if (pagination.value) {
+      pagination.value.total += 1
+    }
   }
 
   function updateGroupInList(group: Group) {
@@ -75,7 +78,9 @@ export const useGroupsStore = defineStore('groups', () => {
   async function deleteGroup(id: number) {
     await groupService.deleteGroup(id)
     groups.value = groups.value.filter(g => g.id !== id)
-    totalGroups.value -= 1
+    if (pagination.value) {
+      pagination.value.total -= 1
+    }
   }
 
   return {

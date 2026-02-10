@@ -238,7 +238,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue'
 import type { Group, StudentProfile } from '@/types/models'
-import type { GroupStudentResponse } from '@/services/groupService'
+import type { GroupStudentResponse, UpdateStudentProfilePayload } from '@/services/groupService'
 import groupService from '@/services/groupService'
 import { GradeOptions, LearningStatusOptions, EducationalStageOptions } from '@/constants'
 
@@ -323,7 +323,7 @@ async function handleSave() {
 
     try {
         // Build payload with all fields (only send non-empty values)
-        const payload: Record<string, any> = {
+        const payload: UpdateStudentProfilePayload = {
             student_id: studentId.value,
         }
 

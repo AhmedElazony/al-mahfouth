@@ -140,7 +140,7 @@
 			@updated="onGroupUpdated" />
 
 		<!-- Manage Students Modal - Full screen on mobile -->
-		<GroupStudentsModal v-if="showManageStudents" :group="group" :students="students"
+		<GroupStudentsModal v-if="showManageStudents && group" :group="group" :students="students"
 			@close="showManageStudents = false" @updated="onStudentsUpdated" />
 	</div>
 </template>
@@ -153,7 +153,7 @@ import groupService, { type GroupStudentResponse } from '@/services/groupService
 import GroupStudentsList from '@/components/groups/GroupStudentsList.vue'
 import GroupStudentsModal from '@/components/groups/GroupStudentsModal.vue'
 import GroupFormModal from '@/components/groups/GroupFormModal.vue'
-import { getEnumLabel, UserRole, WeekDayLabels } from '@/constants'
+import { getEnumLabel, WeekDayLabels } from '@/constants'
 import GroupReportsList from '@/components/groups/GroupReportsList.vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -222,7 +222,7 @@ function formatTime(time: string): string {
 	}
 	const parts = time.split(':')
 	if (parts.length >= 2) {
-		const hours = parseInt(parts[0])
+		const hours = parseInt(parts[0] || '0')
 		const minutes = parts[1]
 		const period = hours >= 12 ? 'م' : 'ص'
 		const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours

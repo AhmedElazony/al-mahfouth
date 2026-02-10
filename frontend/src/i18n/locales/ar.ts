@@ -1,5 +1,3 @@
-import { StudentStatus } from "@/constants";
-
 export default {
 	// App
 	app: {

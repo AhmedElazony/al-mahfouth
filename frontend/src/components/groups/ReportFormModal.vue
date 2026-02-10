@@ -192,11 +192,11 @@ const isFormValid = computed(() => {
 
 // Methods
 function getStudentId(student: GroupStudentResponse): number {
-  return student.student?.id || student.student_id || 0
+  return student.student?.id || 0
 }
 
 function getStudentName(student: GroupStudentResponse): string {
-  return student.student?.name || student.name || '-'
+  return student.student?.name || '-'
 }
 
 function formatDateForApi(dateStr: string): string {
@@ -221,7 +221,7 @@ function populateForm() {
     form.notes = props.report.notes || ''
   } else {
     form.student_id = ''
-    form.date = props.defaultDate || new Date().toISOString().split('T')[0]
+    form.date = props.defaultDate || new Date().toISOString().split('T')[0] || ''
     form.attendance_status = ''
     form.memorized_amount = ''
     form.grade = ''

@@ -400,10 +400,13 @@ async function saveEdit(item: GroupStudentResponse) {
     try {
         const payload: {
             memorizing_amount?: string
-            student_status?: string | null
+            student_status?: string
         } = {
-            memorizing_amount: editForm.memorizing_amount,
-            student_status: editForm.student_status || null
+            memorizing_amount: editForm.memorizing_amount
+        }
+
+        if (editForm.student_status) {
+            payload.student_status = editForm.student_status
         }
 
         const response = await groupService.updateStudent(props.group.id, studentId, payload)

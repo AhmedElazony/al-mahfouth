@@ -21,11 +21,6 @@ function getStoredUser(): User | null {
   return null
 }
 
-function setStoredAuth(token: string, user: User): void {
-  localStorage.setItem('token', token)
-  localStorage.setItem('user', JSON.stringify(user))
-}
-
 function clearStoredAuth(): void {
   localStorage.removeItem('token')
   localStorage.removeItem('user')

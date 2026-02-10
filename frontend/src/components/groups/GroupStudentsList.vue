@@ -235,8 +235,7 @@ const filteredStudents = computed(() => {
         const query = searchQuery.value.toLowerCase()
         result = result.filter(student => {
             const name = getStudentName(student).toLowerCase()
-            const phone = student.student?.phone || ''
-            return name.includes(query) || phone.includes(query)
+            return name.includes(query)
         })
     }
 

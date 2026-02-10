@@ -164,7 +164,7 @@
 			<div v-if="groupsStore.groups.length > 0"
 				class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
 				<div class="text-sm text-gray-500 dark:text-gray-400">
-					{{ $t('common.showing') }} {{ groupsStore.pagination.from }} - {{ groupsStore.pagination.to }}
+					{{ $t('common.showing') }} {{ groupsStore.pagination?.from }} - {{ groupsStore.pagination?.to }}
 					{{ $t('common.of') }} {{ groupsStore.totalGroups }}
 				</div>
 				<div class="flex items-center gap-2">
@@ -233,7 +233,7 @@
 				<!-- Mobile Pagination -->
 				<div v-if="groupsStore.groups.length > 0" class="card p-4 flex flex-col gap-4">
 					<div class="text-sm text-center text-gray-500 dark:text-gray-400">
-						{{ $t('common.showing') }} {{ groupsStore.pagination.from }} - {{ groupsStore.pagination.to }}
+						{{ $t('common.showing') }} {{ groupsStore.pagination?.from }} - {{ groupsStore.pagination?.to }}
 						{{ $t('common.of') }} {{ groupsStore.totalGroups }}
 					</div>
 					<div class="flex items-center justify-center gap-4">
@@ -281,7 +281,7 @@
 import { ref, onMounted } from 'vue'
 import { useGroupsStore } from '@/stores/groups'
 import groupService from '@/services/groupService'
-import type { Group, CreateGroupForm, UpdateGroupForm, ScheduleItem } from '@/types/models'
+import type { Group, ScheduleItem } from '@/types/models'
 import GroupFormModal from '@/components/groups/GroupFormModal.vue'
 import GroupStudentsModal from '@/components/groups/GroupStudentsModal.vue'
 import ConfirmModal from '@/components/common/ConfirmModal.vue'
@@ -354,7 +354,7 @@ function formatTime(time: string): string {
 
 	const parts = time.split(':')
 	if (parts.length >= 2) {
-		const hours = parseInt(parts[0])
+		const hours = parseInt(parts[0] || '0')
 		const minutes = parts[1]
 		const period = hours >= 12 ? 'م' : 'ص'
 		const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours
@@ -389,7 +389,7 @@ function debouncedSearch() {
 function applyFilters() {
 	groupsStore.setFilters({
 		search: searchQuery.value || undefined,
-		teacher_id: selectedTeacher.value || undefined,
+		teacher_id: selectedTeacher.value ? parseInt(selectedTeacher.value) : undefined,
 		is_active: selectedStatus.value === 'active' ? true : selectedStatus.value === 'inactive' ? false : undefined
 	})
 }

@@ -160,7 +160,7 @@ function formatTime(time: string | { value: string; for_view: string } | null | 
   const timeValue = typeof time === 'string' ? time : ''
   const parts = timeValue.split(':')
   if (parts.length >= 2) {
-    const hours = parseInt(parts[0])
+    const hours = parseInt(parts[0] || '0')
     const minutes = parts[1]
     const period = hours >= 12 ? 'م' : 'ص'
     const displayHours = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours
