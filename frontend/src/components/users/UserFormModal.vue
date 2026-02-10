@@ -417,8 +417,18 @@ async function handleSubmit() {
 
 		emit('save', data)
 	} catch (err: any) {
-		error.value = err.message || 'حدث خطأ'
-		loading.value = false
+		if (err.response?.status === 422) {
+			const responseData = err.response.data
+			if (responseData.errors) {
+				validationErrors.value = responseData.errors
+			} else if (responseData.message) {
+				error.value = responseData.message
+			}
+		} else if (err.response?.data?.message) {
+			error.value = err.response.data.message
+		} else {
+			error.value = 'حدث خطأ في حفظ المستخدم'
+		}
 	}
 }
 
