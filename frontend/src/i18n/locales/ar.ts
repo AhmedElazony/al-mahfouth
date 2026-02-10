@@ -220,6 +220,7 @@ export default {
 		allTeachers: 'جميع المعلمين',
 		students: 'الطلاب',
 		manageStudents: 'إدارة الطلاب',
+		addStudents: 'إضافة طلاب',
 		studentsList: 'قائمة الطلاب',
 		studentsCount: 'عدد الطلاب',
 		schedule: 'المواعيد',
