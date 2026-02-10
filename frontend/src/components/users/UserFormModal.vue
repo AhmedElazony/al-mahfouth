@@ -420,7 +420,7 @@ async function handleSubmit() {
 		if (err.response?.status === 422) {
 			const responseData = err.response.data
 			if (responseData.errors) {
-				validationErrors.value = responseData.errors
+				error.value = responseData.errors
 			} else if (responseData.message) {
 				error.value = responseData.message
 			}
