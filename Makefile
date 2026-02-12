@@ -23,7 +23,7 @@ DEV_COMPOSE := docker-compose.dev.yml
 PROD_COMPOSE := docker-compose.prod.yml
 
 # Targets
-.PHONY: images install certs deploy undeploy
+.PHONY: images install certs bash fix-permissions \ frontend-install frontend-dev frontend-build frontend-bash \ dev up down artisan composer logs dev-up dev-down dev-build dev-restart dev-logs dev-ps dev-clean dev-fix-permissions dev-composer-install dev-npm-install dev-npm-build dev-copy-frontend dev-artisan dev-artisan-migrate dev-artisan-seed dev-setup dev-deploy dev-deploy-fast \ prod-up prod-down prod-build prod-restart prod-logs prod-ps prod-fix-permissions prod-composer-install prod-build-frontend prod-copy-frontend prod-artisan prod-artisan-migrate prod-artisan-seed prod-composer prod-setup prod-deploy prod-deploy-fast prod-ssl-renew
 
 ###### Local #######
 images:
