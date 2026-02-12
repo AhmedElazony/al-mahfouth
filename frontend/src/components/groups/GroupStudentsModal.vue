@@ -135,7 +135,7 @@
                                     <i class="pi pi-pencil text-sm"></i>
                                 </button>
                                 <!-- Remove Student Button -->
-                                <button @click="removeStudent(item)"
+                                <button @click="confirmDelete(item)"
                                     :disabled="removingStudentId === getStudentId(item)"
                                     class="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded disabled:opacity-50"
                                     :title="$t('common.delete')">
@@ -157,6 +157,15 @@
         <!-- Student Profile Modal -->
         <StudentProfileModal v-if="showProfileModal && selectedStudent" :group="group" :student="selectedStudent"
             @close="closeStudentProfile" />
+		
+		<!-- Delete Confirmation Modal -->
+		<ConfirmModal v-if="showDeleteModal && selectedStudent"
+			:title="$t('groups.confirmRemoveStudent')"
+			:message="$t('groups.removeStudentConfirmation', { name: selectedStudent?.student?.name || '' })"
+			:confirm-text="$t('common.delete')" :cancel-text="$t('common.cancel')" variant="danger"
+			@confirm="handleDelete"
+			@cancel="showDeleteModal = false; selectedStudent = null"
+		/>
     </div>
 </template>
 
@@ -175,6 +184,7 @@ import {
     StudentStatusOptions,
     getEnumLabel
 } from '@/constants'
+import ConfirmModal from '../common/ConfirmModal.vue'
 
 interface Props {
     group: Group
@@ -202,6 +212,7 @@ const selectedStudentId = ref<number | ''>('')
 const memorizingAmount = ref(MemorizingAmount.ONE_QUARTER)
 const studentStatus = ref('')
 const addingStudent = ref(false)
+const showDeleteModal = ref(false)
 
 // Edit student
 const editingStudentId = ref<number | null>(null)
@@ -425,22 +436,26 @@ async function saveEdit(item: GroupStudentResponse) {
     }
 }
 
-async function removeStudent(item: GroupStudentResponse) {
-    const studentId = getStudentId(item)
-    if (!studentId) return
+// Delete actions
+function confirmDelete(student: GroupStudentResponse) {
+	selectedStudent.value = student
+	showDeleteModal.value = true
+}
 
-    removingStudentId.value = studentId
-    error.value = null
+async function handleDelete() {
+	const studentId = getStudentId(selectedStudent.value!)
+	if (!studentId) return
 
-    try {
-        await groupService.removeStudent(props.group.id, studentId)
-        students.value = students.value.filter(s => getStudentId(s) !== studentId)
+	try {
+		await groupService.removeStudent(props.group.id, studentId)
+
+		students.value = students.value.filter(s => getStudentId(s) !== studentId)
         emit('updated', students.value)
-    } catch (err: any) {
-        error.value = err.response?.data?.message || 'حدث خطأ في إزالة الطالب'
-    } finally {
-        removingStudentId.value = null
-    }
+		showDeleteModal.value = false
+		selectedStudent.value = null
+	} catch (err) {
+		// Error handled in store
+	}
 }
 
 onMounted(() => {

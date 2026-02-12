@@ -238,7 +238,9 @@ export default {
 		time: 'الوقت',
 		from: 'من',
 		to: 'إلى',
-		noStatus: 'بدون حالة'
+		noStatus: 'بدون حالة',
+		confirmRemoveStudent: 'تأكيد إزالة الطالب',
+		removeStudentConfirmation: 'هل أنت متأكد من إزالة الطالب "{name}" من المجموعة؟'
 	},
 
 	// Reports
