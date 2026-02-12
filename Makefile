@@ -309,7 +309,7 @@ prod-setup:
 prod-deploy:
 	@echo "$(BLUE)Deploying production environment...$(NC)"
 	@git pull origin main
-	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan down 
+	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan down || true
 	@$(MAKE) prod-build
 	@$(MAKE) prod-up
 	@echo "$(YELLOW)Waiting for containers to be ready...$(NC)"
@@ -329,7 +329,7 @@ prod-deploy:
 prod-deploy-fast:
 	@echo "$(BLUE)Deploying production environment (fast)...$(NC)"
 	@git pull origin main
-	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan down 
+	@docker compose -f $(PROD_COMPOSE) run --rm -u "$(UID):$(GID)" app php artisan down || true
 	@echo "$(GREEN)Running composer install...$(NC)"
 	@$(MAKE) prod-composer-install
 	@echo "$(GREEN)Running migrations...$(NC)"
