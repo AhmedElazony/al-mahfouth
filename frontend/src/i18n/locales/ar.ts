@@ -272,6 +272,8 @@ export default {
 		clearFilters: 'مسح الفلاتر',
 		allStudents: 'جميع الطلاب',
 		searchByStudent: 'بحث بالطالب',
+		deleteReport: 'حذف التقرير',
+		deleteConfirmation: 'هل أنت متأكد من حذف هذا التقرير؟'
 	},
 
 	// Settings
