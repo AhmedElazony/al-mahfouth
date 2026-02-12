@@ -22,12 +22,13 @@ class ReportController extends ApiController
             $filters = request()->only([
                 'per_page',
                 'student_id',
+                'group_id',
                 'date_from',
                 'date_to',
             ]);
             $reports = $this->reportService
                 ->paginate(
-                    ['student'],
+                    ['student', 'group'],
                     $filters,
                     $filters['per_page'] ?? 15
                 );
