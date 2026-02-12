@@ -6,7 +6,8 @@
 				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('groups.title') }}</h1>
 				<p class="text-gray-500 dark:text-gray-400">{{ $t('groups.subtitle') }}</p>
 			</div>
-			<button @click="openCreateModal" v-if="useAuthStore().isAdmin || useAuthStore().isSuperAdmin" class="btn-primary flex items-center justify-center gap-2">
+			<button @click="openCreateModal" v-if="useAuthStore().isAdmin || useAuthStore().isSuperAdmin"
+				class="btn-primary flex items-center justify-center gap-2">
 				<i class="pi pi-plus"></i>
 				{{ $t('groups.addGroup') }}
 			</button>
@@ -190,7 +191,12 @@
 				<div v-for="group in groupsStore.groups" :key="group.id" class="card p-4 space-y-3">
 					<div class="flex items-start justify-between">
 						<div>
-							<div class="font-medium text-gray-900 dark:text-white">{{ group.name }}</div>
+							<div>
+								<router-link :to="`groups/${group.id}`"
+									class="text-sm font-medium text-primary-600 dark:text-primary-400 hover:underline">
+									{{ group.name }}
+								</router-link>
+							</div>
 							<div class="text-sm text-gray-500 dark:text-gray-400">{{ getTeacherName(group) }}</div>
 						</div>
 						<div class="flex items-center gap-1">
@@ -288,6 +294,7 @@ import ConfirmModal from '@/components/common/ConfirmModal.vue'
 import { WeekDayLabels, getEnumLabel } from '@/constants'
 import userService from '@/services/userService'
 import { useAuthStore } from '@/stores/auth'
+import type router from '@/router'
 
 const groupsStore = useGroupsStore()
 
