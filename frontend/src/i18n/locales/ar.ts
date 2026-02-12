@@ -37,46 +37,53 @@ export default {
 
 	// Dashboard
 	dashboard: {
-    title: 'لوحة التحكم',
-    welcome: 'مرحباً',
-    subtitle: 'نظرة عامة على النظام',
-    
-    // Stats
-    totalGroups: 'إجمالي المجموعات',
-    totalStudents: 'إجمالي الطلاب',
-    totalTeachers: 'إجمالي المعلمين',
-    activeStudents: 'الطلاب النشطين',
-    inactiveStudents: 'الطلاب غير النشطين',
-    myGroups: 'مجموعاتي',
-    myStudents: 'طلابي',
-    
-    // Charts & Summary
-    studentsActivity: 'نشاط الطلاب',
-    quickSummary: 'ملخص سريع',
-    avgStudentsPerGroup: 'متوسط الطلاب لكل مجموعة',
-    avgGroupsPerTeacher: 'متوسط المجموعات لكل معلم',
-    activeRate: 'معدل النشاط',
-    
-    // Quick Actions
-    quickActions: 'إجراءات سريعة',
-    viewGroups: 'عرض المجموعات',
-    manageGroups: 'إدارة المجموعات',
-    manageUsers: 'إدارة المستخدمين',
-    manageUsersDesc: 'إضافة وتعديل المستخدمين',
-    community: 'المجتمع',
-    communityDesc: 'التواصل مع الآخرين',
-    settingsDesc: 'إعدادات النظام',
-    
-    // Recent Activity
-    recentActivity: 'النشاط الأخير',
-    recentActivityComingSoon: 'سيتم إضافة سجل النشاط قريباً',
+		title: 'لوحة التحكم',
+		welcome: 'مرحباً',
+		subtitle: 'نظرة عامة على النظام',
 
-	myInfo: 'معلوماتي',
-    myGroupsList: 'مجموعاتي',
-    students: 'طالب',
-    noGroups: 'لا توجد مجموعات',
-    viewAllGroups: 'عرض جميع المجموعات',
-  },
+		// Stats
+		totalGroups: 'إجمالي المجموعات',
+		totalStudents: 'إجمالي الطلاب',
+		totalTeachers: 'إجمالي المعلمين',
+		totalReports: 'إجمالي التقارير',
+		inactiveStudents: 'الطلاب غير النشطين',
+		myGroups: 'مجموعاتي',
+		myStudents: 'طلابي',
+
+		// Charts & Summary
+		studentsActivity: 'نشاط الطلاب',
+		quickSummary: 'ملخص سريع',
+		avgStudentsPerGroup: 'متوسط الطلاب لكل مجموعة',
+		avgGroupsPerTeacher: 'متوسط المجموعات لكل معلم',
+		activeRate: 'معدل النشاط',
+
+		// Quick Actions
+		quickActions: 'إجراءات سريعة',
+		viewGroups: 'عرض المجموعات',
+		manageGroups: 'إدارة المجموعات',
+		manageUsers: 'إدارة المستخدمين',
+		manageUsersDesc: 'إضافة وتعديل المستخدمين',
+		manageReports: 'إدارة التقارير',
+		community: 'المجتمع',
+		communityDesc: 'التواصل مع الآخرين',
+		settingsDesc: 'إعدادات النظام',
+
+		attendanceOverview: 'نظرة عامة على الحضور',
+		attended: 'حاضر',
+		absent: 'غائب',
+		excused: 'معذور',
+
+		// Recent Activity
+		recentActivity: 'النشاط الأخير',
+		recentActivityComingSoon: 'سيتم إضافة سجل النشاط قريباً',
+
+		myInfo: 'معلوماتي',
+		myGroupsList: 'مجموعاتي',
+		students: 'طالب',
+		noGroups: 'لا توجد مجموعات',
+		viewAllGroups: 'عرض جميع المجموعات',
+		viewReports: 'عرض التقارير',
+	},
 
 	// Users
 	users: {

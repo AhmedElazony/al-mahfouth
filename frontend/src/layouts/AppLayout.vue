@@ -51,7 +51,7 @@
 							</router-link>
 
 							<!-- Admin only: Users -->
-							<router-link v-if="authStore.isAdmin" to="/dashboard/users"
+							<router-link v-if="authStore.hasAdminRole" to="/dashboard/users"
 								class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
 								active-class="!text-primary-600 dark:!text-primary-400 font-medium">
 								<i class="pi pi-user mr-2"></i>
@@ -59,7 +59,7 @@
 							</router-link>
 
 							<!-- Admin/Teacher: Groups -->
-							<template v-if="authStore.isAdmin || authStore.isTeacher">
+							<template v-if="authStore.hasAdminRole || authStore.isTeacher">
 								<router-link to="/dashboard/groups"
 									class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
 									active-class="!text-primary-600 dark:!text-primary-400 font-medium">
@@ -69,7 +69,7 @@
 							</template>
 
 							<!-- Admin only Reports -->
-							<template v-if="authStore.isAdmin">
+							<template v-if="authStore.hasAdminRole">
 								<router-link to="/dashboard/reports"
 									class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
 									active-class="!text-primary-600 dark:!text-primary-400 font-medium">
@@ -183,7 +183,7 @@
 							</router-link>
 
 							<!-- Admin only: Users -->
-							<router-link v-if="authStore.isAdmin" to="/dashboard/users" @click="closeMobileMenu"
+							<router-link v-if="authStore.hasAdminRole" to="/dashboard/users" @click="closeMobileMenu"
 								class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
 								active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">
 								<i class="pi pi-users mr-2"></i>
@@ -191,7 +191,7 @@
 							</router-link>
 
 							<!-- Admin/Teacher: Groups -->
-							<template v-if="authStore.isAdmin || authStore.isTeacher">
+							<template v-if="authStore.hasAdminRole || authStore.isTeacher">
 								<router-link to="/dashboard/groups" @click="closeMobileMenu"
 									class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
 									active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">
@@ -201,7 +201,7 @@
 							</template>
 
 							<!-- Admin only Reports -->
-							<template v-if="authStore.isAdmin">
+							<template v-if="authStore.hasAdminRole">
 								<router-link to="/dashboard/reports" @click="closeMobileMenu"
 									class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
 									active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">

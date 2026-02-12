@@ -14,7 +14,7 @@
 		</div>
 
 		<!-- Admin Dashboard -->
-		<template v-else-if="authStore.isAdmin || authStore.isSuperAdmin">
+		<template v-else-if="authStore.hasAdminRole">
 			<!-- System Stats -->
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 				<!-- Total Groups -->
@@ -62,17 +62,17 @@
 					</div>
 				</div>
 
-				<!-- Active Students -->
+				<!-- Reports Count -->
 				<div class="card p-6">
 					<div class="flex items-center gap-4">
 						<div
 							class="w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center">
-							<i class="pi pi-check-circle text-amber-600 dark:text-amber-400 text-xl"></i>
+							<i class="pi pi-file text-amber-600 dark:text-amber-400 text-xl"></i>
 						</div>
 						<div>
-							<p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('dashboard.activeStudents') }}</p>
-							<p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats?.active_students_count
-								|| 0 }}</p>
+							<p class="text-sm text-gray-500 dark:text-gray-400">{{ $t('dashboard.totalReports') }}</p>
+							<p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats?.reports_count || 0 }}
+							</p>
 						</div>
 					</div>
 				</div>
@@ -81,38 +81,60 @@
 			<!-- Activity Overview -->
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 				<!-- Students Activity Chart -->
+				<!-- Attendance Overview -->
 				<div class="card p-6">
 					<h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-						{{ $t('dashboard.studentsActivity') }}
+						{{ $t('dashboard.attendanceOverview') }}
 					</h2>
 					<div class="space-y-4">
-						<!-- Active Students Bar -->
+						<!-- Attended -->
 						<div>
 							<div class="flex items-center justify-between mb-2">
-								<span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('dashboard.activeStudents')
-								}}</span>
+								<span class="text-sm text-gray-600 dark:text-gray-400">
+									{{ $t('dashboard.attended') }}
+								</span>
 								<span class="text-sm font-medium text-gray-900 dark:text-white">
-									{{ stats?.active_students_count || 0 }}
+									{{ stats?.attended_count || 0 }}
 								</span>
 							</div>
 							<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
 								<div class="bg-green-600 h-2 rounded-full transition-all duration-300"
-									:style="{ width: `${activeStudentsPercentage}%` }"></div>
+									:style="{ width: `${(stats?.attended_count || 0) / (stats?.reports_count || 1) * 100}%` }">
+								</div>
 							</div>
 						</div>
 
-						<!-- Inactive Students Bar -->
+						<!-- Excused -->
 						<div>
 							<div class="flex items-center justify-between mb-2">
-								<span class="text-sm text-gray-600 dark:text-gray-400">{{
-									$t('dashboard.inactiveStudents') }}</span>
+								<span class="text-sm text-gray-600 dark:text-gray-400">
+									{{ $t('dashboard.excused') }}
+								</span>
 								<span class="text-sm font-medium text-gray-900 dark:text-white">
-									{{ stats?.inactive_students_count || 0 }}
+									{{ stats?.excused_count || 0 }}
+								</span>
+							</div>
+							<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+								<div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+									:style="{ width: `${(stats?.excused_count || 0) / (stats?.reports_count || 1) * 100}%` }">
+								</div>
+							</div>
+						</div>
+
+						<!-- Absent -->
+						<div>
+							<div class="flex items-center justify-between mb-2">
+								<span class="text-sm text-gray-600 dark:text-gray-400">
+									{{ $t('dashboard.absent') }}
+								</span>
+								<span class="text-sm font-medium text-gray-900 dark:text-white">
+									{{ stats?.absent_count || 0 }}
 								</span>
 							</div>
 							<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
 								<div class="bg-red-600 h-2 rounded-full transition-all duration-300"
-									:style="{ width: `${inactiveStudentsPercentage}%` }"></div>
+									:style="{ width: `${(stats?.absent_count || 0) / (stats?.reports_count || 1) * 100}%` }">
+								</div>
 							</div>
 						</div>
 					</div>
@@ -136,13 +158,6 @@
 								$t('dashboard.avgGroupsPerTeacher') }}</span>
 							<span class="text-sm font-bold text-gray-900 dark:text-white">
 								{{ avgGroupsPerTeacher }}
-							</span>
-						</div>
-						<div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-							<span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('dashboard.activeRate')
-							}}</span>
-							<span class="text-sm font-bold text-green-600 dark:text-green-400">
-								{{ activeStudentsPercentage.toFixed(1) }}%
 							</span>
 						</div>
 					</div>
@@ -273,8 +288,20 @@
 					</div>
 				</router-link>
 
+				<!-- View Reports -->
+				<router-link v-if="authStore.hasAdminRole || authStore.isSuperAdmin" to="/dashboard/reports"
+					class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors group">
+					<i
+						class="pi pi-file text-xl text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400"></i>
+					<div>
+						<p class="font-medium text-sm text-gray-900 dark:text-white">{{ $t('dashboard.viewReports') }}
+						</p>
+						<p class="text-xs text-gray-500 dark:text-gray-400">{{ $t('dashboard.manageReports') }}</p>
+					</div>
+				</router-link>
+
 				<!-- Manage Users (Admin only) -->
-				<router-link v-if="authStore.isAdmin || authStore.isSuperAdmin" to="/dashboard/users"
+				<router-link v-if="authStore.hasAdminRole" to="/dashboard/users"
 					class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors group">
 					<i
 						class="pi pi-users text-xl text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400"></i>
@@ -310,7 +337,7 @@
 		</div>
 
 		<!-- Recent Activity (placeholder for future) -->
-		<div v-if="authStore.isAdmin || authStore.isSuperAdmin" class="card p-6">
+		<div v-if="authStore.hasAdminRole" class="card p-6">
 			<h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
 				{{ $t('dashboard.recentActivity') }}
 			</h2>
@@ -335,19 +362,7 @@ const loading = ref(true)
 const loadingGroups = ref(false)
 const stats = ref<SystemStats | null>(null)
 const teacherGroupsCount = ref(0)
-// Removed: const teacherStudentsCount = ref(0)
 const teacherGroups = ref<any[]>([])
-
-// Computed properties for admin stats
-const activeStudentsPercentage = computed(() => {
-	if (!stats.value || !stats.value.students_count) return 0
-	return (stats.value.active_students_count / stats.value.students_count) * 100
-})
-
-const inactiveStudentsPercentage = computed(() => {
-	if (!stats.value || !stats.value.students_count) return 0
-	return (stats.value.inactive_students_count / stats.value.students_count) * 100
-})
 
 const avgStudentsPerGroup = computed(() => {
 	if (!stats.value || !stats.value.groups_count) return 0
@@ -385,7 +400,7 @@ async function fetchData() {
 	loading.value = true
 
 	try {
-		if (authStore.isAdmin || authStore.isSuperAdmin) {
+		if (authStore.hasAdminRole) {
 			const response = await statsService.getSystemStats()
 			stats.value = response.data
 		} else if (authStore.isTeacher) {
