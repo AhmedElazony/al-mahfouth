@@ -294,7 +294,6 @@ import ConfirmModal from '@/components/common/ConfirmModal.vue'
 import { WeekDayLabels, getEnumLabel } from '@/constants'
 import userService from '@/services/userService'
 import { useAuthStore } from '@/stores/auth'
-import type router from '@/router'
 
 const groupsStore = useGroupsStore()
 
