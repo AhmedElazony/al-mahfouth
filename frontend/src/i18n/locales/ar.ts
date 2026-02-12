@@ -246,6 +246,7 @@ export default {
 	// Reports
 	reports: {
 		title: 'التقارير',
+		subtitle: 'متابعة الطلاب في الحضور والحفظ وغيرها...',
 		addReport: 'إضافة تقرير',
 		editReport: 'تعديل التقرير',
 		dailyReport: 'التقرير اليومي',
@@ -255,8 +256,9 @@ export default {
 		attendance: 'الحضور',
 		attended: 'حاضر',
 		absent: 'غائب',
-		late: 'متأخر',
 		excused: 'معذور',
+		student: 'الطالب',
+		group: 'المجموعة',
 		regular: 'منتظم',
 		irregular: 'غير منتظم',
 		disconnected: 'منقطع',
@@ -275,7 +277,11 @@ export default {
 		allStudents: 'جميع الطلاب',
 		searchByStudent: 'بحث بالطالب',
 		deleteReport: 'حذف التقرير',
-		deleteConfirmation: 'هل أنت متأكد من حذف هذا التقرير؟'
+		deleteConfirmation: 'هل أنت متأكد من حذف هذا التقرير؟',
+		allGroups: 'جميع المجموعات',
+		searchStudent: 'بحث بالطالب',
+		noReportsFound: 'لم نعثر على تقارير تطابق بحثك',
+		totalReports: 'إجمالي التقارير',
 	},
 
 	// Settings

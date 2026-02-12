@@ -68,6 +68,16 @@
 								</router-link>
 							</template>
 
+							<!-- Admin only Reports -->
+							<template v-if="authStore.isAdmin">
+								<router-link to="/dashboard/reports"
+									class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+									active-class="!text-primary-600 dark:!text-primary-400 font-medium">
+									<i class="pi pi-file mr-2"></i>
+									{{ $t('nav.reports') }}
+								</router-link>
+							</template>
+
 							<!-- Community (for all non-students) -->
 							<router-link to="/community"
 								class="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
@@ -187,6 +197,16 @@
 									active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">
 									<i class="pi pi-book mr-2"></i>
 									{{ $t('nav.groups') }}
+								</router-link>
+							</template>
+
+							<!-- Admin only Reports -->
+							<template v-if="authStore.isAdmin">
+								<router-link to="/dashboard/reports" @click="closeMobileMenu"
+									class="block px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
+									active-class="!text-primary-600 dark:!text-primary-400 bg-primary-50 dark:bg-primary-900/20 font-medium">
+									<i class="pi pi-file mr-2"></i>
+									{{ $t('nav.reports') }}
 								</router-link>
 							</template>
 

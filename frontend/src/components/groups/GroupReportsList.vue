@@ -186,9 +186,9 @@ import { ref, watch, computed, onMounted } from 'vue'
 import type { Group } from '@/types/models'
 import type { GroupStudentResponse } from '@/services/groupService'
 import reportService, { type Report } from '@/services/reportService'
-import ReportFormModal from './ReportFormModal.vue'
 import { AttendanceStatus, Grade } from '@/constants/enums'
 import ConfirmModal from '../common/ConfirmModal.vue'
+import ReportFormModal from '../reports/ReportFormModal.vue'
 
 interface Props {
 	group: Group
