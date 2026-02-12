@@ -1,11 +1,11 @@
 <template>
-  <div class="fixed inset-0 z-50 overflow-y-auto">
+  <div class="fixed inset-0 z-50 overflow-y-auto" @click="$emit('cancel')">
     <!-- Backdrop -->
-    <div class="fixed inset-0 bg-black/50" @click="$emit('cancel')"></div>
+    <div class="fixed inset-0 bg-black/50" style="z-index: 1;"></div>
 
     <!-- Modal -->
-    <div class="relative min-h-screen flex items-center justify-center p-4">
-      <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
+    <div class="relative min-h-screen flex items-center justify-center p-4" style="z-index: 2;">
+      <div @click.stop class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
         <!-- Icon -->
         <div class="flex justify-center mb-4">
           <div :class="iconContainerClass" class="w-16 h-16 rounded-full flex items-center justify-center">

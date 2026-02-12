@@ -1,12 +1,14 @@
 <template>
-	<div class="fixed inset-0 z-50 overflow-y-auto">
-		<div class="fixed inset-0 bg-black/50" @click="$emit('close')"></div>
+	<div class="fixed inset-0 z-50 overflow-y-auto" @click="$emit('close')">
+		<!-- Backdrop -->
+		<div class="fixed inset-0 bg-black/50" style="z-index: 1;"></div>
 
-		<div class="relative min-h-screen flex items-center justify-center p-4">
-			<div
+		<!-- Modal -->
+		<div class="relative min-h-screen flex items-center justify-center p-4" style="z-index: 2;">
+			<div @click.stop
 				class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
 				<!-- Header -->
-				<div
+				<div @click.stop
 					class="sticky top-0 bg-white dark:bg-gray-800 flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 z-10">
 					<h2 class="text-lg font-bold text-gray-900 dark:text-white">
 						{{ isEditing ? $t('groups.editGroup') : $t('groups.addGroup') }}

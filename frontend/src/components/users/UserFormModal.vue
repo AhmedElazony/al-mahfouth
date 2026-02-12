@@ -1,11 +1,12 @@
 <template>
-	<div class="fixed inset-0 z-50 overflow-y-auto">
+	<div class="fixed inset-0 z-50 overflow-y-auto" @click="emit('close')">
 		<!-- Backdrop -->
-		<div class="fixed inset-0 bg-black/50" @click="$emit('close')"></div>
+		<div class="fixed inset-0 bg-black/50" style="z-index: 1;">
+		</div>
 
 		<!-- Modal -->
-		<div class="relative min-h-screen flex items-center justify-center p-4">
-			<div
+		<div class="relative min-h-screen flex items-center justify-center p-4" style="z-index: 2;">
+			<div @click.stop
 				class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
 				<!-- Header -->
 				<div
@@ -13,7 +14,7 @@
 					<h2 class="text-xl font-bold text-gray-900 dark:text-white">
 						{{ isEditing ? $t('users.editUser') : $t('users.addUser') }}
 					</h2>
-					<button @click="$emit('close')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+					<button @click="emit('close')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
 						<i class="pi pi-times text-xl"></i>
 					</button>
 				</div>
