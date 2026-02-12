@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Api\V1\Controllers\Tahfidh;
+namespace App\Http\Api\V1\Controllers\Tahfidh\Groups;
 
+use App\Domains\Tahfidh\Models\Group;
 use App\Domains\Tahfidh\Models\Report;
 use App\Domains\Tahfidh\Services\Contracts\ReportService;
 use App\Http\Api\V1\Controllers\ApiController;
@@ -16,7 +17,7 @@ class ReportController extends ApiController
         protected ReportService $reportService
     ) {}
 
-    public function index()
+    public function index(Group $group)
     {
         try {
             $filters = request()->only([
@@ -26,7 +27,8 @@ class ReportController extends ApiController
                 'date_to',
             ]);
             $reports = $this->reportService
-                ->paginate(
+                ->paginateByGroup(
+                    $group->id,
                     ['student'],
                     $filters,
                     $filters['per_page'] ?? 15
@@ -43,13 +45,17 @@ class ReportController extends ApiController
         }
     }
 
-    public function show(Report $report)
+    public function show(Group $group, Report $report)
     {
         try {
             return $this->success(
                 __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
                 ReportResource::make(
-                    $report->load(['student', 'group', 'createdBy'])
+                    $this->reportService->showByGroup(
+                        $group->id,
+                        $report->id,
+                        ['student', 'group', 'createdBy']
+                    )
                 )
             );
         } catch (\Throwable $th) {
@@ -59,11 +65,11 @@ class ReportController extends ApiController
         }
     }
 
-    public function store(StoreReportRequest $request)
+    public function store(StoreReportRequest $request, Group $group)
     {
         try {
             $report = $this->reportService
-                ->create($request->validated());
+                ->storeByGroup($group, $request->validated());
 
             return $this->success(
                 __(ResponseMessageEnum::ADDED_SUCCESSFULLY->value),
@@ -76,11 +82,11 @@ class ReportController extends ApiController
         }
     }
 
-    public function update(UpdateReportRequest $request, Report $report)
+    public function update(UpdateReportRequest $request, Group $group, Report $report)
     {
         try {
             $report = $this->reportService
-                ->update($report, $request->validated());
+                ->updateByGroup($group, $report, $request->validated());
 
             return $this->success(
                 __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
@@ -93,10 +99,10 @@ class ReportController extends ApiController
         }
     }
 
-    public function destroy(Report $report)
+    public function destroy(Group $group, Report $report)
     {
         try {
-            $this->reportService->delete($report);
+            $this->reportService->deleteByGroup($group, $report);
 
             return $this->success(
                 __(ResponseMessageEnum::DELETED_SUCCESSFULLY->value)

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Api\V1\Controllers\Tahfidh;
+namespace App\Http\Api\V1\Controllers\Tahfidh\Groups;
 
 use App\Domains\Tahfidh\Models\Group;
 use App\Domains\Tahfidh\Services\Contracts\GroupService;

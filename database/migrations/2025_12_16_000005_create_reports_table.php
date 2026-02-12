@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('students', 'user_id')->cascadeOnDelete();
-            $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete();
+            $table->foreignId('group_id')->nullable()->constrained('groups')->cascadeOnDelete();
             $table->foreignId('created_by')->constrained('users')->nullOnDelete();
             $table->date('date');
             $table->enum('attendance_status', AttendanceStatusesEnum::values());

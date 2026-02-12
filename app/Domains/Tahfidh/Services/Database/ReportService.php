@@ -19,6 +19,14 @@ class ReportService extends BaseService implements ReportServiceContract
         parent::__construct(Report::class);
     }
 
+    public function create(array $data): Report
+    {
+        return parent::create([
+            ...$data,
+            'created_by' => auth()->id(),
+        ]);
+    }
+
     public function getByGroup(string $groupId, array $with = [], array $filters = [], array $columns = ['*']): Collection
     {
         return $this->get($with, array_merge($filters, ['group_id' => $groupId]), $columns);
