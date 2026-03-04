@@ -2,9 +2,203 @@
 
 namespace App\Domains\User\Services\Database;
 
-use App\Domains\User\Services\Contracts\UserServiceInterface;
+use App\Domains\Tahfidh\Models\StudentTajweed;
+use App\Domains\User\Enums\UserGendersEnum;
+use App\Domains\User\Enums\UserRolesEnum;
+use App\Domains\User\Models\User;
+use App\Domains\User\Services\Contracts\UserService as UserServiceContract;
+use App\Http\Api\V1\Resources\User\UserResource;
+use App\Support\Enums\ResponseMessageEnum;
+use App\Support\Services\Database\BaseService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
-class UserService implements UserServiceInterface
+class UserService extends BaseService implements UserServiceContract
 {
-    //
+    public function __construct()
+    {
+        parent::__construct(User::class);
+    }
+
+    public function paginate(array $with = [], array $filters = [], int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+    {
+        $query = $this->model()->with($with);
+
+        if (auth()->user()->isTeacher()) {
+            $query->where('role', UserRolesEnum::STUDENT->value);
+        }
+
+        return $query
+            ->filter($filters)
+            ->latest()
+            ->paginate($perPage, $columns);
+    }
+
+    public function create(array $data): Model
+    {
+        return DB::transaction(function () use ($data) {
+            $user = User::create([
+                'name' => $data['name'],
+                'username' => $data['username'],
+                'email' => $data['email'],
+                'phone' => $data['phone'] ?? null,
+                'password' => Hash::make($data['password']),
+                'gender' => $data['gender'] ?? UserGendersEnum::MALE->value,
+                'role' => $data['role'] ?? UserRolesEnum::STUDENT->value,
+            ]);
+
+            $this->createOrUpdateRoleProfile(
+                $user,
+                $user->role ?? $data['role'],
+                $data
+            );
+
+            return $user;
+        });
+
+    }
+
+    public function update(Model $user, array $data): Model
+    {
+        return DB::transaction(function () use ($user, $data) {
+            $user->update([
+                'name' => $data['name'] ?? $user->name,
+                'username' => $data['username'] ?? $user->username,
+                'email' => $data['email'] ?? $user->email,
+                'phone' => $data['phone'] ?? $user->phone,
+                'password' => isset($data['password']) ? Hash::make($data['password']) : $user->password,
+                'gender' => $data['gender'] ?? $user->gender,
+            ]);
+
+            $this->createOrUpdateRoleProfile(
+                $user,
+                $user->role,
+                $data
+            );
+
+            return $user;
+        });
+    }
+
+    public function updateProfile(array $data): User
+    {
+        $user = auth()->user();
+        $user->update([
+            'name' => $data['name'] ?? $user->name,
+            'username' => $data['username'] ?? $user->username,
+            'phone' => $data['phone'] ?? $user->phone,
+            'password' => isset($data['password']) ? Hash::make($data['password']) : $user->password,
+        ]);
+
+        return $user;
+    }
+
+    public function delete(Model $user): void
+    {
+        if ($user->isSuperAdmin()) {
+            throw new \Exception(
+                __(ResponseMessageEnum::CANNOT_DELETE_SUPER_ADMIN->value),
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        if ($user->id === auth()->id()) {
+            throw new \Exception(
+                __(ResponseMessageEnum::CANNOT_DELETE_OWN_ACCOUNT->value),
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        $user->delete();
+    }
+
+    public function getStudentGroups(): Collection
+    {
+        $user = auth()->user();
+
+        if (! $user->isStudent()) {
+            throw new \Exception(
+                __(ResponseMessageEnum::FORBIDDEN->value),
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        return $user->student->groups()
+            ->with('teacher')
+            ->withPivot([
+                'student_status',
+                'memorizing_amount',
+                'joined_at',
+            ])->get();
+    }
+
+    public function login(string $usernameOrEmail, string $password): array
+    {
+        return DB::transaction(function () use ($usernameOrEmail, $password) {
+            $user = User::where('email', $usernameOrEmail)
+                ->orWhere('username', $usernameOrEmail)
+                ->first();
+
+            if (! isset($user) || ! Hash::check($password, $user?->password)) {
+                throw new \Exception(
+                    __(ResponseMessageEnum::INVALID_CREDENTIALS->value),
+                    Response::HTTP_UNAUTHORIZED
+                );
+            }
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return ['user' => UserResource::make($user->loadRoleRelations()), 'token' => $token];
+        });
+
+    }
+
+    public function logout(): void
+    {
+        auth()->user()
+            ->tokens()->delete();
+    }
+
+    private function createOrUpdateRoleProfile(User $user, string $role, array $data)
+    {
+        return match ($role) {
+            UserRolesEnum::TEACHER->value => $this->handleTeacherProfile($user, $data),
+            UserRolesEnum::STUDENT->value => $this->handleStudentProfile($user, $data),
+            default => null,
+        };
+    }
+
+    private function handleTeacherProfile(User $user, array $data)
+    {
+        $currentProfile = $user->teacher;
+        $user->teacher()->updateOrCreate(['user_id' => $user->id], [
+            'created_by' => $currentProfile->created_by ?? auth()->id(),
+            'specialization' => $data['teacher_specialization'] ?? $currentProfile->specialization ?? null,
+        ]);
+    }
+
+    private function handleStudentProfile(User $user, array $data)
+    {
+        $currentProfile = $user->student;
+        $user->student()->updateOrCreate(['user_id' => $user->id], [
+            'created_by' => $currentProfile->created_by ?? auth()->id(),
+            'educational_stage' => $data['student_educational_stage'] ?? $currentProfile->educational_stage ?? null,
+            'begin_memorizing_at' => $data['student_begin_memorizing_at'] ?? $currentProfile->begin_memorizing_at ?? null,
+            'memorizing_completed_at' => $data['student_memorizing_completed_at'] ?? $currentProfile->memorizing_completed_at ?? null,
+        ]);
+
+        if (isset($data['student_tajweed_recitation_level']) ||
+            isset($data['student_tajweed_learning_status']) ||
+            isset($data['student_tajweed_notes'])) {
+            $tajweed = StudentTajweed::firstOrNew(['student_id' => $user->id]);
+            $tajweed->recitation_level = $data['student_tajweed_recitation_level'] ?? $tajweed->recitation_level;
+            $tajweed->learning_status = $data['student_tajweed_learning_status'] ?? $tajweed->learning_status;
+            $tajweed->notes = $data['student_tajweed_notes'] ?? $tajweed->notes;
+            $tajweed->save();
+        }
+    }
 }

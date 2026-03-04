@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'success' => 'تمت العملية بنجاح.',
+    'failed' => 'فشلت العملية.',
+    'items_fetched' => 'تم جلب العناصر بنجاح.',
+    'item_added' => 'تمت إضافة العنصر بنجاح.',
+    'item_updated' => 'تم تحديث العنصر بنجاح.',
+    'item_deleted' => 'تم حذف العنصر بنجاح.',
+    'login_successful' => 'تم تسجيل الدخول بنجاح.',
+    'logout_successful' => 'تم تسجيل الخروج بنجاح.',
+    'invalid_credentials' => 'هذه البيانات غير مطابقة لسجلاتنا.',
+    'unauthorized' => 'غير مصرح لك بالوصول إلى هذا المورد.',
+    'forbidden' => 'ليس لديك الأذونات اللازمة للوصول إلى هذا المورد.',
+    'already_exists' => 'العنصر موجود بالفعل.',
+    'not_found' => 'العنصر غير موجود.',
+    'method_not_allowed' => 'طريقة الطلب غير مسموح بها.',
+    'student_not_in_group' => 'الطالب غير موجود في المجموعة.',
+	'cannot_delete_super_admin' => 'لا يمكن حذف المشرف العام.',
+	'cannot_delete_own_account' => 'لا يمكنك حذف حسابك بنفسك',
+];

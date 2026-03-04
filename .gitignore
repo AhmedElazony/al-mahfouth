@@ -4,6 +4,7 @@
 .env.backup
 .env.production
 .phpactor.json
+.php-cs-fixer.*
 .phpunit.result.cache
 /.fleet
 /.idea
@@ -15,6 +16,7 @@
 /node_modules
 /public/build
 /public/hot
+/public/app
 /public/storage
 /storage/*.key
 /storage/pail

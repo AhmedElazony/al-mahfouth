@@ -1,0 +1,214 @@
+<?php
+
+namespace App\Http\Api\V1\Controllers\Tahfidh\Groups;
+
+use App\Domains\Tahfidh\Models\Group;
+use App\Domains\Tahfidh\Services\Contracts\GroupService;
+use App\Domains\User\Models\Student;
+use App\Http\Api\V1\Controllers\ApiController;
+use App\Http\Api\V1\Requests\Tahfidh\Groups\AssignStudentRequest;
+use App\Http\Api\V1\Requests\Tahfidh\Groups\StoreGroupRequest;
+use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateAssignedStudentRequest;
+use App\Http\Api\V1\Requests\Tahfidh\Groups\UpdateGroupRequest;
+use App\Http\Api\V1\Requests\User\UpdateStudentProfileRequest;
+use App\Http\Api\V1\Resources\Tahfidh\GroupResource;
+use App\Http\Api\V1\Resources\Tahfidh\GroupStudentResource;
+use App\Http\Api\V1\Resources\User\StudentResource;
+use App\Support\Enums\ResponseMessageEnum;
+
+class GroupController extends ApiController
+{
+    public function __construct(
+        protected GroupService $groupService,
+    ) {}
+
+    public function index()
+    {
+        try {
+            $filters = request()->only([
+				'per_page',
+                'q',
+                'teacher_id',
+                'is_active',
+            ]);
+
+            return $this->paginated(
+                $this->groupService->paginate(
+					['teacher'],
+					$filters,
+					$filters['per_page'] ?? 15,
+				),
+                GroupResource::class,
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function show(Group $group)
+    {
+        try {
+            return $this->success(
+                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
+                GroupResource::make($group->load('teacher')),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function store(StoreGroupRequest $request)
+    {
+        try {
+            $group = $this->groupService
+                ->create($request->validated());
+
+            return $this->success(
+                __(ResponseMessageEnum::ADDED_SUCCESSFULLY->value),
+                GroupResource::make($group->load('teacher')),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function update(Group $group, UpdateGroupRequest $request)
+    {
+        try {
+            $updatedGroup = $this->groupService
+                ->update($group, $request->validated());
+
+            return $this->success(
+                __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
+                GroupResource::make($updatedGroup->load('teacher')),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function destroy(Group $group)
+    {
+        try {
+            $this->groupService->delete($group);
+
+            return $this->success(
+                __(ResponseMessageEnum::DELETED_SUCCESSFULLY->value),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function getStudents(Group $group)
+    {
+        try {
+            $students = $this->groupService
+                ->getStudents($group);
+
+            return $this->success(
+                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
+                GroupStudentResource::collection($students),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function showStudent(Group $group, int $studentId)
+    {
+        try {
+            $student = $this->groupService
+                ->getStudent($group, $studentId);
+            return $this->success(
+                __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
+                StudentResource::make($student),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function assignStudent(Group $group, AssignStudentRequest $request)
+    {
+        try {
+            $students = $this->groupService
+                ->assignStudent($group, $request->validated());
+
+            return $this->success(
+                __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
+                GroupStudentResource::collection($students),
+            );
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function updateAssignedStudent(Group $group, Student $student, UpdateAssignedStudentRequest $request)
+    {
+        try {
+            $students = $this->groupService
+                ->updateAssignedStudent($group, $student->user_id, $request->validated());
+
+            return $this->success(
+                __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
+                GroupStudentResource::collection($students),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function updateStudentProfile(Group $group, UpdateStudentProfileRequest $request)
+    {
+        try {
+            $updatedStudent = $this->groupService
+                ->updateStudentProfile($group, $request->validated());
+
+            return $this->success(
+                __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
+                StudentResource::make($updatedStudent),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+
+    public function removeStudent(Group $group, Student $student)
+    {
+        try {
+            $this->groupService
+                ->removeStudent($group, $student->user_id);
+
+            return $this->success(
+                __(ResponseMessageEnum::UPDATED_SUCCESSFULLY->value),
+            );
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage()
+            );
+        }
+    }
+}
